@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="158.62mm" height="64.182mm" version="1.1" viewBox="0 0 158.62 64.182" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs>
+<linearGradient id="f" x2="1" gradientTransform="matrix(-25.118 -65.17 -65.17 25.118 286.84 348.9)" gradientUnits="userSpaceOnUse">
+<stop stop-color="#004fa4" offset="0"/>
+<stop stop-color="#00b8b8" offset=".5907"/>
+<stop stop-color="#00b8b8" offset="1"/>
+</linearGradient>
+<linearGradient id="e" x2="1" gradientTransform="matrix(140.97 0 0 -140.97 185.04 355.37)" gradientUnits="userSpaceOnUse">
+<stop stop-color="#59b5ff" offset="0"/>
+<stop stop-color="#2a00ba" offset="1"/>
+</linearGradient>
+<linearGradient id="d" x2="1" gradientTransform="matrix(83.499 -115.41 -115.41 -83.499 231.16 441.99)" gradientUnits="userSpaceOnUse">
+<stop stop-color="#ce00ff" offset="0"/>
+<stop stop-color="#4500ba" offset="1"/>
+</linearGradient>
+<linearGradient id="c" x2="1" gradientTransform="matrix(-41.41 -110.65 -110.65 41.41 312.72 448.37)" gradientUnits="userSpaceOnUse">
+<stop stop-color="#ff00ae" offset="0"/>
+<stop stop-color="#760022" offset="1"/>
+</linearGradient>
+<linearGradient id="b" x2="1" gradientTransform="matrix(-103.19 3.3944 3.3944 103.19 361.52 396.48)" gradientUnits="userSpaceOnUse">
+<stop stop-color="#ffba00" offset="0"/>
+<stop stop-color="#c22700" offset="1"/>
+</linearGradient>
+<linearGradient id="a" x1="278.51" x2="384.17" y1="27.567" y2="27.567" gradientTransform="translate(123.18)" gradientUnits="userSpaceOnUse">
+<stop stop-color="#e6499e" offset="0"/>
+<stop stop-color="#915bf0" stop-opacity=".85514" offset="1"/>
+</linearGradient>
+</defs>
+<g transform="translate(-345 18.654)">
+<g transform="matrix(.35278 0 0 -.35278 272.98 140.89)">
+<path d="m204.16 361.29c0-50.239 40.727-90.966 90.966-90.966 26.326 0 50.035 11.187 66.645 29.062l-38.375 37.53c-6.847-7.933-16.967-12.962-28.27-12.962-20.62 0-37.337 16.716-37.337 37.336 0 20.621 16.717 37.337 37.337 37.337 10.985 0 20.86-4.744 27.692-12.295l38.352 37.508c-16.579 17.5-40.035 28.417-66.044 28.417-50.239 0-90.966-40.727-90.966-90.967" fill="url(#f)"/>
+</g>
+<g transform="matrix(.35278 0 0 -.35278 272.98 140.89)">
+<path d="m224.56 418.7c-12.756-15.659-20.409-35.641-20.409-57.414 0-31.46 15.97-59.187 40.245-75.522 3.626-0.575 7.341-0.883 11.127-0.883 32.494 0 59.837 21.996 67.994 51.904l-0.13 0.127c-6.847-7.933-16.967-12.962-28.27-12.962-20.62 0-37.337 16.716-37.337 37.336 0 20.621 16.717 37.337 37.337 37.337 7.444 0 14.375-2.184 20.199-5.939-12.457 19.916-34.571 33.172-59.793 33.172-11.11 0-21.615-2.578-30.963-7.156" fill="url(#e)"/>
+</g>
+<g transform="matrix(.35278 0 0 -.35278 272.98 140.89)">
+<path d="m204.3 366.38c8.248-29.769 35.521-51.63 67.917-51.63 18.863 0 35.983 7.42 48.632 19.49-6.696-6.375-15.751-10.292-25.727-10.292-20.62 0-37.337 16.716-37.337 37.336 0 20.621 16.717 37.337 37.337 37.337 10.985 0 20.86-4.744 27.692-12.295l17.503 17.119c-6.146 23.047-23.675 41.435-46.202 48.793-48.069-0.522-87.189-38.321-89.815-85.858m116.66-32.037c0.852 0.817 1.683 1.653 2.493 2.511l-0.058 0.056c-0.771-0.893-1.583-1.75-2.435-2.567m-0.108-0.103c0.036 0.034 0.072 0.069 0.108 0.103-0.035-0.034-0.072-0.069-0.108-0.103" fill="url(#d)"/>
+</g>
+<g transform="matrix(.35278 0 0 -.35278 272.98 140.89)">
+<path d="m266.74 447.73c-17.114-12.86-28.185-33.327-28.185-56.382 0-28.476 16.894-52.991 41.199-64.112-0.018 0.01-0.032 0.026-0.051 0.034-12.929 5.869-21.92 18.892-21.92 34.015 0 20.621 16.717 37.337 37.337 37.337 10.985 0 20.86-4.744 27.692-12.295l38.352 37.508c-16.579 17.5-40.035 28.417-66.044 28.417-9.911 0-19.449-1.591-28.38-4.522" fill="url(#c)"/>
+</g>
+<g transform="matrix(.35278 0 0 -.35278 272.98 140.89)">
+<path d="m258.02 365.45c2.073 18.659 17.888 33.171 37.1 33.171 10.985 0 20.86-4.744 27.692-12.295l38.352 37.508c-0.028 0.03-0.057 0.059-0.085 0.088-9.773 5.127-20.888 8.043-32.689 8.043-37.596 0-68.308-29.435-70.37-66.515" fill="url(#b)"/>
+</g>
+<text x="401.11111" y="41.203964" fill="url(#a)" font-family="'MS Gothic'" font-size="36.7px" stroke-width=".3823" style="line-height:1.25" xml:space="preserve"><tspan x="401.11111" y="41.203964" fill="url(#a)" font-family="Georgia" stroke-width=".3823">ircle it</tspan></text>
+</g>
+</svg>

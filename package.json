@@ -1,0 +1,72 @@
+{
+  "name": "circleit",
+  "version": "0.0.1",
+  "private": false,
+  "dependencies": {
+    "@headlessui/react": "^1.7.3",
+    "@supabase/supabase-js": "^2.1.1",
+    "@tanstack/react-query": "^4.13.5",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^13.0.0",
+    "@testing-library/user-event": "^13.2.1",
+    "@tippyjs/react": "^4.2.6",
+    "autoprefixer": "^10.4.13",
+    "axios": "^1.1.3",
+    "deso-protocol": "^0.7.17",
+    "emoji-picker-react": "^4.4.5",
+    "goober": "^2.1.11",
+    "linkify-plugin-hashtag": "^4.0.2",
+    "linkify-plugin-mention": "^4.0.2",
+    "linkify-react": "^4.0.2",
+    "linkifyjs": "^4.0.2",
+    "nanoid": "^4.0.0",
+    "party-js": "^2.2.0",
+    "postcss": "^8.4.18",
+    "process": "^0.11.10",
+    "react": "^18.2.0",
+    "react-app-rewired": "^2.2.1",
+    "react-cool-inview": "^3.0.1",
+    "react-detect-click-outside": "^1.1.7",
+    "react-device-detect": "^2.2.2",
+    "react-dom": "^18.2.0",
+    "react-hot-toast": "^2.4.0",
+    "react-icons": "^4.6.0",
+    "react-modal-image": "^2.6.0",
+    "react-router-dom": "^6.4.2",
+    "react-scripts": "5.0.1",
+    "react-simple-image-slider": "^2.4.1",
+    "sass": "^1.55.0",
+    "tus-js-client": "^3.0.1",
+    "use-debounce": "^8.0.4",
+    "use-resize-observer": "^9.0.2",
+    "web-vitals": "^2.1.0",
+    "zustand": "^4.1.4"
+  },
+  "scripts": {
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.2.1"
+  }
+}
