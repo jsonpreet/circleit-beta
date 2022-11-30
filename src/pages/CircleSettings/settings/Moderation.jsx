@@ -10,7 +10,7 @@ import { BiX } from "react-icons/bi";
 export default function Moderation({ user, sidebar }) {
   const [profileExtraDataJson, setPorfileExtraDataJson] = useState(JSON.parse(typeof user.profile.ExtraData.CircleIt !== "undefined"? user.profile.ExtraData.CircleIt: "{}"));
   const { setUser } = useApp((state) => state);
-  const [circleGuidelines, setCircleGuidelines] = useState(profileExtraDataJson? profileExtraDataJson.CircleGuidelines: "");
+  const [circleGuidelines, setCircleGuidelines] = useState(profileExtraDataJson? typeof profileExtraDataJson.CircleGuidelines !== "undefined"? profileExtraDataJson.CircleGuidelines: "": "");
   const [bannedWordList, setBannedWordList] = useState(profileExtraDataJson? typeof profileExtraDataJson.BannedWords !== "undefined"? profileExtraDataJson.BannedWords: []: []);
   const [currentBannedWord, setCurrentBannedWord] = useState("");
   const [listOfSearchedProfiles, setListOfSearchedProfiles] = useState([]);
