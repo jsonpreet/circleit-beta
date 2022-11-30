@@ -76,8 +76,8 @@ function SubProfileCard({ profile }) {
       }
     }
 
-    fetchFollowings();
-    fetchFollowers();
+    //fetchFollowings();
+    //fetchFollowers();
 
     if (isLoggedIn) {
       checkFollowing();
@@ -93,7 +93,7 @@ function SubProfileCard({ profile }) {
       <div
         className={`darkenBg border darkenBorder darkenHoverBg rounded-lg ${
           isCircle ? `w-[300px] p-4` : `w-[250px]`
-        } font-normal text-left customShadow flex flex-col items-center justify-start space-y-1`}>
+        } font-normal text-left customShadow flex flex-col items-center justify-start`}>
         {isCircle ? (
           <>
             <div className='flex w-full'>
@@ -133,7 +133,7 @@ function SubProfileCard({ profile }) {
                 )}
               </div>
             </div>
-            <div className='py-3 px-4 w-full flex justify-between'>
+            {/* <div className='py-3 px-4 w-full flex justify-between'>
               <div className='flex flex-col items-center space-y-1'>
                 <span className='font-bold text-xl'>{follows}</span>
                 <span className='text-sm'>
@@ -146,8 +146,8 @@ function SubProfileCard({ profile }) {
                   {isCircle ? `Mods` : `Followings`}
                 </span>
               </div>
-            </div>
-            <div className='w-full items-center justify-center flex'>
+            </div> */}
+            <div className='w-full items-center mt-4 justify-center flex'>
               {isLoggedIn ? (
                 isFollowing ? (
                   <button className='py-2 w-full px-4 border border-transparent rounded-full text-sm font-medium text-white buttonBG focus:outline-none'>
@@ -213,7 +213,7 @@ function SubProfileCard({ profile }) {
                   </span>
                 )}
               </div>
-              <div className='py-3 px-4 w-full flex justify-between'>
+              {/* <div className='py-3 px-4 w-full flex justify-between'>
                 <div className='flex flex-col items-center space-y-1'>
                   <span className='font-bold text-xl'>{follows}</span>
                   <span className='text-sm'>
@@ -226,8 +226,8 @@ function SubProfileCard({ profile }) {
                     {isCircle ? `Mods` : `Followings`}
                   </span>
                 </div>
-              </div>
-              <div className='w-full items-center justify-center flex'>
+              </div> */}
+              <div className='w-full items-center mt-4 justify-center flex'>
                 {isLoggedIn ? (
                   isFollowing ? (
                     <button className='py-2 w-full px-4 border border-transparent rounded-full text-sm font-medium text-white buttonBG focus:outline-none'>
