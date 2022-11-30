@@ -54,7 +54,7 @@ function Search() {
                     <input
                         type='text'
                         placeholder='Find circle'
-                        className='search primaryBg rounded-full px-4 py-2 w-full outline-none focus:shadow transition delay-50 ring-1 pl-12'
+                        className='search secondaryBg rounded-full px-4 py-2 w-full outline-none focus:shadow transition delay-50 ring-1 pl-12'
                         onChange={(e) => setQuery(e.target.value)}
                         value={query}
                     />
