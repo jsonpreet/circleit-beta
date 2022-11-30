@@ -77,3 +77,10 @@
   color: var(--toastify-text-color-success);
   --toastify-icon-color-success: var(--toastify-text-color-success);
 }
+
+.single-modal-image{
+  div {
+    height: 100%;
+    max-height: 600px;
+  }
+}

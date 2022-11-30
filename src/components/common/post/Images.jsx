@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import SimpleImageSlider from "react-simple-image-slider";
-import { Lightbox } from "react-modal-image";
-import ModalImage from "react-modal-image";
+import ModalImage, { Lightbox } from "react-modal-image";
 
 function PostImages({images, circle}) {
   const [openLightbox, setOpenLightbox] = useState(false);
@@ -22,7 +21,7 @@ function PostImages({images, circle}) {
     <>
       <div className='w-full relative mt-4 justify-center'>
         {images.length > 1 ?
-          <div className='rounded-3xl simpleImageSlider w-full min-h-[300px] max-h-[300px] md:min-h-[600px] md:max-h-[800px] h-full'>
+          <div className='rounded-3xl simpleImageSlider w-full min-h-[300px] max-h-[300px] md:min-h-[600px] md:max-h-[700px] h-full'>
             <SimpleImageSlider
               width={`100%`}
               height={`100%`}
@@ -36,12 +35,15 @@ function PostImages({images, circle}) {
           </div>
           :
           images[0] !== '' && 
-          <ModalImage
-            small={images[0]}
-            large={images[0]}
-            hideDownload={true}
-            alt={circle.Username}
-          />
+          <div>
+            <ModalImage
+              small={images[0]}
+              large={images[0]}
+              hideDownload={true}
+              className='min-h-[300px] !max-h-[300px] md:!max-h-[600px] h-full'
+              alt={circle.Username}
+            />
+          </div>
         }
         {openLightbox && (
           <Lightbox
