@@ -15,7 +15,7 @@ export default function Moderation({ user, sidebar }) {
   const [currentBannedWord, setCurrentBannedWord] = useState("");
   const [listOfSearchedProfiles, setListOfSearchedProfiles] = useState([]);
   const [searchPrefix, setSearchPrefix] = useState("");
-  const [listOfModerators, setListOfModerators] = useState(profileExtraDataJson? profileExtraDataJson.Mods: []);
+  const [listOfModerators, setListOfModerators] = useState(profileExtraDataJson? profileExtraDataJson.Mods !== "undefined"? profileExtraDataJson.Mods: []: []);
   const [showSearchBox, setShowSearchBox] = useState(false);
 
   const [currentTagWord, setCurrentTagWord] = useState("");
