@@ -83,11 +83,17 @@ function Header() {
           // }
           try {
             const data = await deso.user.getSingleProfile(request);
-            let checkExtraData = data.Profile.ExtraData.CircleIt;
+            let checkExtraData = data.Profile.ExtraData? data.Profile.ExtraData.CircleIt:false;
             if (checkExtraData) {
-              let payload = JSON.parse(data.Profile.ExtraData.CircleIt);
-              let isCircle = payload && payload.isCircle === "true" ? true : false;
-              setCircle(isCircle);
+              try{
+                let payload = JSON.parse(data.Profile.ExtraData.CircleIt);
+                let isCircle = payload && payload.isCircle === "true" ? true : false;
+                setCircle(isCircle);
+              }
+              catch{
+                setCircle(false);
+              }
+             
             }
 
             setUser({ profile: data.Profile });
