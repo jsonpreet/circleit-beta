@@ -11,7 +11,7 @@ export default function Moderation({ user, sidebar }) {
   const profileExtraDataJson = JSON.parse(user.profile.ExtraData.CircleIt);
   const { setUser } = useApp((state) => state);
   const [circleGuidelines, setCircleGuidelines] = useState(profileExtraDataJson? profileExtraDataJson.CircleGuidelines: "");
-  const [bannedWordList, setBannedWordList] = useState(profileExtraDataJson? profileExtraDataJson.BannedWords: []);
+  const [bannedWordList, setBannedWordList] = useState(profileExtraDataJson? typeof profileExtraDataJson.BannedWords !== "undefined"? profileExtraDataJson.BannedWords: []: []);
   const [currentBannedWord, setCurrentBannedWord] = useState("");
   const [listOfSearchedProfiles, setListOfSearchedProfiles] = useState([]);
   const [searchPrefix, setSearchPrefix] = useState("");
@@ -19,7 +19,7 @@ export default function Moderation({ user, sidebar }) {
   const [showSearchBox, setShowSearchBox] = useState(false);
 
   const [currentTagWord, setCurrentTagWord] = useState("");
-  const [tagWordList, setTagWordList] = useState(profileExtraDataJson? profileExtraDataJson.PostTags: []);
+  const [tagWordList, setTagWordList] = useState(profileExtraDataJson? typeof profileExtraDataJson.PostTags !== "undefined"? profileExtraDataJson.PostTags: []: []);
   const [loading, setLoading] = useState(false);
 
   const handleBannedWordChange = (e) => {
