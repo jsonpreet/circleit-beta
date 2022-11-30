@@ -36,6 +36,7 @@
     "react-scripts": "5.0.1",
     "react-simple-image-slider": "^2.4.1",
     "sass": "^1.55.0",
+    "simplebar-react": "^2.4.3",
     "tus-js-client": "^3.0.1",
     "use-debounce": "^8.0.4",
     "use-resize-observer": "^9.0.2",

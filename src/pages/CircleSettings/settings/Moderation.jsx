@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import Deso from "deso-protocol";
 import useApp from "../../../store/app";
@@ -31,36 +31,6 @@ export default function Moderation({ user, sidebar }) {
     }
   };
 
-  const handleProfileSuggestor = async (e) => {
-    let prefix = e.target.value;
-    setSearchPrefix(prefix);
-    if (prefix.length > 0) {
-      const deso = new Deso(DESO_CONFIG);
-      const request = {
-        PublicKeyBase58Check: "",
-        Username: "",
-        UsernamePrefix: prefix,
-        Description: "",
-        OrderBy: "",
-        NumToFetch: 20,
-        ReaderPublicKeyBase58Check: user.PublicKeyBase58Check,
-        ModerationType: "",
-        FetchUsersThatHODL: false,
-        AddGlobalFeedBool: false,
-      };
-      try {
-        const profiles = await deso.user.getProfiles(request);
-        if (profiles && profiles.ProfilesFound !== null) {
-          setShowSearchBox(true);
-          //setListOfSearchProfiles only top 4 profiles
-          setListOfSearchedProfiles(profiles.ProfilesFound.slice(0, 4));
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
-
   const handleTagChange = (e) => {
     if (e.target.value !== "" && (e.keyCode === 32 || e.key === "Enter")) {
       setCurrentTagWord("");
@@ -69,6 +39,39 @@ export default function Moderation({ user, sidebar }) {
       setCurrentTagWord(e.target.value);
     }
   };
+
+  useEffect(() => {
+    const getData = setTimeout(async() => {
+      if (searchPrefix.length > 0) {
+        const deso = new Deso(DESO_CONFIG);
+        const request = {
+          PublicKeyBase58Check: "",
+          Username: "",
+          UsernamePrefix: searchPrefix,
+          Description: "",
+          OrderBy: "",
+          NumToFetch: 20,
+          ReaderPublicKeyBase58Check: user.PublicKeyBase58Check,
+          ModerationType: "",
+          FetchUsersThatHODL: false,
+          AddGlobalFeedBool: false,
+        };
+        try {
+          const profiles = await deso.user.getProfiles(request);
+          if (profiles && profiles.ProfilesFound !== null) {
+            setShowSearchBox(true);
+            //setListOfSearchProfiles only top 4 profiles
+            setListOfSearchedProfiles(profiles.ProfilesFound.slice(0, 4));
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        setShowSearchBox(false);
+      }
+    }, 700)
+    return () => clearTimeout(getData)
+  }, [searchPrefix])
 
   const updateProfile = async () => {
     const profileExtraInfo = user.profile.ExtraData;
@@ -176,7 +179,7 @@ export default function Moderation({ user, sidebar }) {
             placeholder='Search Users to add as moderators'
             value={searchPrefix}
             className='search rounded-full darkenBg darkenBorder border darkenHoverBg  px-3 py-2 w-full outline-none focus:shadow transition delay-50 ring-1 placeholder:text-gray-400 dark:placeholder:text-gray-500'
-            onChange={handleProfileSuggestor}
+            onChange={(e) => setSearchPrefix(e.target.value)}
           />
 
           {showSearchBox && (

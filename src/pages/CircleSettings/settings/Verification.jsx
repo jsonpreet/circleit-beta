@@ -6,6 +6,7 @@ import { DESO_CONFIG, NODE_URL } from "../../../utils/Constants";
 import { Loader } from "../../../utils/Loader";
 import toast from "react-hot-toast";
 import useApp from "../../../store/app";
+import { useEffect } from "react";
 export default function Verification({ user, sidebar }) {
   const profileExtraDataJson = JSON.parse(user.profile.ExtraData.CircleIt);
   const { setUser } = useApp((state) => state);
@@ -17,35 +18,38 @@ export default function Verification({ user, sidebar }) {
   );
   const [showSearchBox, setShowSearchBox] = useState(false);
 
-  const handleProfileSuggestor = async (e) => {
-    let prefix = e.target.value;
-    setSearchPrefix(prefix);
-    if (prefix.length > 0) {
-      const deso = new Deso(DESO_CONFIG);
-      const request = {
-        PublicKeyBase58Check: "",
-        Username: "",
-        UsernamePrefix: prefix,
-        Description: "",
-        OrderBy: "",
-        NumToFetch: 20,
-        ReaderPublicKeyBase58Check: user.PublicKeyBase58Check,
-        ModerationType: "",
-        FetchUsersThatHODL: false,
-        AddGlobalFeedBool: false,
-      };
-      try {
-        const profiles = await deso.user.getProfiles(request);
-        if (profiles && profiles.ProfilesFound !== null) {
-          setShowSearchBox(true);
-          //setListOfSearchProfiles only top 4 profiles
-          setListOfSearchedProfiles(profiles.ProfilesFound.slice(0, 4));
+  useEffect(() => {
+    const getData = setTimeout(async() => {
+      if (searchPrefix.length > 0) {
+        const deso = new Deso(DESO_CONFIG);
+        const request = {
+          PublicKeyBase58Check: "",
+          Username: "",
+          UsernamePrefix: searchPrefix,
+          Description: "",
+          OrderBy: "",
+          NumToFetch: 20,
+          ReaderPublicKeyBase58Check: user.PublicKeyBase58Check,
+          ModerationType: "",
+          FetchUsersThatHODL: false,
+          AddGlobalFeedBool: false,
+        };
+        try {
+          const profiles = await deso.user.getProfiles(request);
+          if (profiles && profiles.ProfilesFound !== null) {
+            setShowSearchBox(true);
+            //setListOfSearchProfiles only top 4 profiles
+            setListOfSearchedProfiles(profiles.ProfilesFound.slice(0, 4));
+          }
+        } catch (error) {
+          console.log(error);
         }
-      } catch (error) {
-        console.log(error);
+      } else {
+        setShowSearchBox(false);
       }
-    }
-  };
+    }, 700)
+    return () => clearTimeout(getData)
+  }, [searchPrefix])
 
   const updateProfile = async () => {
     const profileExtraInfo = user.profile.ExtraData;
@@ -114,7 +118,7 @@ export default function Verification({ user, sidebar }) {
             placeholder='Search Users to add as moderators'
             value={searchPrefix}
             className='search rounded-full darkenBg darkenBorder border darkenHoverBg  px-3 py-2 w-full outline-none focus:shadow transition delay-50 placeholder:text-gray-400 dark:placeholder:text-gray-500'
-            onChange={handleProfileSuggestor}
+            onChange={(e) => setSearchPrefix(e.target.value)}
           />
           {showSearchBox && (
             <div className='flex flex-col rounded-xl darkenBg border divide-y theme-divider py-2 darkenBorder mt-4'>
