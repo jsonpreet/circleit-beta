@@ -8,18 +8,18 @@ import toast from "react-hot-toast";
 import { BiX } from "react-icons/bi";
 
 export default function Moderation({ user, sidebar }) {
-  const profileExtraDataJson = JSON.parse(user.profile.ExtraData.CircleIt);
+  const [profileExtraDataJson, setPorfileExtraDataJson] = useState(JSON.parse(typeof user.profile.ExtraData.CircleIt !== "undefined"? user.profile.ExtraData.CircleIt: "{}"));
   const { setUser } = useApp((state) => state);
-  const [circleGuidelines, setCircleGuidelines] = useState(profileExtraDataJson? profileExtraDataJson.CircleGuidelines: "");
-  const [bannedWordList, setBannedWordList] = useState(profileExtraDataJson? profileExtraDataJson.BannedWords: []);
+  const [circleGuidelines, setCircleGuidelines] = useState(profileExtraDataJson? typeof profileExtraDataJson.CircleGuidelines !== "undefined"? profileExtraDataJson.CircleGuidelines: "": "");
+  const [bannedWordList, setBannedWordList] = useState(profileExtraDataJson? typeof profileExtraDataJson.BannedWords !== "undefined"? profileExtraDataJson.BannedWords: []: []);
   const [currentBannedWord, setCurrentBannedWord] = useState("");
   const [listOfSearchedProfiles, setListOfSearchedProfiles] = useState([]);
   const [searchPrefix, setSearchPrefix] = useState("");
-  const [listOfModerators, setListOfModerators] = useState(profileExtraDataJson? profileExtraDataJson.Mods: []);
+  const [listOfModerators, setListOfModerators] = useState(profileExtraDataJson? profileExtraDataJson.Mods !== "undefined"? profileExtraDataJson.Mods: []: []);
   const [showSearchBox, setShowSearchBox] = useState(false);
 
   const [currentTagWord, setCurrentTagWord] = useState("");
-  const [tagWordList, setTagWordList] = useState(profileExtraDataJson? profileExtraDataJson.PostTags: []);
+  const [tagWordList, setTagWordList] = useState(profileExtraDataJson? typeof profileExtraDataJson.PostTags !== "undefined"? profileExtraDataJson.PostTags: []: []);
   const [loading, setLoading] = useState(false);
 
   const handleBannedWordChange = (e) => {

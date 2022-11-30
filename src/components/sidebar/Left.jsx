@@ -26,7 +26,12 @@ function SidebarLeft({ rootRef }) {
           console.log(error.error_description || error.message);
       }
       if (data && data.length > 0) {
-          setCircles(data);
+        const uniqueCircles = data.filter((thing, index, self) =>
+        index === self.findIndex((t) => (
+          t.Username === thing.Username
+        ))
+      )
+          setCircles(uniqueCircles);
       }
     }
     fetchCircles()
