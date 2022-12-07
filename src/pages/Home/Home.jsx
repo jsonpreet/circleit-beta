@@ -164,6 +164,7 @@ function Home() {
                             <PostCard
                                 post={post}
                                 key={post.PostHashHex}
+                                isCommunityPost={false}
                                 isRepost={false}
                                 circle={circleProfile}
                                 onCirclePage={false}

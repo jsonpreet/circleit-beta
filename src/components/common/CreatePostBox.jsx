@@ -180,6 +180,8 @@ export default function CreatePostBox({ circle }) {
         PostExtraData: {
           EmbedVideoURL: postEmbedLink,
           CircleIt: JSON.stringify(payload),
+          CircleUsername: circle.Username,
+          CirclePublicKey: circle.PublicKeyBase58Check,
         }
       };
       await deso.posts.submitPost(request);

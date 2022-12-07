@@ -50,35 +50,39 @@ function PostTopMeta({
             interactiveDebounce={100}
             delay={100}
             render={(attrs) => (
-              <SubProfileCard isCircle={true} profile={profile} {...attrs} />
+              <SubProfileCard isCircle={false}
+                profile={post.ProfileEntryResponse} {...attrs} />
             )}>
             <Link
               to={url}
               className='primaryTextColor text-sm cursor-pointer relative hover:underline flex items-center justify-center space-x-1'>
               <img
-                src={`${NODE_URL}/get-single-profile-picture/${
-                  onCirclePage
-                    ? isCommunityPost
-                      ? circle.PublicKeyBase58Check
-                      : post.ProfileEntryResponse.PublicKeyBase58Check
-                    : circle.PublicKeyBase58Check
-                }?fallback=https://diamondapp.com/assets/img/default_profile_pic.png`}
+                src={`${NODE_URL}/get-single-profile-picture/${onCirclePage
+                  ? isCommunityPost
+                    ? circle.PublicKeyBase58Check
+                    : post.ProfileEntryResponse.PublicKeyBase58Check
+                  : post.ProfileEntryResponse.PublicKeyBase58Check
+                  }?fallback=https://diamondapp.com/assets/img/default_profile_pic.png`}
                 className='w-8 h-8 rounded-full mt-1'
                 alt={
                   onCirclePage
                     ? isCommunityPost
                       ? circle.Username
                       : post.ProfileEntryResponse.Username
-                    : circle.Username
+                    : post.ProfileEntryResponse.Username
                 }
               />
               <span>
-                {onCirclePage &&
-                  !isCommunityPost &&
+                {/* Show user name on post which are on circle Feed */}
+                {(onCirclePage ||
+                  !isCommunityPost) &&
                   post.ProfileEntryResponse.Username}
 
-                {(!onCirclePage || isCommunityPost) &&
+                {/* Show CircleName on post which are on Community Feed in Circle Page */}
+                {(!onCirclePage && isCommunityPost) &&
                   (isCircle ? `c/${circle.Username}` : `${circle.Username}`)}
+
+
               </span>
               {onCirclePage &&
                 !isCommunityPost &&
@@ -89,33 +93,16 @@ function PostTopMeta({
             </Link>
           </Tippy>
         </div>
-        {!isCommunityPost && !onCirclePage && (
+
+
+        {(!isCommunityPost && !onCirclePage && typeof post.PostExtraData.CircleUsername != "undefined") && (
           <div className='flex items-center text-sm'>
-            <span className='md:inline-flex hidden mr-1 extralightText'>Posted by</span>
-            <Tippy
-              followCursor={true}
-              placement='bottom'
-              interactive={true}
-              maxWidth={300}
-              interactiveDebounce={100}
-              delay={100}
-              render={(attrs) => (
-                <SubProfileCard
-                  isCircle={false}
-                  profile={post.ProfileEntryResponse}
-                  {...attrs}
-                />
-              )}>
-              <Link
-                to={`/${profileIsCircle ? `circle` : `u`}/${
-                  post.ProfileEntryResponse.Username
-                }`}
-                className='text-sm cursor-pointer hover:underline relative flex items-center justify-center space-x-1 extralightText'>
-                {/* <img src={`https://node.deso.org/api/v0/get-single-profile-picture/${publicKey}?fallback=https://diamondapp.com/assets/img/default_profile_pic.png`} className='w-5 h-5 rounded-full mt-1' alt='' /> */}
-                {/* <span>{post.ProfileEntryResponse.ExtraData?.DisplayName ? post.ProfileEntryResponse.ExtraData?.DisplayName : post.ProfileEntryResponse.Username}</span> */}
-                <span>{post.ProfileEntryResponse.Username}</span>
-              </Link>
-            </Tippy>
+            <span className='md:inline-flex hidden mr-1 extralightText'>Posted in</span>
+            <Link
+              to={`/circle/${post.PostExtraData.CircleUsername}`}
+              className='text-sm cursor-pointer hover:underline relative flex items-center justify-center space-x-1 extralightText'>
+              <span>{`c/${post.PostExtraData.CircleUsername}`}</span>
+            </Link>
           </div>
         )}
         <div className='flex items-center space-x-2'>
