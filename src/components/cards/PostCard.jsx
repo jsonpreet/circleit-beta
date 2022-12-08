@@ -31,6 +31,7 @@ export default function PostCard({
   const navigate = useNavigate();
   const [videoEmbed, setEmbed] = useState("");
   const [postTitle, setPostTitle] = useState("");
+  const [postBody, setPostBody] = useState("");
   // let body1 = post.Body.replace( `Posted on @CircleIt in @${circle.Username}`, "" );
   // let body2 = body1.replace(`Posted on @${circle.Username}`, "");
   // let body3 = body2.replace(`Posted on @CircleIt in @${post.ProfileEntryResponse.Username}`, "");
@@ -61,7 +62,11 @@ export default function PostCard({
   }, [post]);
 
   useEffect(() => {
-    post.Body.length > 200 ? setReadMore(true) : setReadMore(false);
+ 
+    const regex = /Posted on @\w+ in @\w+/;
+    const output = post.Body.replace(regex, "");
+    output.length > 200 ? setReadMore(true) : setReadMore(false);
+    setPostBody(output.trimRight())
   }, [post.Body]);
 
   const onPostClicked = (event) => {
@@ -119,7 +124,7 @@ export default function PostCard({
             : null}
             <div className='w-full lightText'>
               <Linkify options={LinkifyOptions}>
-                {!readMore ? post.Body : `${post.Body.substring(0, 200)}`}
+                {!readMore ? postBody : `${postBody.substring(0, 200)}`}
               </Linkify>
               {readMore && (
                 <span

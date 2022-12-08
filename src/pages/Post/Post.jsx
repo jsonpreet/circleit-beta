@@ -75,19 +75,11 @@ function Post() {
                             let post = response.PostFound;
                             setPost(post);
                             setisLoading(false);
-                            // let body1 = post.Body.replace(
-                            //     `Posted on @CircleIt in @${profileResponse.Profile.Username}`,
-                            //     ""
-                            // );
-                            // let body = body1.replace(
-                            //     `Posted on @${profileResponse.Profile.Username}`,
-                            //     ""
-                            // );
-                            // console.log(post)
-                            // let body1 = post.Body.replace( `Posted on @CircleIt in @${circle}`, "" );
-                            // let body3 = body1.replace(`Posted on @CircleIt in @${post.ProfileEntryResponse.Username}`, "");
-                            // let body = body3.replace( `Posted on @CircleIt in @${profileResponse.Profile.Username}`, "" );
-                            setBody(post.Body);
+                            const regex = /Posted on @\w+ in @\w+/;
+                            const output = post.Body.replace(regex, "");
+                            
+                         
+                            setBody(output.trimRight());
                             if (post.PostExtraData && post.PostExtraData['EmbedVideoURL'] !== null) {
                                 const response = getEmbedURL(post.PostExtraData['EmbedVideoURL']);
                                 setEmbed(response)
