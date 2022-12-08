@@ -50,7 +50,7 @@ function Search() {
         <>
             {isBrowser ?
             
-                <div className='flex flex-row w-[728px] items-center relative'>
+                <div className='flex flex-row w-[700px] items-center relative'>
                     <input
                         type='text'
                         placeholder='Find circle'
