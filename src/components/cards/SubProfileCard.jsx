@@ -15,6 +15,8 @@ function SubProfileCard({ profile }) {
   const [isFollowing, setisFollowing] = useState(false);
   const [readMore, setReadMore] = useState(false);
   let payload = null;
+  console.log("in subprofilecard")
+  console.log(profile)
   try {
     payload = profile.ExtraData?.CircleIt
       ? JSON.parse(profile.ExtraData.CircleIt)
