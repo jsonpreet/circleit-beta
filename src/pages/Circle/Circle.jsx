@@ -13,6 +13,7 @@ import { useInView } from "react-cool-inview";
 import { DefaultLayout } from "../../components/layouts";
 import { DESO_CONFIG } from "../../utils/Constants";
 import CircleTabs from "../../components/common/CircleTabs";
+import { act } from "react-dom/test-utils";
 
 export default function Circle() {
   const { isLoggedIn, user } = useApp();
@@ -169,10 +170,8 @@ export default function Circle() {
                 setCommunityHasMore(false);
               }
               let feedDataList = response.Posts;
-              //remove posts where RecloutedPostEntryResponse is not null
-              feedDataList = feedDataList.filter(
-                (post) => post.RecloutedPostEntryResponse === null
-              );
+             
+              setLastPostHashHex(response.LastPostHashHex)
               setCommunityPostFeed(feedDataList);
             } catch (error) {
               console.log(error);
@@ -183,9 +182,9 @@ export default function Circle() {
         console.log("something wentr wrong. profile didn't load or don't exit");
       }
     }
-    let lastTab = localStorage.getItem("lastTab");
+    let lastTab = localStorage.getItem("circleTab");
     if (lastTab === null) lastTab = "hot";
-    localStorage.setItem("lastTab", lastTab);
+    localStorage.setItem("circleTab", lastTab);
     setActiveTab(lastTab);
     fetchData(lastTab);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -235,7 +234,9 @@ export default function Circle() {
           console.log(error);
         }
       }
+      console.log(activeTab)
       if (activeTab === "community") {
+        console.log("in it should work wtf")
         const request = {
           Username: circle.toLowerCase(),
           ReaderPublicKeyBase58Check: userPublicKey,
@@ -250,11 +251,9 @@ export default function Circle() {
             setCommunityHasMore(false);
           }
           let feedDataList = response.Posts;
-          //remove posts where RecloutedPostEntryResponse is not null
-          feedDataList = feedDataList.filter(
-            (post) => post.RecloutedPostEntryResponse === null
-          );
-          setCommunityPostFeed(feedDataList);
+        
+          setLastPostHashHex(response.LastPostHashHex)
+          setCommunityPostFeed([...communityPostFeed, ...feedDataList]);
         } catch (error) {
           console.log(error);
         }
@@ -281,9 +280,9 @@ export default function Circle() {
             </div>
             <div>
               {isLoading || feedLoading ? <FeedShimmer cols={20} /> : null}
-              {currentActiveTab === "hot" && (
+              {(currentActiveTab === "hot") && (
                 <>
-                  {hotFeed.length > 0 ? (
+                  {hotFeed? (
                     hotFeed.map((post) => (
                       <PostCard
                         circle={circleProfile}
@@ -315,7 +314,7 @@ export default function Circle() {
               )}
               {currentActiveTab === "new" && (
                 <>
-                  {newFeed.length > 0 ? (
+                  {newFeed ? (
                     newFeed.map((post) => (
                       <PostCard
                         circle={circleProfile}
@@ -347,7 +346,7 @@ export default function Circle() {
               )}
               {currentActiveTab === "community" && (
                 <>
-                  {communityPostFeed.length > 0 ? (
+                  {communityPostFeed? (
                     communityPostFeed.map((post) => (
                       <PostCard
                         circle={circleProfile}
