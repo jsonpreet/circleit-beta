@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import DiamondedCreatorsList from "./DiamondedCreatorsList";
 import Deso from "deso-protocol";
-
 // TODO: add catch exception to manage handlings when API errors out
 function SidebarRight() {
   const [topDiamondList, setTopDimaondList] = useState([]);
@@ -16,21 +15,19 @@ function SidebarRight() {
       );
 
       const data = await response.json();
-      
+
       let publicKeyList = [];
       //loop through data.data list
-      let tempDimaondInfoMap = {}
+      let tempDimaondInfoMap = {};
       for (let i = 0; i < data.data.length; i++) {
-        let currentItem = data.data[i]
+        let currentItem = data.data[i];
         tempDimaondInfoMap[currentItem.public_key] = {
-
-            diamonds_received_24h: currentItem.diamonds_received_24h,
-            diamonds_received_value_24h: currentItem.diamonds_received_value_24h
-
-        }
+          diamonds_received_24h: currentItem.diamonds_received_24h,
+          diamonds_received_value_24h: currentItem.diamonds_received_value_24h,
+        };
         publicKeyList.push(currentItem.public_key);
       }
-      setDiamondInfoMap(tempDimaondInfoMap)
+      setDiamondInfoMap(tempDimaondInfoMap);
 
       const request = {
         PublicKeysBase58Check: publicKeyList,
@@ -48,12 +45,13 @@ function SidebarRight() {
         <div className='flex-1 w-full flex flex-col'>
           <div className='flex items-center space-x-2 px-4 text-xl font-bold mb-4 pb-4 border-b secondaryBorder dark:text-white'>
             <h3 className=''>Top Diamonded Creators</h3>
-           
-          
           </div>
 
           <div className='px-4'>
-            <DiamondedCreatorsList list={topDiamondList} diamondInfoMap = {diamondInfoMap} />
+            <DiamondedCreatorsList
+              list={topDiamondList}
+              diamondInfoMap={diamondInfoMap}
+            />
           </div>
         </div>
       </div>
