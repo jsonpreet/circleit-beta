@@ -8,7 +8,7 @@ import CreateCircleModal from "../modals/CreateCircle";
 import toast from "react-hot-toast";
 import logo from "../../assets/logo.svg";
 import { supabase } from "../../utils/supabase";
-import SimpleBar from 'simplebar-react';
+import SimpleBar from "simplebar-react";
 
 function SidebarLeft({ rootRef }) {
   const { isLoggedIn, isCircle } = useApp();
@@ -21,49 +21,34 @@ function SidebarLeft({ rootRef }) {
 
   useEffect(() => {
     async function fetchCircles() {
-      const { data, error, status } = await supabase.from('circles').select()
+      const { data, error, status } = await supabase.from("circles").select();
       if (error && status !== 406) {
-          console.log(error.error_description || error.message);
+        console.log(error.error_description || error.message);
       }
       if (data && data.length > 0) {
-        const uniqueCircles = data.filter((thing, index, self) =>
-        index === self.findIndex((t) => (
-          t.Username === thing.Username
-        ))
-      )
-          setCircles(uniqueCircles);
+        const uniqueCircles = data.filter(
+          (thing, index, self) =>
+            index === self.findIndex((t) => t.Username === thing.Username)
+        );
+        setCircles(uniqueCircles);
       }
     }
-    fetchCircles()
-  },[])
+    fetchCircles();
+  }, []);
   return (
     <>
       <div className='w-56 items-start relative justify-start dark:bg-[#121214] bg-white dark:border-[#2D2D33] border-gray-100 overflow-auto h-screen border-r p-4 bg-clip-padding backdrop-blur-xl backdrop-filter'>
         <div className='flex flex-row -mt-2 items-center'>
           <Link to='/'>
             <div className='relative text-4xl font-bold dark:text-white sm:text-4xl lg:text-5xl leading-none rounded-full z-10'>
-              <img src={logo} className="h-14" alt="Circleit Logo"></img>
+              <img src={logo} className='h-14' alt='Circleit Logo'></img>
             </div>
           </Link>
         </div>
-        <div className="flex flex-col overflow-auto w-full pr-4">
-          <div className='flex flex-row w-full mt-8 h-12 items-start justify-start'>
-            <button className='w-full h-full flex flex-row justify-between items-center px-4 rounded-md border primaryBorder primaryBg dark:text-white'>
-              <span className='dark:text-[#b3b8c0] text-gray-600'>
-                Filter by
-              </span>
-              <BsChevronDown
-                className=' dark:text-[#b3b8c0] text-gray-600'
-                size={20}
-              />
-            </button>
-          </div>
-          <CircleList name='Favorites' list={defaultCircles} />
-          {circles && circles.length > 0 ?
-            <>
-              <div className='divider'></div>
-              <CircleList name='Community Circles' list={circles} />
-            </> : null}
+        <div className='flex flex-col overflow-auto w-full pr-4 mt-4'>
+         
+
+          <CircleList name='Top Circles' list={defaultCircles} />
           <div className='divider'></div>
           {isLoggedIn ? (
             !isCircle ? (
@@ -86,6 +71,12 @@ function SidebarLeft({ rootRef }) {
             setShowModal={setShowModal}
           />
         </div>
+        {circles && circles.length > 0 ? (
+          <>
+            <div className='divider'></div>
+            <CircleList name='New Circles' list={(circles.reverse()).slice(0, 10)} />
+          </>
+        ) : null}
       </div>
     </>
   );

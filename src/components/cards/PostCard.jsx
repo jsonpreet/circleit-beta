@@ -106,7 +106,7 @@ export default function PostCard({
       onClick={(e) => onPostClicked(e)}
       className={`${
         isRepost ? `my-2` : ``
-      } cursor-pointer flex items-start justify-between min-h-24 lg:min-h-36 w-full transition secondaryBg secondaryBorder border primaryTextColor rounded-md mb-2`}>
+      } cursor-pointer flex items-start justify-between min-h-24 lg:min-h-36 w-full transition secondaryBg secondaryBorder border primaryTextColor rounded-md mb-1`}>
       <div className='flex flex-col w-full p-4'>
         <PostTopMeta
           post={post}
