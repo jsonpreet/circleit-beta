@@ -46,8 +46,6 @@ function SidebarLeft({ rootRef }) {
           </Link>
         </div>
         <div className='flex flex-col overflow-auto w-full pr-4 mt-4'>
-         
-
           <CircleList name='Top Circles' list={defaultCircles} />
           <div className='divider'></div>
           {isLoggedIn ? (
@@ -58,13 +56,7 @@ function SidebarLeft({ rootRef }) {
                 <span>Create a Circle</span>
               </button>
             ) : null
-          ) : (
-            <button
-              onClick={() => login()}
-              className='font-medium text-white px-6 py-3 leading-none w-full rounded-full buttonBG my-6'>
-              <span>Create a Circle</span>
-            </button>
-          )}
+          ) : null}
           <CreateCircleModal
             rootRef={rootRef}
             showModal={showModal}
@@ -74,7 +66,10 @@ function SidebarLeft({ rootRef }) {
         {circles && circles.length > 0 ? (
           <>
             <div className='divider'></div>
-            <CircleList name='New Circles' list={(circles.reverse()).slice(0, 10)} />
+            <CircleList
+              name='New Circles'
+              list={circles.reverse().slice(0, 10)}
+            />
           </>
         ) : null}
       </div>
