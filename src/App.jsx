@@ -9,13 +9,15 @@ import { Latest } from "./pages/Latest";
 import { Post } from "./pages/Post";
 import { Profile } from "./pages/Profile";
 import RedirectRoute from "./pages/RedirectRoute";
+import { SignUp } from "./pages/SignUp";
 
 function App() {
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path='/' element={<Home />} />
+          <Route path='/' element={<Home/>} />
+          <Route path='/sign-up' element={<SignUp/>} />
           <Route path='/latest' element={<Latest />} />
           <Route path='/hot' element={<Home />} />
           <Route path='/circle' element={<RedirectRoute />} />
