@@ -13,11 +13,17 @@ function PostTopMeta({
   isCommunityPost,
   onCirclePage,
 }) {
-  const verifiedPayload = circle
-    ? circle.ExtraData.CircleIt !== undefined
-      ? JSON.parse(circle.ExtraData.CircleIt)
-      : null
-    : null;
+  let verifiedPayload = null;
+  try {
+    verifiedPayload = circle
+      ? circle.ExtraData.CircleIt !== undefined
+        ? JSON.parse(circle.ExtraData.CircleIt)
+        : null
+      : null;
+  } catch {
+    verifiedPayload = null;
+  }
+
   const [listOfVerifiedUsers, setListOfVerifiedUsers] = useState(
     verifiedPayload?.VerifiedUsers.length > 0
       ? verifiedPayload.VerifiedUsers.map((user) => user.PublicKeyBase58Check)
@@ -60,7 +66,7 @@ function PostTopMeta({
             render={(attrs) => (
               <SubProfileCard
                 isCircle={false}
-                profile={!isCommunityPost ?post.ProfileEntryResponse: circle}
+                profile={!isCommunityPost ? post.ProfileEntryResponse : circle}
                 {...attrs}
               />
             )}>

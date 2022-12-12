@@ -103,17 +103,21 @@ export default function Circle() {
               if (response.HotFeedPage === null) {
                 setMentionHasMore(false);
               }
+
               let feedDataList = response.HotFeedPage;
               //remove posts where RecloutedPostEntryResponse is not null
-              feedDataList = feedDataList.filter(
-                (post) => post.RecloutedPostEntryResponse === null
-              );
+              if (feedDataList) {
+                feedDataList = feedDataList.filter(
+                  (post) => post.RecloutedPostEntryResponse === null
+                );
+                const seenPostLists = response.HotFeedPage.map(
+                  (post) => post.PostHashHex
+                );
+                setSeenMentionPost(seenPostLists);
+              }
               setMentionFeed(feedDataList);
               //store postHashHex of each post in hotFeed
-              const seenPostLists = response.HotFeedPage.map(
-                (post) => post.PostHashHex
-              );
-              setSeenMentionPost(seenPostLists);
+
               setIsLoading(false);
             } catch (error) {
               console.log(error);
@@ -253,7 +257,7 @@ export default function Circle() {
                   ) : (
                     <NoPostCard />
                   )}
-                  {!isLoading && !feedLoading && mentionFeed.length === 0 && (
+                  {(mentionFeed && !isLoading && !feedLoading && mentionFeed.length === 0) && (
                     <NoPostCard />
                   )}
                   {!isLoading &&

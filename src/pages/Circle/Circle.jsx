@@ -361,7 +361,7 @@ export default function Circle() {
                     <NoPostCard />
                   )}
                   {!isLoading &&
-                    !feedLoading &&
+                    !feedLoading && communityPostFeed &&
                     communityPostFeed.length === 0 && <NoPostCard />}
                   {!isLoading &&
                     !feedLoading &&
