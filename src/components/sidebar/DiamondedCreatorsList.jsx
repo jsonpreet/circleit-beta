@@ -19,7 +19,8 @@ function DiaondedCreatorList({ name, list, diamondInfoMap }) {
             let publicKey = userInfo.ProfileEntryResponse.PublicKeyBase58Check;
 
             return (
-              <div className='flex items-center  my-1'>
+              <div className='flex items-center  my-1'
+              key={index}>
                 <div className='flex items-center space-x-1'>
                   <Tippy
                     followCursor={true}

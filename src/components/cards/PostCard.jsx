@@ -149,7 +149,7 @@ export default function PostCard({
             )}
             {post.PostExtraData?.EmbedVideoURL &&
               post.PostExtraData?.EmbedVideoURL !== "" &&
-              videoEmbed !== "" && (
+              videoEmbed !== "" && typeof videoEmbed != "undefined" &&(
                 <div className='mt-2 embed-container w-full flex flex-row items-center justify-center rounded-xl overflow-hidden'>
                   <iframe
                     title='extraembed-video'
