@@ -138,10 +138,10 @@ function Header() {
               <span className='ml-2'>Home</span>
             </Link>
             <Link
-              to='/latest'
+              to='/following'
               className='mr-6 menu font-semibold flex flex-row flex-grow transition delay-75'>
               <FiSunrise size={24} />
-              <span className='ml-2'>Latest</span>
+              <span className='ml-2'>Following</span>
             </Link>
             <Link
               to='/hot'

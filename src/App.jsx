@@ -5,7 +5,7 @@ import { CircleSettings } from "./pages/CircleSettings";
 import { CreatePost } from "./pages/Create";
 import ErrorPage from "./pages/Error/Error";
 import { Home } from "./pages/Home";
-import { Latest } from "./pages/Latest";
+import { Following } from "./pages/Following";
 import { Post } from "./pages/Post";
 import { Profile } from "./pages/Profile";
 import RedirectRoute from "./pages/RedirectRoute";
@@ -16,7 +16,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Home />} />
-          <Route path='/latest' element={<Latest />} />
+          <Route path='/following' element={<Following/>} />
           <Route path='/hot' element={<Home />} />
           <Route path='/circle' element={<RedirectRoute />} />
           <Route path='/u' element={<RedirectRoute />} />

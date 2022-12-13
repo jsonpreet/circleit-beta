@@ -56,7 +56,7 @@ function PostTopMeta({
             interactive={true}
             maxWidth={300}
             interactiveDebounce={100}
-            delay={100}
+            delay={200}
             render={(attrs) => (
               <SubProfileCard isCircle={false} profile={circle} {...attrs} />
             )}
