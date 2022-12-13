@@ -1,45 +1,67 @@
 import { useEffect, useState } from "react";
 import Deso from "deso-protocol";
 import PostCard from "../../components/cards/PostCard";
-import { Header } from "../../components/header";
 import { useNavigate, useParams } from "react-router-dom";
 import { CreatePostBox } from "../../components/common";
-import { SidebarLeft } from "../../components/sidebar";
 import { SidebarRight } from "../../components/sidebar/circle";
-import { Toaster } from "react-hot-toast";
 import useApp from "../../store/app";
 import FeedShimmer from "../../components/shimmers/Feed";
 import SidebarShimmer from "../../components/shimmers/Sidebar";
 import NoPostCard from "../../components/cards/NoPostCard";
-import { useInView } from "react-cool-inview";
 import { Loader } from "../../utils/Loader";
+import { useInView } from "react-cool-inview";
 import { DefaultLayout } from "../../components/layouts";
 import { DESO_CONFIG } from "../../utils/Constants";
 import ProfileTabs from "../../components/common/ProfileTabs";
-
-const deso = new Deso(DESO_CONFIG);
 
 export default function Circle() {
   const { isLoggedIn, user } = useApp();
   const { username } = useParams();
   const [isLoading, setIsLoading] = useState(true);
-  const [feedData, setFeedData] = useState([]);
+
   const [userProfile, setUserProfile] = useState([]);
   const [activeTab, setActiveTab] = useState("");
-  const navigate = useNavigate();
   const [feedLoading, setFeedLoading] = useState(false);
   const [currentActiveTab, setCurrentActiveTab] = useState("");
-  const [seenPosts, setSeenPosts] = useState([]);
-  const [hasMore, setHasMore] = useState(true);
 
+  const navigate = useNavigate();
+
+  // having 2 different states for each tab. So we don't have to fetch the data again on tab change
+  const [mentionFeed, setMentionFeed] = useState([]);
+  const [communityPostFeed, setCommunityPostFeed] = useState([]);
+
+  const [seenMentionPost, setSeenMentionPost] = useState([]);
   const [lastPostHashHex, setLastPostHashHex] = useState("");
+
+  const [mentionHasMore, setMentionHasMore] = useState(true);
+
+  const [communityHasMore, setCommunityHasMore] = useState(true);
+
+  const [noMentionPosts, setNoMnetionPosts] = useState(false);
+
+  const [noCommunityPosts, setNoCommunityPosts] = useState(false);
   const userPublicKey = isLoggedIn
     ? user.profile.PublicKeyBase58Check
     : "BC1YLhBLE1834FBJbQ9JU23JbPanNYMkUsdpJZrFVqNGsCe7YadYiUg";
 
   useEffect(() => {
-    async function fetchData() {
-      if (!username) return;
+    if (mentionFeed && mentionFeed.length > 0) {
+      setNoMnetionPosts(false);
+    } else {
+      setNoMnetionPosts(true);
+    }
+
+    if (communityPostFeed && communityPostFeed.length > 0) {
+      setNoCommunityPosts(false);
+    } else {
+      setNoCommunityPosts(true);
+    }
+  }, [mentionFeed, communityPostFeed]);
+
+  useEffect(() => {
+    async function fetchData(lastTab) {
+      if (!username) return navigate("/");
+      const deso = new Deso(DESO_CONFIG);
       const profileRequest = {
         Username: `${username}`,
       };
@@ -55,182 +77,235 @@ export default function Circle() {
           return;
         }
         setUserProfile(profileResponse.Profile);
-        const request = {
-          Username: username,
-          ReaderPublicKeyBase58Check: userPublicKey,
-          NumToFetch: 20,
-        };
-        setIsLoading(false);
+
+        let sequenceTabList = [
+          lastTab ? lastTab : "posts",
+          "mentions",
+          "posts",
+        ];
+        //remove duplicate from sequenceTabList
+        sequenceTabList = [...new Set(sequenceTabList)];
+
+        //looping through each tab and storing their feed data in state
+        for (let i = 0; i < sequenceTabList.length; i++) {
+          const tab = sequenceTabList[i];
+          if (tab === "mentions") {
+            const request = {
+              ReaderPublicKeyBase58Check: userPublicKey,
+              SeenPosts: [],
+              Tag: `@${username.toLowerCase()}`,
+              SortByNew: true,
+              ResponseLimit: 20,
+            };
+            try {
+              setMentionHasMore(true);
+              const response = await deso.posts.getHotFeed(request);
+              if (response.HotFeedPage === null) {
+                setMentionHasMore(false);
+              }
+
+              let feedDataList = response.HotFeedPage;
+              //remove posts where RecloutedPostEntryResponse is not null
+              if (feedDataList) {
+                feedDataList = feedDataList.filter(
+                  (post) => post.RecloutedPostEntryResponse === null
+                );
+                const seenPostLists = response.HotFeedPage.map(
+                  (post) => post.PostHashHex
+                );
+                setSeenMentionPost(seenPostLists);
+              }
+              setMentionFeed(feedDataList);
+              //store postHashHex of each post in hotFeed
+
+              setIsLoading(false);
+            } catch (error) {
+              console.log(error);
+            }
+          }
+
+          if (tab === "posts") {
+            const request = {
+              Username: username.toLowerCase(),
+              ReaderPublicKeyBase58Check: userPublicKey,
+              NumToFetch: 20,
+            };
+            try {
+              setCommunityHasMore(true);
+              const response = await deso.posts.getPostsForPublicKey(request);
+
+              if (response.Posts === null) {
+                setCommunityHasMore(false);
+              }
+              let feedDataList = response.Posts;
+
+              setLastPostHashHex(response.LastPostHashHex);
+              setCommunityPostFeed(feedDataList);
+            } catch (error) {
+              console.log(error);
+            }
+          }
+        }
+      } else {
+        console.log("something wentr wrong. profile didn't load or don't exit");
       }
     }
-
     let lastTab = localStorage.getItem("profileTab");
-    if (lastTab) {
-      setActiveTab(lastTab);
-      setCurrentActiveTab(lastTab);
-    }
-    else {
-      setActiveTab("posts");
-      setCurrentActiveTab("posts");
-      localStorage.setItem("profileTab", "posts");
-    }
-    fetchData();
+    if (lastTab === null) lastTab = "posts";
+    localStorage.setItem("profileTab", lastTab);
+    setActiveTab(lastTab);
+    fetchData(lastTab);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username, userPublicKey]);
 
   useEffect(() => {
-    async function fetchData() {
-      setFeedLoading(true);
-      setCurrentActiveTab(activeTab);
-      if (!username) return;
+    setCurrentActiveTab(activeTab);
+  }, [activeTab, username, userPublicKey]);
 
-      if (activeTab === "comments") {
-        return; // we yet have to work on Comment feed ..
-      }
-      else if (activeTab === "posts") {
-        const request = {
-          Username: username,
-          ReaderPublicKeyBase58Check: userPublicKey,
-          NumToFetch: 20,
-        };
-        try {
-          setHasMore(true);
-          const response = await deso.posts.getPostsForPublicKey(request);
-
-
-          setFeedData(response.Posts);
-          const lastPostHashHex = response.LastPostHashHex;
-          setLastPostHashHex(lastPostHashHex);
-          setFeedLoading(false);
-          return;
-        } catch (error) {
-          setFeedLoading(false);
-        }
-      }
-      else if (activeTab === "mentions") {
+  const { observe } = useInView({
+    rootMargin: "1000px 0px",
+    onEnter: async () => {
+      const deso = new Deso(DESO_CONFIG);
+      if (activeTab === "mentions") {
+        setMentionHasMore(true);
         const request = {
           ReaderPublicKeyBase58Check: userPublicKey,
-          SeenPosts: [],
+          SeenPosts: seenMentionPost,
           Tag: `@${username.toLowerCase()}`,
           SortByNew: true,
           ResponseLimit: 20,
         };
         try {
           const response = await deso.posts.getHotFeed(request);
-          if (response.HotFeedPage === null) {
-            setHasMore(false);
+          if (response.HotFeedPage.length === 0) {
+            setMentionHasMore(false);
           }
-          setFeedData(response.HotFeedPage);
+          let feedDataList = response.HotFeedPage;
+          //remove posts where RecloutedPostEntryResponse is not null
+          feedDataList = feedDataList.filter(
+            (post) => post.RecloutedPostEntryResponse === null
+          );
+          setMentionFeed([...mentionFeed, ...feedDataList]);
+
           //store postHashHex of each post in hotFeed
           const seenPostLists = response.HotFeedPage.map(
             (post) => post.PostHashHex
           );
-          setSeenPosts(seenPostLists);
-          setFeedLoading(false);
+
+          setSeenMentionPost([...seenMentionPost, ...seenPostLists]);
         } catch (error) {
-          if (feedData.length !== 0) {
-            setFeedLoading(false);
-          }
+          console.log(error);
         }
       }
 
+      if (activeTab === "community") {
+        const request = {
+          Username: username.toLowerCase(),
+          ReaderPublicKeyBase58Check: userPublicKey,
+          NumToFetch: 20,
+          LastPostHashHex: lastPostHashHex,
+        };
+        try {
+          setCommunityHasMore(true);
+          const response = await deso.posts.getPostsForPublicKey(request);
 
-    }
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab, username, userPublicKey]);
+          if (response.Posts === null) {
+            setCommunityHasMore(false);
+          }
+          let feedDataList = response.Posts;
 
-  const { observe } = useInView({
-    rootMargin: "1000px 0px",
-    onEnter: async () => {
-      setHasMore(true);
-      console.log(`fetching more posts for infinite scroll`);
-      const request = {
-        ReaderPublicKeyBase58Check: userPublicKey,
-        SeenPosts: seenPosts,
-        Tag: `@${username.toLowerCase()}`,
-        SortByNew: true,
-        ResponseLimit: 20,
-      };
-      try {
-
-        if (activeTab === "posts") {
-          const request = {
-            Username: username,
-            ReaderPublicKeyBase58Check: userPublicKey,
-            NumToFetch: 20,
-            LastPostHashHex: lastPostHashHex,
-          };
-          const response = await deso.getPostsForPublicKey(request);
-
-
-          setFeedData([...feedData, ...response.Posts]);
-          const lastPostHashHex = response.LastPostHashHex;
-          setLastPostHashHex(lastPostHashHex);
-          return
+          setLastPostHashHex(response.LastPostHashHex);
+          setCommunityPostFeed([...communityPostFeed, ...feedDataList]);
+        } catch (error) {
+          console.log(error);
         }
-        const response = await deso.posts.getHotFeed(request);
-        if (response.HotFeedPage.length === 0) {
-          setHasMore(false);
-        }
-        else {
-          setFeedData([...feedData, ...response.HotFeedPage]);
-          //store postHashHex of each post in hotFeed
-          const seenPostLists = response.HotFeedPage.map(
-            (post) => post.PostHashHex
-          );
-          setSeenPosts([...seenPosts, ...seenPostLists]);
-        }
-
-      } catch (error) {
-        console.log(error);
-        setHasMore(false);
       }
     },
   });
 
   const handleTabChange = (tab) => {
-    setActiveTab(tab);
     localStorage.setItem("profileTab", tab);
-  }
+    setActiveTab(tab);
+  };
   return (
     <>
       <DefaultLayout>
         <div className='grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-8'>
           <div className='grid grid-cols-1 gap-4 lg:col-span-2 mt-6'>
-            <ProfileTabs handleTabChange={handleTabChange} username={username} activeTab={activeTab} currentActiveTab={currentActiveTab}/>
+            <ProfileTabs
+              handleTabChange={handleTabChange}
+              username={username}
+              activeTab={activeTab}
+              currentActiveTab={currentActiveTab}
+            />
+
             <div>
-              {isLoading || feedLoading ? (
-                <FeedShimmer cols={10} />
-              ) : feedData?.length > 0 ? (
-                feedData.map((post) => (
-                  <PostCard
-                    circle={userProfile}
-                    key={post.PostHashHex}
-                    post={post}
-                    isRepost={false}
-                    isCommunityPost={currentActiveTab === "posts"}
-                    onCirclePage={true}
-                  />
-                ))
-              ) : (
+              {isLoading || feedLoading ? <FeedShimmer cols={20} /> : null}
+              {currentActiveTab === "mentions" && (
                 <>
-                  <NoPostCard />
+                  {mentionFeed ? (
+                    mentionFeed.map((post) => (
+                      <PostCard
+                        circle={userProfile}
+                        key={post.PostHashHex}
+                        post={post}
+                        isRepost={false}
+                        isCommunityPost={false}
+                        onCirclePage={true}
+                      />
+                    ))
+                  ) : (
+                    <NoPostCard />
+                  )}
+                  {(mentionFeed && !isLoading && !feedLoading && mentionFeed.length === 0) && (
+                    <NoPostCard />
+                  )}
+                  {!isLoading &&
+                    !feedLoading &&
+                    (mentionHasMore ? (
+                      <span ref={observe} className='flex justify-center p-10'>
+                        <Loader />
+                      </span>
+                    ) : (
+                      <div className='flex justify-center p-10'>
+                        <p className='text-gray-500'>No more posts</p>
+                      </div>
+                    ))}
                 </>
               )}
-              {!isLoading &&
-                !feedLoading &&
-                (hasMore ? (
-                  <span ref={observe} className='flex justify-center p-10'>
-                    <Loader />
-                  </span>
-                ) : (
-                  <div className='flex justify-center p-10'>
-                    <p className='text-gray-500 dark:text-gray-400'>
-                      No more posts
-                    </p>
-                  </div>
-                ))}
+
+              {currentActiveTab === "posts" && (
+                <>
+                  {communityPostFeed ? (
+                    communityPostFeed.map((post) => (
+                      <PostCard
+                        circle={userProfile}
+                        key={post.PostHashHex}
+                        post={post}
+                        isRepost={false}
+                        isCommunityPost={true}
+                        onCirclePage={true}
+                      />
+                    ))
+                  ) : (
+                    <NoPostCard />
+                  )}
+                  {!isLoading &&
+                    !feedLoading && communityPostFeed &&
+                    communityPostFeed.length === 0 && <NoPostCard />}
+                  {!isLoading &&
+                    !feedLoading &&
+                    (communityHasMore ? (
+                      <span ref={observe} className='flex justify-center p-10'>
+                        <Loader />
+                      </span>
+                    ) : (
+                      <div className='flex justify-center p-10'>
+                        <p className='text-gray-500'>No more posts</p>
+                      </div>
+                    ))}
+                </>
+              )}
             </div>
           </div>
           <div className='mt-[20px] md:mt-[35px]'>

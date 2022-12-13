@@ -13,11 +13,17 @@ function PostTopMeta({
   isCommunityPost,
   onCirclePage,
 }) {
-  const verifiedPayload = circle
-    ? circle.ExtraData.CircleIt !== undefined
-      ? JSON.parse(circle.ExtraData.CircleIt)
-      : null
-    : null;
+  let verifiedPayload = null;
+  try {
+    verifiedPayload = circle
+      ? circle.ExtraData.CircleIt !== undefined
+        ? JSON.parse(circle.ExtraData.CircleIt)
+        : null
+      : null;
+  } catch {
+    verifiedPayload = null;
+  }
+
   const [listOfVerifiedUsers, setListOfVerifiedUsers] = useState(
     verifiedPayload?.VerifiedUsers.length > 0
       ? verifiedPayload.VerifiedUsers.map((user) => user.PublicKeyBase58Check)
@@ -48,23 +54,25 @@ function PostTopMeta({
 
   return (
     <>
-      <div className="flex flex-row items-center justify-start space-x-2 w-full mb-1">
-        <div className="flex items-center text-sm font-bold -mt-[2px]">
+      <div className='flex flex-row items-center justify-start space-x-2 w-full mb-1'>
+        <div className='flex items-center text-sm font-bold -mt-[2px]'>
           <Tippy
             followCursor={true}
-            placement="bottom"
+            placement='bottom'
             interactive={true}
             maxWidth={300}
             interactiveDebounce={100}
             delay={200}
             render={(attrs) => (
-              <SubProfileCard isCircle={false} profile={circle} {...attrs} />
-            )}
-          >
+              <SubProfileCard
+                isCircle={false}
+                profile={!isCommunityPost ? post.ProfileEntryResponse : circle}
+                {...attrs}
+              />
+            )}>
             <Link
               to={url}
-              className="primaryTextColor text-sm cursor-pointer relative hover:underline flex items-center justify-center space-x-1"
-            >
+              className='primaryTextColor text-sm cursor-pointer relative hover:underline flex items-center justify-center space-x-1'>
               <img
                 src={`${NODE_URL}/get-single-profile-picture/${
                   onCirclePage
@@ -73,7 +81,7 @@ function PostTopMeta({
                       : post.ProfileEntryResponse.PublicKeyBase58Check
                     : post.ProfileEntryResponse.PublicKeyBase58Check
                 }?fallback=https://diamondapp.com/assets/img/default_profile_pic.png`}
-                className="w-8 h-8 rounded-full mt-1"
+                className='w-8 h-8 rounded-full mt-1'
                 alt={
                   onCirclePage
                     ? isCommunityPost
@@ -92,11 +100,9 @@ function PostTopMeta({
                 {!onCirclePage &&
                   isCommunityPost &&
                   (isCircle ? `c/${circle.Username}` : `${circle.Username}`)}
-                {onCirclePage &&
-                  isCommunityPost &&
-                  circle.Username}
+                {onCirclePage && isCommunityPost && circle.Username}
 
-{onCirclePage &&
+                {onCirclePage &&
                   !isCommunityPost &&
                   post.ProfileEntryResponse.Username}
               </span>
@@ -105,7 +111,7 @@ function PostTopMeta({
                 listOfVerifiedUsers &&
                 listOfVerifiedUsers.indexOf(
                   post.ProfileEntryResponse.PublicKeyBase58Check
-                ) > -1 && <img src={greenCheck} className="w-4 h-4" />}
+                ) > -1 && <img src={greenCheck} className='w-4 h-4' />}
             </Link>
           </Tippy>
         </div>
@@ -113,25 +119,23 @@ function PostTopMeta({
         {!isCommunityPost &&
           !onCirclePage &&
           typeof post.PostExtraData.CircleUsername != "undefined" && (
-            <div className="flex items-center text-sm">
-              <span className="md:inline-flex hidden mr-1 extralightText">
+            <div className='flex items-center text-sm'>
+              <span className='md:inline-flex hidden mr-1 extralightText'>
                 Posted in
               </span>
               <Link
                 to={`/circle/${post.PostExtraData.CircleUsername}`}
-                className="text-sm cursor-pointer hover:underline relative flex items-center justify-center space-x-1 extralightText"
-              >
+                className='text-sm cursor-pointer hover:underline relative flex items-center justify-center space-x-1 extralightText'>
                 <span>{`c/${post.PostExtraData.CircleUsername}`}</span>
               </Link>
             </div>
           )}
-        <div className="flex items-center space-x-2">
-          <span className="middot" />
-          <div className="items-center text-sm">
+        <div className='flex items-center space-x-2'>
+          <span className='middot' />
+          <div className='items-center text-sm'>
             <span
-              className="text-sm extralightText"
-              title={dateFormat(post.TimestampNanos)}
-            >
+              className='text-sm extralightText'
+              title={dateFormat(post.TimestampNanos)}>
               {timeStampToTimeAgo(post.TimestampNanos)}
             </span>
           </div>

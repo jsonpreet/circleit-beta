@@ -9,6 +9,7 @@ import { Following } from "./pages/Following";
 import { Post } from "./pages/Post";
 import { Profile } from "./pages/Profile";
 import RedirectRoute from "./pages/RedirectRoute";
+import { SignUp } from "./pages/SignUp";
 
 function App() {
   return (
@@ -17,6 +18,9 @@ function App() {
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/following' element={<Following/>} />
+          <Route path='/' element={<Home/>} />
+          <Route path='/sign-up' element={<SignUp/>} />
+          <Route path='/latest' element={<Latest />} />
           <Route path='/hot' element={<Home />} />
           <Route path='/circle' element={<RedirectRoute />} />
           <Route path='/u' element={<RedirectRoute />} />

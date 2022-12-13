@@ -16,3 +16,5 @@ export const NODE_URL = 'https://diamondapp.com/api/v0'; //'https://node.deso.or
 export const DESO_CONFIG = {
     nodeUri: NODE_URL
 }
+
+export const MIN_DESO_TO_CREATE_PROFILE = 0.001 // IDK WHAT'S THE EXACT VALUE IS. COPIED IT FROM DIAMOND'S FRONTEND (NOT FROM CODE);

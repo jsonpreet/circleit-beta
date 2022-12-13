@@ -24,7 +24,7 @@ function CircleList({ name, list }) {
                   alt=''
                 />
                 <span className='font-semibold tracking-wider'>
-                  c/{circle.Username}
+                  c/{`${circle.Username.slice(0, 13)}${circle.Username.length> 13? `...`: ''}`}
                 </span>
               </Link>
             );
