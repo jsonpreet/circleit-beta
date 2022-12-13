@@ -80,6 +80,7 @@ function Header() {
           // toast.error("Something went wrong");
           // console.log(error);
           //route to /sign-up
+          localStorage.setItem("newDeSoPublicKey", response.key);
           navigate("/sign-up");
         }
       } else {
