@@ -34,10 +34,11 @@ function CommentCard({post, comment, isSubComment, parent = null}) {
         : "BC1YLhBLE1834FBJbQ9JU23JbPanNYMkUsdpJZrFVqNGsCe7YadYiUg";
     
     useEffect(() => {
-        if (comment.PostExtraData && comment.PostExtraData['EmbedVideoURL'] !== null) {
-            const response = getEmbedURL(comment.PostExtraData['EmbedVideoURL']);
-            setEmbed(response)
-        }
+        //disabled this as this throws weird error on this post u/nader/e94f552d8f1d6e78b038ca6a5669308984e2a2d5e4bb0d222c23a510a2fff877
+        // if (comment.PostExtraData && comment.PostExtraData['EmbedVideoURL'] !== null) {
+        //     const response = getEmbedURL(comment.PostExtraData['EmbedVideoURL']);
+        //     setEmbed(response)
+        // }
         
         if (comment.Comments && comment.Comments.length > 0) {
             setComments(comment.Comments)
@@ -108,7 +109,7 @@ function CommentCard({post, comment, isSubComment, parent = null}) {
     return (
         <>
             <div
-                key={comment.PostHashHex}
+             
                 data-id={comment.PostHashHex}
                 data-last={lastID}
                 className={`flex flex-col overflow-hidden secondaryBorder ${isSubComment ? `ml-2 px-0 rounded-none` : `border-b pb-4 px-4 last:border-transparent`}`}>
@@ -186,11 +187,13 @@ function CommentCard({post, comment, isSubComment, parent = null}) {
                                 <iframe title='embed-video' src={comment.VideoURLs[0]} className='w-full absolute left-0 right-0 top-0 bottom-0 h-full feed-post__video' allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowFullScreen></iframe>
                             </div>
                         }
-                        {comment.PostExtraData?.EmbedVideoURL && comment.PostExtraData?.EmbedVideoURL !== '' && videoEmbed !== '' &&
+
+                        {/* idk. it just gives error at this post u/nader/e94f552d8f1d6e78b038ca6a5669308984e2a2d5e4bb0d222c23a510a2fff877 so i am commentng tiktok URL embeds */}
+                        {/* {comment.PostExtraData?.EmbedVideoURL && comment.PostExtraData?.EmbedVideoURL !== '' && videoEmbed !== '' &&
                             <div className='mt-2 embed-container w-full flex flex-row items-center justify-center rounded-xl overflow-hidden'>
                                 <iframe title='extraembed-video' id="embed-iframe" className='w-full flex-shrink-0 feed-post__image' height={getEmbedHeight(videoEmbed)} style={{ maxWidth: getEmbedWidth(videoEmbed) }} src={videoEmbed} frameBorder="0" allow="picture-in-picture; clipboard-write; encrypted-media; gyroscope; accelerometer; encrypted-media;" allowFullScreen ></iframe>
                             </div>
-                        }
+                        } */}
                         <div className='mb-2'>
                             <PostBottomMeta post={comment} isRepost={false} />
                         </div>

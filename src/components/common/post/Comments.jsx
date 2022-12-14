@@ -302,7 +302,9 @@ function PostComments({ post }) {
           {comments &&
             comments.length > 0 &&
             comments.map((comment, index) => {
-              return <CommentCard isSubComment={false} post={post} comment={comment} />
+              return <div key={index}>
+                <CommentCard isSubComment={false} post={post} comment={comment}  />
+                </div>
             })
           }
           {!loadingComments && comments && comments.length === 0 && (

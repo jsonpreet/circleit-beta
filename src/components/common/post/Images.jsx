@@ -19,7 +19,7 @@ function PostImages({images, circle}) {
   }
   return (
     <>
-      <div className='w-full relative mt-4 justify-center border rounded-sm'>
+      <div className='w-full relative mt-4 justify-center secondaryBorder border rounded-sm'>
         {images.length > 1 ?
           <div className='rounded-3xl simpleImageSlider w-full min-h-[300px] max-h-[300px] md:min-h-[600px] md:max-h-[700px] h-full'>
             <SimpleImageSlider
