@@ -1,13 +1,12 @@
 import React from "react";
 import { useState } from "react";
 import { Loader } from "../../utils/Loader";
-
+import { useDetectClickOutside } from "react-detect-click-outside";
 export default function FeedChanger({
   userPublicKey,
   desoObj,
   handleFeedChange,
-  feedUser
-
+  feedUser,
 }) {
   const initialSearchResult = [
     {
@@ -64,16 +63,15 @@ export default function FeedChanger({
 
     return () => clearTimeout(getData);
   }, [query]);
-
   const closeSearch = () => {
-    // setShowResults(false);
-    // setResults([]);
     setQuery("");
+    setIsDropdownExpanded(false);
   };
+  const ref = useDetectClickOutside({ onTriggered: closeSearch });
 
   const [isDropdowExpanded, setIsDropdownExpanded] = useState(false);
   return (
-    <div>
+    <div ref={ref}>
       <button
         className='flex space-x-1 items-center text-sm pl-1 rounded-md hover:bg-gray-200 p-1 hover:bg-opacity-20'
         onClick={() => {
@@ -83,7 +81,11 @@ export default function FeedChanger({
           src={`https://diamondapp.com/api/v0/get-single-profile-picture/${feedUser.PublicKeyBase58Check}?fallback=https://diamondapp.com/assets/img/default_profile_pic.png`}
           className='h-8 w-8 rounded-full'
         />
-        <span className='flex flex-col ml-2 lightText'>{userPublicKey===feedUser.PublicKeyBase58Check?'My Feed': `${feedUser.Username}'s Feed`}</span>
+        <span className='flex flex-col ml-2 lightText'>
+          {userPublicKey === feedUser.PublicKeyBase58Check
+            ? "My Feed"
+            : `${feedUser.Username}'s Feed`}
+        </span>
         <svg
           xmlns='http://www.w3.org/2000/svg'
           viewBox='0 0 20 20'
