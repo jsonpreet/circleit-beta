@@ -10,6 +10,7 @@ import PostCard from "../../components/cards/PostCard";
 import FeedShimmer from "../../components/shimmers/Feed";
 import { DESO_CONFIG } from "../../utils/Constants";
 import toast from "react-hot-toast";
+import FeedChanger from "./FeedChanger";
 
 function Following() {
   const { isLoggedIn, user } = useApp();
@@ -20,15 +21,17 @@ function Following() {
   const [lastPostHashHex, setLastPostHashHex] = useState("");
   const [hasMore, setHasMore] = useState(false);
   const [noPosts, setNoPosts] = useState(false);
+  const deso = new Deso(DESO_CONFIG);
 
   const circle = "circleit";
   const userPublicKey = isLoggedIn
     ? user.profile.PublicKeyBase58Check
     : "BC1YLhBLE1834FBJbQ9JU23JbPanNYMkUsdpJZrFVqNGsCe7YadYiUg";
 
+    const [feedUser, setFeedUser] = useState({PublicKeyBase58Check:userPublicKey});
+
   useEffect(() => {
     async function fetchData() {
-      const deso = new Deso(DESO_CONFIG);
       try {
         const profileRequest = {
           Username: `${circle}`,
@@ -132,16 +135,62 @@ function Following() {
     },
   });
 
+  const handleFeedChange = (feedUser) => {
+    async function getFeed() {
+      const request = {
+        PostHashHex: "",
+        ReaderPublicKeyBase58Check: feedUser.PublicKeyBase58Check,
+        OrderBy: "newest",
+        StartTstampSecs: null,
+        PostContent: "",
+        NumToFetch: 50,
+        FetchSubcomments: false,
+        GetPostsForFollowFeed: true,
+        GetPostsForGlobalWhitelist: false,
+        GetPostsByDESO: false,
+        MediaRequired: false,
+        PostsByDESOMinutesLookback: 0,
+        AddGlobalFeedBool: false,
+      };
+      try {
+        setHasMore(true);
+        const response = await deso.posts.getPostsStateless(request);
+        if (response.PostsFound === null) {
+          setHasMore(false);
+        }
+        if(response.PostsFound.length ==0){
+          setHasMore(false)
+          setFeedData([])
+          setIsLoading(false)
+          return
+        }
+        let feedDataList = response.PostsFound;
+        setLastPostHashHex(feedDataList[feedDataList.length - 1].PostHashHex);
+        setFeedData(feedDataList);
+      } catch (error) {
+        console.log(error);
+        //toast.error("Something went wrong");
+        setIsLoading(false);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    setFeedUser(feedUser)
+    setIsLoading(true);
+   
+    getFeed();
+  };
+
   return (
     <>
       <DefaultLayout>
         {!isLoggedIn && (
-          <div className="relative inline-flex justify-center rounded-full items-center w-full my-20">
-            <div className="relative text-4xl md:py-10 font-bold text-center dark:text-white sm:text-4xl lg:text-5xl leading-none rounded-full z-10">
-              <span className="brandGradientBg blur-2xl filter opacity-10 w-full h-full absolute inset-0 rounded-full"></span>
-              <span className="md:px-5">
+          <div className='relative inline-flex justify-center rounded-full items-center w-full my-20'>
+            <div className='relative text-4xl md:py-10 font-bold text-center dark:text-white sm:text-4xl lg:text-5xl leading-none rounded-full z-10'>
+              <span className='brandGradientBg blur-2xl filter opacity-10 w-full h-full absolute inset-0 rounded-full'></span>
+              <span className='md:px-5'>
                 Your{" "}
-                <span className="text-transparent bg-clip-text brandGradientBg">
+                <span className='text-transparent bg-clip-text brandGradientBg'>
                   Community
                 </span>{" "}
                 on your terms.
@@ -149,27 +198,35 @@ function Following() {
             </div>
           </div>
         )}
-        <div className="grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-8 mt-4">
-          <div className="grid grid-cols-1 gap-4 lg:col-span-2">
-            <div className="flex w-full items-center">
-              <div className="hidden md:flex md:float-left mr-4 text-white brandGradientBg dark:border-[#18181C] border-transparent border rounded-md p-3">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  aria-hidden="true"
-                  className="h-5 w-5"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z"
-                    clipRule="evenodd"
-                  ></path>
-                </svg>
+        <div className='grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-8 mt-4'>
+          <div className='grid grid-cols-1 gap-4 lg:col-span-2'>
+            <div className='flex items-center justify-between w-full'>
+              <div className='flex  items-center'>
+                <div className='hidden md:flex md:float-left mr-4 text-white brandGradientBg dark:border-[#18181C] border-transparent border rounded-md p-3'>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    viewBox='0 0 20 20'
+                    fill='currentColor'
+                    aria-hidden='true'
+                    className='h-5 w-5'>
+                    <path
+                      fillRule='evenodd'
+                      d='M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z'
+                      clipRule='evenodd'></path>
+                  </svg>
+                </div>
+                <h1 className='text-2xl lg:text-3xl font-bold dark:text-white'>
+                  Following Feed
+                </h1>
+                {/* Make a drop down menu*/}
               </div>
-              <h1 className="text-2xl lg:text-3xl font-bold dark:text-white">
-              Following Feed
-              </h1>
+
+              <FeedChanger
+                userPublicKey={userPublicKey}
+                feedUser={feedUser}
+                desoObj={deso}
+                handleFeedChange={handleFeedChange}
+              />
             </div>
             {isLoading && <FeedShimmer cols={20} />}
             {!isLoading && feedData && feedData.length > 0 ? (
@@ -195,18 +252,18 @@ function Following() {
             {!isLoading &&
               !feedLoading &&
               (hasMore ? (
-                <span ref={observe} className="flex justify-center my-10">
+                <span ref={observe} className='flex justify-center my-10'>
                   <Loader />
                 </span>
               ) : (
-                <div className="flex justify-center md:p-10">
-                  <p className="text-gray-500 dark:text-gray-400">
+                <div className='flex justify-center md:p-10'>
+                  <p className='text-gray-500 dark:text-gray-400'>
                     No more posts
                   </p>
                 </div>
               ))}
           </div>
-          <div className="mt-[20px] md:mt-[75px]">
+          <div className='mt-[20px] md:mt-[75px]'>
             <SidebarRight />
           </div>
         </div>
