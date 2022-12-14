@@ -11,7 +11,7 @@ export const defaultCircles = [
 
 export const SCROLL_THRESHOLD = 0.5;
 
-export const NODE_URL = 'https://diamondapp.com/api/v0'; //'https://node.deso.org/api/v0';
+export const NODE_URL = 'https://node.deso.org/api/v0'; //'https://node.deso.org/api/v0';
 
 export const DESO_CONFIG = {
     nodeUri: NODE_URL
