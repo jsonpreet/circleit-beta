@@ -37,7 +37,7 @@ export default function CreatePostBox({ circle }) {
   const [showLinkField, setShowLinkField] = useState(false);
   const videoStreamInterval = null;
   const inputFileRef = useRef(null);
-
+  const deso = new Deso(DESO_CONFIG);
   useEffect(() => {
     if (postEmoji && postEmoji.emoji.trim().length > 0) {
       setPostBody(postBody + postEmoji.emoji);
@@ -54,7 +54,7 @@ export default function CreatePostBox({ circle }) {
 
   const handleImage = async () => {
     setUploadingImage(true);
-    const deso = new Deso();
+
     const request = {
       UserPublicKeyBase58Check: user.profile.PublicKeyBase58Check,
     };
@@ -62,6 +62,67 @@ export default function CreatePostBox({ circle }) {
     if (response.ImageURL !== "") {
       setPostImage(response.ImageURL);
       setUploadingImage(false);
+    }
+  };
+
+  //look for ctrl + v
+  const handlePaste = async (e) => {
+    try {
+      const clipBoardItems = await navigator.clipboard.read();
+      const fileItem = clipBoardItems[0].types.includes(
+        "image/png",
+        "image/jpg",
+        "image/jpeg",
+        "image/gif",
+        "image/webp"
+      );
+      if (fileItem) {
+        setUploadingImage(true);
+        const fileObject = await clipBoardItems[0].getType(
+          "image/png",
+          "image/jpg",
+          "image/jpeg",
+          "image/gif",
+          "image/webp"
+        );
+        const file = new File([fileObject], clipBoardItems[0].types, {
+          type: clipBoardItems[0].types,
+        });
+        handleImageUpload(file);
+      }
+    } catch (e) {
+      console.log("Not image");
+    }
+  };
+
+  const handleImageUpload = async (file) => {
+    const request = undefined;
+    try {
+      const jwt = await deso.identity.getJwt(request);
+
+      //make a POST request to https://node.deso.org/api/v0/upload-image
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("JWT", jwt);
+      formData.append(
+        "UserPublicKeyBase58Check",
+        user.profile.PublicKeyBase58Check
+      );
+      const response = await fetch(
+        "https://node.deso.org/api/v0/upload-image",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const data = await response.json();
+      if (data.ImageURL !== "") {
+        setPostImage(data.ImageURL);
+      }
+      setUploadingImage(false);
+    } catch (e) {
+      setUploadingImage(false);
+      console.log(e);
     }
   };
 
@@ -136,7 +197,6 @@ export default function CreatePostBox({ circle }) {
   };
 
   const pollForReadyToStream = (onReadyToStream, mediaId) => {
-    const deso = new Deso();
     let attempts = 0;
     let numTries = 1200;
     let timeoutMillis = 500;
@@ -169,7 +229,7 @@ export default function CreatePostBox({ circle }) {
 
   const submitPost = async () => {
     setIsLoading(true);
-    const deso = new Deso(DESO_CONFIG);
+
     try {
       let payload = {
         Title: postTitle,
@@ -178,9 +238,7 @@ export default function CreatePostBox({ circle }) {
         circle.Username != "CircleIt" ? " in @" + circle.Username : ""
       }`;
       let body =
-        postBody.trim().length > 0
-          ? postBody + `\n\n ${extraBody}`
-          : null;
+        postBody.trim().length > 0 ? postBody + `\n\n ${extraBody}` : null;
       const request = {
         UpdaterPublicKeyBase58Check: user.profile.PublicKeyBase58Check,
         BodyObj: {
@@ -215,6 +273,16 @@ export default function CreatePostBox({ circle }) {
       //   ount: party.variation.range(100, 2000),
       //   size: party.variation.range(0.5, 2.0),
       // })
+    }
+  };
+  // look for ctrl + enter
+  const handleKeyDown = (e) => {
+    if (e.keyCode === 13 && e.ctrlKey) {
+      submitPost();
+    }
+    //check for paste
+    if (e.keyCode === 86 && e.ctrlKey) {
+      handlePaste(e);
     }
   };
 
@@ -257,6 +325,7 @@ export default function CreatePostBox({ circle }) {
                     placeholder='Write something...'
                     value={postBody}
                     onChange={(e) => setPostBody(e.target.value)}
+                    onKeyDown={handleKeyDown}
                   />
                 </div>
                 <div>

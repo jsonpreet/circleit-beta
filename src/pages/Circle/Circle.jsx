@@ -152,6 +152,7 @@ export default function Circle() {
                 (post) => post.PostHashHex
               );
               setSeenNewPosts(seenPostLists);
+              setIsLoading(false);
             } catch (error) {
               console.log(error);
             }
@@ -173,6 +174,7 @@ export default function Circle() {
              
               setLastPostHashHex(response.LastPostHashHex)
               setCommunityPostFeed(feedDataList);
+              setIsLoading(false);
             } catch (error) {
               console.log(error);
             }

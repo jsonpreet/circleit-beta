@@ -11,8 +11,13 @@ import { BiImageAdd, BiVideoPlus } from "react-icons/bi";
 import { ImEmbed2 } from "react-icons/im";
 import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
-import * as tus from "tus-js-client"
-import { getEmbedHeight, getEmbedURL, getEmbedWidth, isValidEmbedURL } from "../../../utils/EmbedUrls";
+import * as tus from "tus-js-client";
+import {
+  getEmbedHeight,
+  getEmbedURL,
+  getEmbedWidth,
+  isValidEmbedURL,
+} from "../../../utils/EmbedUrls";
 import { BsEmojiSmile, BsTrash } from "react-icons/bs";
 import { Popover, Transition } from "@headlessui/react";
 import EmojiPicker from "emoji-picker-react";
@@ -23,10 +28,10 @@ function PostComments({ post }) {
   const { isLoggedIn, user, isCircle: userIsCircle } = useApp();
   const { circle } = useParams();
   const [comment, setComment] = useState("");
-  const [postImage, setPostImage] = useState('');
-  const [postEmoji, setEmoji] = useState('');
-  const [postLink, setPostLink] = useState('');
-  const [postEmbedLink, setPostEmbedLink] = useState('');
+  const [postImage, setPostImage] = useState("");
+  const [postEmoji, setEmoji] = useState("");
+  const [postLink, setPostLink] = useState("");
+  const [postEmbedLink, setPostEmbedLink] = useState("");
   const [comments, setComments] = useState("");
   const [hasMore, setHasMore] = useState(true);
   const [commentOffset, setCommentOffset] = useState(30);
@@ -39,12 +44,12 @@ function PostComments({ post }) {
   const userPublicKey = isLoggedIn
     ? user.profile.PublicKeyBase58Check
     : "BC1YLhBLE1834FBJbQ9JU23JbPanNYMkUsdpJZrFVqNGsCe7YadYiUg";
-  
+
   useEffect(() => {
     if (postEmoji && postEmoji.emoji.trim().length > 0) {
-      setComment(comment + postEmoji.emoji)
+      setComment(comment + postEmoji.emoji);
     }
-  }, [postEmoji])
+  }, [postEmoji]);
 
   useEffect(() => {
     setComments(post.Comments);
@@ -55,13 +60,14 @@ function PostComments({ post }) {
 
   const submitComment = async (e) => {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
+
     if (comment.trim().length > 0) {
-     
       const request = {
         BodyObj: {
           Body: comment,
-          ImageURLs: postImage !== '' ? [postImage] : [],
+          ImageURLs: postImage !== "" ? [postImage] : [],
         },
         ParentStakeID: post.PostHashHex,
         UpdaterPublicKeyBase58Check: userPublicKey,
@@ -94,22 +100,20 @@ function PostComments({ post }) {
       } catch (error) {
         console.log(error);
         setLoading(false);
-      }
-      finally {
-        setComment('');
-        setPostImage('');
-        setPostEmbedLink('');
-        setEmoji('');
-        setPostLink('');
+      } finally {
+        setComment("");
+        setPostImage("");
+        setPostEmbedLink("");
+        setEmoji("");
+        setPostLink("");
         setLoading(false);
         setShowLinkField(false);
-        toast.success('Congratulations! Post Created.');
+        toast.success("Congratulations! Post Created.");
       }
     } else {
-        setLoading(false);
-        toast.error('Please write something to post.');
+      setLoading(false);
+      toast.error("Please write something to post.");
     }
-    
   };
 
   const { observe } = useInView({
@@ -153,86 +157,176 @@ function PostComments({ post }) {
   });
 
   const handleEmbedLink = (e) => {
-    const link = e.target.value
+    const link = e.target.value;
     setPostLink(link);
     if (link.trim().length > 0) {
       const response = getEmbedURL(link);
-      const isValid = isValidEmbedURL(response)
+      const isValid = isValidEmbedURL(response);
       if (isValid) {
-        setPostEmbedLink(response)
+        setPostEmbedLink(response);
       } else {
-        setPostEmbedLink(null)
-        toast.error('Invalid Embed URL');
+        setPostEmbedLink(null);
+        toast.error("Invalid Embed URL");
       }
     }
-  }
+  };
 
   const handleImage = async () => {
     setUploadingImage(true);
     const deso = new Deso();
     const request = {
-      UserPublicKeyBase58Check: user.profile.PublicKeyBase58Check
+      UserPublicKeyBase58Check: user.profile.PublicKeyBase58Check,
     };
     const response = await deso.media.uploadImage(request);
-    if(response.ImageURL !== "") {
+    if (response.ImageURL !== "") {
       setPostImage(response.ImageURL);
       setUploadingImage(false);
     }
-  }
+  };
+
+  const handlePaste = async (e) => {
+    try {
+      const clipBoardItems = await navigator.clipboard.read();
+      const fileItem = clipBoardItems[0].types.includes(
+        "image/png",
+        "image/jpg",
+        "image/jpeg",
+        "image/gif",
+        "image/webp"
+      );
+      if (fileItem) {
+        setUploadingImage(true);
+        const fileObject = await clipBoardItems[0].getType(
+          "image/png",
+          "image/jpg",
+          "image/jpeg",
+          "image/gif",
+          "image/webp"
+        );
+        const file = new File([fileObject], clipBoardItems[0].types, {
+          type: clipBoardItems[0].types,
+        });
+        handleImageUpload(file);
+      }
+    } catch (e) {
+      console.log("Not image");
+    }
+  };
+
+  const handleImageUpload = async (file) => {
+    const request = undefined;
+    try {
+      const jwt = await deso.identity.getJwt(request);
+
+      //make a POST request to https://node.deso.org/api/v0/upload-image
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("JWT", jwt);
+      formData.append(
+        "UserPublicKeyBase58Check",
+        user.profile.PublicKeyBase58Check
+      );
+      const response = await fetch(
+        "https://node.deso.org/api/v0/upload-image",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const data = await response.json();
+      if (data.ImageURL !== "") {
+        setPostImage(data.ImageURL);
+      }
+      setUploadingImage(false);
+    } catch (e) {
+      setUploadingImage(false);
+      console.log(e);
+    }
+  };
+
+  // look for ctrl + enter
+  const handleKeyDown = (e) => {
+    if (e.keyCode === 13 && e.ctrlKey) {
+      submitComment(e);
+    }
+    //check for paste
+    if (e.keyCode === 86 && e.ctrlKey) {
+      handlePaste(e);
+    }
+  };
+
   return (
     <>
       <div className='flex flex-col w-full'>
-        {isLoggedIn ? <div className='flex w-full px-4'>
-          <div className='transition w-full delay-50 border secondaryBorder rounded-md p-[1px]'>
-            <textarea
-              className='w-full h-32 auto-resize primaryBg dark:text-white outline-none p-2 focus:ring-0'
-              placeholder='Write a comment...'
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-            />
-            {postImage !== '' ?
-            <div className="relative m-4">
-              <img src={postImage}
-                alt=""
-                className="w-full darkenBorder border rounded-lg"
+        {isLoggedIn ? (
+          <div className='flex w-full px-4'>
+            <div className='transition w-full delay-50 border secondaryBorder rounded-md p-[1px]'>
+              <textarea
+                className='w-full h-32 auto-resize primaryBg dark:text-white outline-none p-2 focus:ring-0'
+                placeholder='Write a comment...'
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                onKeyDown={handleKeyDown}
               />
-              <div className="absolute top-4 right-4 ">
-                <button onClick={() => {
-                    setPostImage('')
-                  }}
-                  className="bg-red-500 group hover:bg-red-700  rounded-full w-10 h-10 drop-shadow-lg flex items-center justify-center">
-                  <BsTrash size={24} className="text-white" />
-                </button>
-              </div>
-            </div>
-              : null}
-            {showLinkField ?
-            <div className="m-4">
-              <input
-                onChange={handleEmbedLink}
-                value={postLink}
-                className={`focus:ring-0 focus:outline-none outline-none darkenBg darkenHoverBg border dark:border-[#2D2D33] hover:dark:border-[#43434d] border-gray-200 hover:border-gray-200 resize-none w-full heading px-4 py-2 rounded-md`}
-                placeholder='Embed Youtube, Vimeo, TikTok, Giphy, Spotify, Mousai, or SoundCloud' />
-            </div>
-          : null}
-          {postEmbedLink !== '' && postEmbedLink !== null ?
-            <div className='m-2 embed-container w-full flex flex-row items-center justify-center rounded-xl overflow-hidden'>
-              <iframe id="embed-iframe" className='w-full flex-shrink-0' height={getEmbedHeight(postEmbedLink)} style={{ maxWidth: getEmbedWidth(postEmbedLink) }} src={postEmbedLink} frameBorder="0" allow="picture-in-picture; clipboard-write; encrypted-media; gyroscope; accelerometer; encrypted-media;" allowFullScreen ></iframe>
-            </div>
-            : null}
-            <div className='bg-gray-100 -mt-[1px] dark:bg-[#121214] p-2 flex w-full'>
-             <div className="flex items-center space-x-4 my-2 px-2">
-                <div>
-                  <Tippy content="Add Image" placement="bottom">
-                    <button onClick={() => {
-                        handleImage()
-                        setShowLinkField(false)
-                      }}>
-                      {uploadingImage ? <Loader className='w-5 h-5'/> : <BiImageAdd size={21} className="text-gray-500" />}
+              {postImage !== "" ? (
+                <div className='relative m-4'>
+                  <img
+                    src={postImage}
+                    alt=''
+                    className='w-full darkenBorder border rounded-lg'
+                  />
+                  <div className='absolute top-4 right-4 '>
+                    <button
+                      onClick={() => {
+                        setPostImage("");
+                      }}
+                      className='bg-red-500 group hover:bg-red-700  rounded-full w-10 h-10 drop-shadow-lg flex items-center justify-center'>
+                      <BsTrash size={24} className='text-white' />
                     </button>
-                  </Tippy>
+                  </div>
                 </div>
-                {/* <div>
+              ) : null}
+              {showLinkField ? (
+                <div className='m-4'>
+                  <input
+                    onChange={handleEmbedLink}
+                    value={postLink}
+                    className={`focus:ring-0 focus:outline-none outline-none darkenBg darkenHoverBg border dark:border-[#2D2D33] hover:dark:border-[#43434d] border-gray-200 hover:border-gray-200 resize-none w-full heading px-4 py-2 rounded-md`}
+                    placeholder='Embed Youtube, Vimeo, TikTok, Giphy, Spotify, Mousai, or SoundCloud'
+                  />
+                </div>
+              ) : null}
+              {postEmbedLink !== "" && postEmbedLink !== null ? (
+                <div className='m-2 embed-container w-full flex flex-row items-center justify-center rounded-xl overflow-hidden'>
+                  <iframe
+                    id='embed-iframe'
+                    className='w-full flex-shrink-0'
+                    height={getEmbedHeight(postEmbedLink)}
+                    style={{ maxWidth: getEmbedWidth(postEmbedLink) }}
+                    src={postEmbedLink}
+                    frameBorder='0'
+                    allow='picture-in-picture; clipboard-write; encrypted-media; gyroscope; accelerometer; encrypted-media;'
+                    allowFullScreen></iframe>
+                </div>
+              ) : null}
+              <div className='bg-gray-100 -mt-[1px] dark:bg-[#121214] p-2 flex w-full'>
+                <div className='flex items-center space-x-4 my-2 px-2'>
+                  <div>
+                    <Tippy content='Add Image' placement='bottom'>
+                      <button
+                        onClick={() => {
+                          handleImage();
+                          setShowLinkField(false);
+                        }}>
+                        {uploadingImage ? (
+                          <Loader className='w-5 h-5' />
+                        ) : (
+                          <BiImageAdd size={21} className='text-gray-500' />
+                        )}
+                      </button>
+                    </Tippy>
+                  </div>
+                  {/* <div>
                   <input ref={inputFileRef} type="file" className="hidden" name="video" onChange={handleFileChange} />
                   <Tippy content="Add Video" placement="bottom">
                     <button onClick={() => handleVideo()}>
@@ -240,73 +334,85 @@ function PostComments({ post }) {
                     </button>
                   </Tippy>
                 </div> */}
-                <div>
-                  <Tippy content="Add Embed" placement="bottom">
-                    <button onClick={() => {
-                        setUploadingImage(false);
-                        setShowLinkField(true)
-                      }
-                    }>
-                      <ImEmbed2 size={21} className="text-gray-500" />
-                    </button>
-                  </Tippy>
-                </div>
-                <div className="relative">
-                  <Popover className="relative">
+                  <div>
+                    <Tippy content='Add Embed' placement='bottom'>
+                      <button
+                        onClick={() => {
+                          setUploadingImage(false);
+                          setShowLinkField(true);
+                        }}>
+                        <ImEmbed2 size={21} className='text-gray-500' />
+                      </button>
+                    </Tippy>
+                  </div>
+                  <div className='relative'>
+                    <Popover className='relative'>
                       {({ open }) => (
-                      <>
-                        <Popover.Button
-                          onClick={() => {
-                            setUploadingImage(false);
-                            postEmbedLink !== '' && postEmbedLink !== null ? setShowLinkField(true) : setShowLinkField(false)
-                          }}
-                          className={`
-                              ${open ? '' : 'text-opacity-90'}
-                              group inline-flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75`}
-                          >
-                              <BsEmojiSmile size={19} className="text-gray-500" />
+                        <>
+                          <Popover.Button
+                            onClick={() => {
+                              setUploadingImage(false);
+                              postEmbedLink !== "" && postEmbedLink !== null
+                                ? setShowLinkField(true)
+                                : setShowLinkField(false);
+                            }}
+                            className={`
+                              ${open ? "" : "text-opacity-90"}
+                              group inline-flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75`}>
+                            <BsEmojiSmile size={19} className='text-gray-500' />
                           </Popover.Button>
                           <Transition
-                              as={Fragment}
-                              enter="transition ease-out duration-200"
-                              enterFrom="opacity-0 translate-y-1"
-                              enterTo="opacity-100 translate-y-0"
-                              leave="transition ease-in duration-150"
-                              leaveFrom="opacity-100 translate-y-0"
-                              leaveTo="opacity-0 translate-y-1"
-                          >
-                              <Popover.Panel className="absolute left-1/2 z-20 mt-3 w-screen max-w-sm -translate-x-1/2 transform">
-                                  <EmojiPicker emojiStyle='twitter' onEmojiClick={setEmoji}  />
-                              </Popover.Panel>
+                            as={Fragment}
+                            enter='transition ease-out duration-200'
+                            enterFrom='opacity-0 translate-y-1'
+                            enterTo='opacity-100 translate-y-0'
+                            leave='transition ease-in duration-150'
+                            leaveFrom='opacity-100 translate-y-0'
+                            leaveTo='opacity-0 translate-y-1'>
+                            <Popover.Panel className='absolute left-1/2 z-20 mt-3 w-screen max-w-sm -translate-x-1/2 transform'>
+                              <EmojiPicker
+                                emojiStyle='twitter'
+                                onEmojiClick={setEmoji}
+                              />
+                            </Popover.Panel>
                           </Transition>
-                      </>
+                        </>
                       )}
-                  </Popover>
+                    </Popover>
+                  </div>
                 </div>
-              </div>
-              <div className='flex w-full justify-end'>
-                <button
-                  onClick={(e) => submitComment(e)}
-                  className='buttonBG dark:text-white flex items-center px-4 py-2 rounded-md'>
-                  {loading && <Loader className='mr-2 w-5 h-5' />}{" "}
-                  <span>Post</span>
-                </button>
+                <div className='flex w-full justify-end'>
+                  <button
+                    onClick={(e) => submitComment(e)}
+                    className='buttonBG dark:text-white flex items-center px-4 py-2 rounded-md'>
+                    {loading && <Loader className='mr-2 w-5 h-5' />}{" "}
+                    <span>Post</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div> :
+        ) : (
           <div className='mb-2 flex px-4 items-center'>
-            <span className="text-lg brandGradientText font-semibold">Comments</span>
-          </div>}
+            <span className='text-lg brandGradientText font-semibold'>
+              Comments
+            </span>
+          </div>
+        )}
         <div className='flex flex-col space-y-4 mt-4'>
           {comments &&
             comments.length > 0 &&
             comments.map((comment, index) => {
-              return <div key={index}>
-                <CommentCard isSubComment={false} post={post} comment={comment}  />
+              return (
+                <div key={index}>
+                  <CommentCard
+                    isSubComment={false}
+                    post={post}
+                    comment={comment}
+                  />
                 </div>
-            })
-          }
+              );
+            })}
           {!loadingComments && comments && comments.length === 0 && (
             <div className='text-sm text-gray-500 dark:text-gray-400'>
               No comments yet

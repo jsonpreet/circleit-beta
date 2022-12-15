@@ -199,9 +199,9 @@ function CommentCard({post, comment, isSubComment, parent = null}) {
                         </div>
                         {comments && comments.length > 0 && (
                             <div className='mt-4 mb-2'>
-                                {comments.map((subcomment) => {
+                                {comments.map((subcomment, index) => {
                                     return (
-                                        <CommentCard isSubComment={true} parent={comment} comment={subcomment} />
+                                        <CommentCard isSubComment={true} parent={comment} comment={subcomment} key={index}/>
                                     )
                                 })}
                             </div>

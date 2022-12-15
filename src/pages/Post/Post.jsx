@@ -20,7 +20,7 @@ import {
   PostComments,
   PostImages,
 } from "../../components/common/post";
-import ModalImage from "react-modal-image";
+
 import { DefaultLayout } from '../../components/layouts';
 import { getEmbedHeight, getEmbedURL, getEmbedWidth } from '../../utils/EmbedUrls';
 import { DESO_CONFIG } from "../../utils/Constants";
