@@ -184,6 +184,7 @@ export default function PostCard({
                 ? post.RepostedPostEntryResponse
                 : post
             }
+            isCircle={isCircle}
             circle={circle}
           />
         </div>

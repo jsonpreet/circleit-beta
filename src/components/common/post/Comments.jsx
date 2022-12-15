@@ -257,7 +257,7 @@ function PostComments({ post }) {
 
   return (
     <>
-      <div className='flex flex-col w-full'>
+      <div id="comments" className='flex flex-col w-full'>
         {isLoggedIn ? (
           <div className='flex w-full px-4'>
             <div className='transition w-full delay-50 border secondaryBorder rounded-md p-[1px]'>

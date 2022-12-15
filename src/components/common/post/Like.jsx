@@ -82,7 +82,7 @@ function LikeButton({ isRepost, post }) {
                 <div className='flex text-sm items-center justify-center font-semibold extralightText'>
                     <button
                         onClick={() => like(liked)}
-                        className={` ${loading && `animate-pulse`} flex text-sm items-center justify-center font-semibold extralightText`}
+                        className={` ${loading && `animate-pulse`} px-3 flex text-sm items-center justify-center font-semibold extralightText`}
                     >
                         {isLoggedIn ? (
                         liked ? (

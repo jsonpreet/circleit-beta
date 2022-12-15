@@ -6,39 +6,61 @@ import { FaRegShareSquare } from "react-icons/fa";
 import { HeartFillIcon, HeartIcon } from "../../../utils/Icons";
 import LikeButton from "./Like";
 import { isMobile } from "react-device-detect";
+import DiamondModal from "../../modals/Diamond";
+import { toast } from "react-hot-toast";
+import { useState } from "react";
+import useApp from "../../../store/app";
+import { formatNumber } from "../../../utils/Functions";
+import { useNavigate } from "react-router-dom";
+import ShareModal from "../../modals/Share";
 
-function PostBottomMeta({ isRepost, post }) {
+function PostBottomMeta({ circle, isCircle, isRepost, post }) {
+  const { isLoggedIn } = useApp();
+  const [diamondBestowed, setDiamondBestowed] = useState(post.PostEntryReaderState.DiamondLevelBestowed)
+  const [diamonds, setDiamonds] = useState(post.DiamondCount)
+  const [showDiamond, setShowDiamond] = useState(false)
+  const [showShareModal, setShowShareModal] = useState(false)
+  const navigate = useNavigate();
+
+  const showDiamondModal = () => {
+    if (!isLoggedIn) {
+      return toast.error('You must be logged in!')
+    } 
+    setShowDiamond(!showDiamond)
+  }
   return (
     <>
+      <DiamondModal setDiamonds={setDiamonds} diamonds={diamonds} diamondBestowed={diamondBestowed} setDiamondBestowed={setDiamondBestowed} show={showDiamond} setShowDiamondModal={setShowDiamond} post={post} />
+      <ShareModal show={showShareModal} setShowShare={setShowShareModal} post={post} />
       <div className='flex w-full items-center mt-2 primaryTextColor'>
-        <div className='flex space-x-6'>
+        <div className='flex -ml-3'>
           {isRepost && (
-            <div className='hidden md:flex text-sm items-center justify-center font-semibold extralightText'>
+            <div className='px-3 hidden md:flex text-sm items-center justify-center font-semibold extralightText'>
               {post.PostEntryReaderState.LikedByReader ? (
                 <HeartFillIcon classes={`text-red-500 h-4 w-4 mt-[1px] mr-1`} />
               ) : (
                 <HeartIcon classes={`h-4 mt-[1px] w-4 mr-1`} />
               )}
-              <span>{post.LikeCount}</span>
+              <span>{formatNumber(post.LikeCount)}</span>
             </div>
           )}
           {isMobile ? <LikeButton post={post} /> : null }
-          <div className='flex text-sm items-center justify-center font-semibold extralightText'>
+          <button onClick={() => navigate(`/${isCircle ? `circle` : `u`}/${circle.Username}/${post.PostHashHex}#comments`)} className='px-3 flex text-sm items-center cursor-pointer justify-center font-semibold extralightText'>
             <BsChatLeft size={17} className='mt-1 mr-1' />
-            <span>{post.CommentCount}</span>
-          </div>
-          <div className='flex text-sm items-center justify-center font-semibold extralightText'>
+            <span>{formatNumber(post.CommentCount)}</span>
+          </button>
+          <div className='px-3 flex text-sm items-center justify-center font-semibold extralightText'>
             <FiRefreshCcw size={17} className='mt-1 mr-1' />
-            <span>{post.RepostCount + post.QuoteRepostCount}</span>
+            <span>{formatNumber(post.RepostCount + post.QuoteRepostCount)}</span>
           </div>
-          <div className='flex text-sm items-center justify-center font-semibold extralightText'>
+          <button onClick={showDiamondModal} className={`px-3 flex text-sm items-center cursor-pointer justify-center font-semibold ${diamondBestowed > 0 ? `text-pink-600`: `extralightText`}`}>
             <IoDiamondOutline size={17} className='mt-1 mr-1' />
-            <span>{post.DiamondCount}</span>
-          </div>
-          <div className='cursor-pointer flex text-sm items-center justify-center font-semibold extralightText'>
+            <span>{formatNumber(diamonds)}</span>
+          </button>
+          <button onClick={() => setShowShareModal(!showShareModal)} className='px-3 cursor-pointer flex text-sm items-center justify-center font-semibold extralightText'>
             <FaRegShareSquare size={17} className='mt-1 mr-1' />
             <span className='mt-[1px]'></span>
-          </div>
+          </button>
         </div>
       </div>
     </>

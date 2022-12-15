@@ -22,3 +22,10 @@ export const DESO_CONFIG = {
 }
 
 export const MIN_DESO_TO_CREATE_PROFILE = 0.001 // IDK WHAT'S THE EXACT VALUE IS. COPIED IT FROM DIAMOND'S FRONTEND (NOT FROM CODE);
+
+export const APP = {
+    Name: 'Circleit',
+    URL: 'https://beta.circleit.app',
+    Description: '',
+    Twitter: '@CircleItApp'
+}

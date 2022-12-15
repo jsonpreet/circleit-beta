@@ -236,7 +236,7 @@ export default function CreatePostBox({ circle }) {
         Title: postTitle,
       };
       let extraBody = `Posted on @CircleIt${
-        circle.Username != "CircleIt" ? " in @" + circle.Username : ""
+        circle.Username !== "CircleIt" ? " in @" + circle.Username : ""
       }`;
       let body =
         postBody.trim().length > 0 ? postBody + `\n\n ${extraBody}` : null;
