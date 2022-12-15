@@ -153,9 +153,9 @@ function Post() {
                                         {isLoggedIn &&
                                             <div className='mb-2 flex px-4 items-center space-x-1'>
                                                 <span>Comment as</span>
-                                                <Link to={`/${userIsCircle ? `circle` : `u`}/${user.profile.Username}`} className='brandGradientText'>
+                                                <p to={`/${userIsCircle ? `circle` : `u`}/${user.profile.Username}`} className='brandGradientText'>
                                                     <span>{user.profile.Username}</span>
-                                                </Link>
+                                                </p>
                                             </div>
                                         }    
                                         <div>

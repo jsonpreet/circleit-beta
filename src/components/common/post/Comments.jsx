@@ -57,10 +57,10 @@ function PostComments({ post }) {
     e.preventDefault();
     setLoading(true);
     if (comment.trim().length > 0) {
-      let body = comment.trim().length > 0 ? comment + `\n\n Posted on @CircleIt in @${circle}` : null;
+     
       const request = {
         BodyObj: {
-          Body: body,
+          Body: comment,
           ImageURLs: postImage !== '' ? [postImage] : [],
         },
         ParentStakeID: post.PostHashHex,
