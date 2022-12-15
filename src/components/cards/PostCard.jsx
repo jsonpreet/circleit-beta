@@ -65,8 +65,12 @@ export default function PostCard({
  
     const regex = /Posted on @\w+ in @\w+/;
     const output = post.Body.replace(regex, "");
-    output.length > 200 ? setReadMore(true) : setReadMore(false);
-    setPostBody(output.trimRight())
+    
+
+    const regex2 = /Posted via @\w+/;
+    const output2 = output.replace(regex2, "");
+    output2.length > 240 ? setReadMore(true) : setReadMore(false);
+    setPostBody(output2.trimRight())
   }, [post.Body]);
 
   const onPostClicked = (event) => {
