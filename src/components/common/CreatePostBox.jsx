@@ -32,7 +32,7 @@ export default function CreatePostBox({ circle }) {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isExpanded, setExpand] = useState(false);
   const [isVideoReady, setVideoProcess] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [showLinkField, setShowLinkField] = useState(false);
   const videoStreamInterval = null;
@@ -490,8 +490,10 @@ export default function CreatePostBox({ circle }) {
                   <div className='justify-end'>
                     <button
                       onClick={submitPost}
-                      className='font-medium text-white transition delay-75 px-6 py-1.5 rounded-full buttonBG ml-6'>
-                      {isLoading && <Loader className='mr-2' size='sm' />} Post
+                      className='font-medium text-white transition delay-75 px-6 py-1.5 rounded-full buttonBG ml-6 flex items-center space-x-1'>
+                     {isLoading && <Loader className='mr-2' size='sm' />}
+                      <span> Post</span>
+                     
                     </button>
                   </div>
                 </div>
