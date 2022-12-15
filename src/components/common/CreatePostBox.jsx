@@ -32,7 +32,7 @@ export default function CreatePostBox({ circle }) {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isExpanded, setExpand] = useState(false);
   const [isVideoReady, setVideoProcess] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [showLinkField, setShowLinkField] = useState(false);
   const videoStreamInterval = null;
@@ -228,6 +228,7 @@ export default function CreatePostBox({ circle }) {
   };
 
   const submitPost = async () => {
+    if(isLoading) return;
     setIsLoading(true);
 
     try {
@@ -309,6 +310,7 @@ export default function CreatePostBox({ circle }) {
                 }`}
                 placeholder={`${!isExpanded ? "Create Post" : "Title"}`}
                 value={postTitle}
+                handleKeyDown={handleKeyDown}
                 onChange={(e) => setPostTitle(e.target.value)}
               />
               {!isExpanded ? (
@@ -487,15 +489,14 @@ export default function CreatePostBox({ circle }) {
                       </Popover>
                     </div>
                   </div>
-                  <div className='justify-end'>
-                    <button
-                      onClick={submitPost}
-                      className='font-medium text-white transition delay-75 px-6 py-1.5 rounded-full buttonBG ml-6 flex items-center space-x-1'>
-                     {isLoading && <Loader className='mr-2' size='sm' />}
-                      <span> Post</span>
-                     
-                    </button>
-                  </div>
+                  <div className='flex w-full justify-end'>
+                  <button
+                    onClick={(e) => submitPost(e)}
+                    className={`buttonBG dark:text-white flex items-center ${isLoading? 'px-4': 'px-8'} py-2 rounded-full`}>
+                    {isLoading && <Loader className='mr-2 w-5 h-5' />}{" "}
+                    <span>Post</span>
+                  </button>
+                </div>
                 </div>
               </>
             ) : null}
