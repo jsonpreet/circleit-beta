@@ -34,6 +34,7 @@
     "react-modal-image": "^2.6.0",
     "react-router-dom": "^6.4.2",
     "react-scripts": "5.0.1",
+    "react-share": "^4.4.1",
     "react-simple-image-slider": "^2.4.1",
     "rsuite": "^5.23.2",
     "sass": "^1.55.0",
