@@ -5,7 +5,7 @@ import Linkify from "linkify-react";
 import "linkify-plugin-hashtag";
 import "linkify-plugin-mention";
 import { LinkifyOptions } from "../../utils/Functions";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
 import {

@@ -23,7 +23,8 @@ import { DESO_CONFIG } from "../utils/Constants";
 const deso = new Deso(DESO_CONFIG);
 const MemPoolState = (props) => {
   const [memPool, setMemPool] = useState([]);
-
+  const [appState, setAppState] = useState({});
+  const [exchangeRates, setExchangeRates] = useState({});
   const updateMemPoolState = (newTransactionMapList) => {
     setMemPool([...memPool, newTransactionMapList]);
   };
@@ -57,8 +58,24 @@ const MemPoolState = (props) => {
     }, 1000);
     return () => clearInterval(interval);
   }, [memPool]);
+
+  useEffect(() => {
+    async function initStates() {
+      const request = {
+        PublicKeyBase58Check:
+          "BC1YLheA3NepQ8Zohcf5ApY6sYQee9aPJCPY6m3u6XxCL57Asix5peY",
+      };
+      const res = await deso.metaData.getAppState(request);
+      setAppState(res);
+
+      const response = await deso.metaData.getExchangeRate();
+      setExchangeRates(response);
+    }
+    initStates();
+  }, []);
   return (
-    <MemPoolContext.Provider value={{ memPool, updateMemPoolState }}>
+    <MemPoolContext.Provider
+      value={{ memPool, updateMemPoolState, appState, exchangeRates }}>
       {props.children}
     </MemPoolContext.Provider>
   );
