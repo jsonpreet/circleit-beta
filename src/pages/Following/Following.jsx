@@ -230,10 +230,10 @@ function Following() {
             </div>
             {isLoading && <FeedShimmer cols={20} />}
             {!isLoading && feedData && feedData.length > 0 ? (
-              feedData.map((post) => (
+              feedData.map((post, index) => (
                 <PostCard
                   post={post}
-                  key={post.PostHashHex}
+                  key={index}
                   isRepost={false}
                   circle={circleProfile}
                   onCirclePage={false}

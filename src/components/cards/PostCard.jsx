@@ -127,7 +127,7 @@ export default function PostCard({
               </h2>
             : null}
             <div className='w-full lightText break-words'>
-              <Linkify options={LinkifyOptions} className="break-words">
+              <Linkify options={LinkifyOptions} >
                 {!readMore ? postBody : `${postBody.substring(0, 200)}`}
               </Linkify>
               {readMore && (

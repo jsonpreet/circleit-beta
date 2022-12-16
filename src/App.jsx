@@ -10,10 +10,11 @@ import { Post } from "./pages/Post";
 import { Profile } from "./pages/Profile";
 import RedirectRoute from "./pages/RedirectRoute";
 import { SignUp } from "./pages/SignUp";
-
+import MemPoolState from "../src/MemoryPool/MemPoolState"
 function App() {
   return (
     <>
+    <MemPoolState>
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Home />} />
@@ -33,6 +34,7 @@ function App() {
           <Route path='/u/:username/settings' element={<ProtectedRoute><CircleSettings /></ProtectedRoute>} />
         </Routes>
       </BrowserRouter>
+      </MemPoolState>
     </>
   );
 }
