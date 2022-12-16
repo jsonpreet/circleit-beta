@@ -4,19 +4,21 @@ import { createContext } from "react";
 //this helps us not to ping the getappstate and getexchangerate api every time we need to use it
 const GlobalContext = createContext({
   homeFeed: [],
-  updateHomeFeed: () => {},
   followingFeed: {},
-  updateFollowingFeed: () => {},
   circleItProfile: {},
-  updateCircleItProfile: () => {},
-
   diamondInfoMap: {},
-  updateDiamondInfoMap : () => {},
   topDiamonderStatelessResponse: {},
-  updateTopDiamonderStatelessResponse: () => {},
+  followingFeedInfo: {},
+  newCircles: [],
 
-  followingFeedInfo:{},
+
+  updateHomeFeed: () => {},
+  updateFollowingFeed: () => {},
+  updateCircleItProfile: () => {},
+  updateDiamondInfoMap: () => {},
+  updateTopDiamonderStatelessResponse: () => {},
   updateFollowingFeedInfo: () => {},
+  updateNewCircles: () => {},
 });
 
 export default GlobalContext;

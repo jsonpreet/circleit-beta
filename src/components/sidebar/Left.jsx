@@ -1,23 +1,22 @@
 import { defaultCircles } from "../../utils/Constants";
-import { BsChevronDown } from "react-icons/bs";
 import CircleList from "./CircleList";
 import { Link } from "react-router-dom";
 import useApp from "../../store/app";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import CreateCircleModal from "../modals/CreateCircle";
-import toast from "react-hot-toast";
+import GlobalContext from "../../utils/GlobalContext/GlobalContext";
 import logo from "../../assets/logo.svg";
 import { supabase } from "../../utils/supabase";
-import SimpleBar from "simplebar-react";
 
 function SidebarLeft({ rootRef }) {
+  const GlobalContextValue = useContext(GlobalContext);
   const { isLoggedIn, isCircle } = useApp();
   const [showModal, setShowModal] = useState(false);
-  const [circles, setCircles] = useState([]);
-
-  const login = async () => {
-    toast.error("You must be logged in!");
-  };
+  const [circles, setCircles] = useState(
+    GlobalContextValue.newCircles.length > 0
+      ? GlobalContextValue.newCircles
+      : []
+  );
 
   useEffect(() => {
     async function fetchCircles() {
@@ -30,10 +29,14 @@ function SidebarLeft({ rootRef }) {
           (thing, index, self) =>
             index === self.findIndex((t) => t.Username === thing.Username)
         );
-        setCircles(uniqueCircles);
+        let reversedCircles = uniqueCircles.reverse().slice(0, 10);
+        setCircles(reversedCircles);
+        GlobalContextValue.updateNewCircles(reversedCircles);
       }
     }
-    fetchCircles();
+    if (GlobalContextValue.newCircles.length == 0) {
+      fetchCircles();
+    }
   }, []);
   return (
     <>
@@ -68,7 +71,7 @@ function SidebarLeft({ rootRef }) {
             <div className='divider'></div>
             <CircleList
               name='New Circles'
-              list={circles.reverse().slice(0, 10)}
+              list={circles}
             />
           </>
         ) : null}
