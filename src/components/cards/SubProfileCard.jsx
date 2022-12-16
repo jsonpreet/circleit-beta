@@ -10,9 +10,6 @@ const deso = new Deso(DESO_CONFIG);
 
 function SubProfileCard({ profile }) {
   const { isLoggedIn, user } = useApp();
-  const [follows, setFollows] = useState(0);
-  const [followings, setFollowings] = useState(0);
-  const [isFollowing, setisFollowing] = useState(false);
   const [readMore, setReadMore] = useState(false);
   let payload = null;
 
@@ -31,59 +28,6 @@ function SubProfileCard({ profile }) {
       ? profile.ExtraData.FeaturedImageURL
       : "https://wallpaperaccess.com/full/1760835.jpg";
 
-  useEffect(() => {
-    async function fetchFollowers() {
-      try {
-        const followRequest = {
-          PublicKeyBase58Check: `${profile.PublicKeyBase58Check}`,
-          GetEntriesFollowingUsername: true,
-        };
-        const response = await deso.social.getFollowsStateless(followRequest);
-        if (response !== null) {
-          setFollows(response.NumFollowers);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    async function fetchFollowings() {
-      try {
-        const followRequest = {
-          PublicKeyBase58Check: `${profile.PublicKeyBase58Check}`,
-          GetEntriesFollowingUsername: false,
-        };
-        const response = await deso.social.getFollowsStateless(followRequest);
-        if (response !== null) {
-          setFollowings(response.NumFollowers);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    async function checkFollowing() {
-      try {
-        const followRequest = {
-          IsFollowingPublicKeyBase58Check: `${user.profile.PublicKeyBase58Check}`,
-          PublicKeyBase58Check: `${profile.PublicKeyBase58Check}`,
-        };
-        const response = await deso.social.isFollowingPublicKey(followRequest);
-        if (response !== null) {
-          setisFollowing(response);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    //fetchFollowings();
-    //fetchFollowers();
-
-    if (isLoggedIn) {
-      checkFollowing();
-    }
-  }, [isLoggedIn, profile, user.profile]);
 
   useEffect(() => {
     profile.Description.length > 100 ? setReadMore(true) : setReadMore(false);
@@ -148,23 +92,7 @@ function SubProfileCard({ profile }) {
                 </span>
               </div>
             </div> */}
-            <div className='w-full items-center mt-4 justify-center flex'>
-              {isLoggedIn ? (
-                isFollowing ? (
-                  <button className='py-2 w-full px-4 border border-transparent rounded-full text-sm font-medium text-white buttonBG focus:outline-none'>
-                    {isCircle ? `Leave` : `Unfollow`}
-                  </button>
-                ) : (
-                  <button className='py-2 w-full px-4 border border-transparent rounded-full text-sm font-medium text-white buttonBG focus:outline-none'>
-                    {isCircle ? `Join` : `Follow`}
-                  </button>
-                )
-              ) : (
-                <button className='py-2 w-full px-4 border border-transparent rounded-full text-sm font-medium text-white buttonBG focus:outline-none'>
-                  {isCircle ? `Join` : `Follow`}
-                </button>
-              )}
-            </div>
+           
           </>
         ) : (
           <>
@@ -228,23 +156,7 @@ function SubProfileCard({ profile }) {
                   </span>
                 </div>
               </div> */}
-              <div className='w-full items-center mt-4 justify-center flex'>
-                {isLoggedIn ? (
-                  isFollowing ? (
-                    <button className='py-2 w-full px-4 border border-transparent rounded-full text-sm font-medium text-white buttonBG focus:outline-none'>
-                      {isCircle ? `Leave` : `Unfollow`}
-                    </button>
-                  ) : (
-                    <button className='py-2 w-full px-4 border border-transparent rounded-full text-sm font-medium text-white buttonBG focus:outline-none'>
-                      {isCircle ? `Join` : `Follow`}
-                    </button>
-                  )
-                ) : (
-                  <button className='py-2 w-full px-4 border border-transparent rounded-full text-sm font-medium text-white buttonBG focus:outline-none'>
-                    {isCircle ? `Join` : `Follow`}
-                  </button>
-                )}
-              </div>
+            
             </div>
           </>
         )}

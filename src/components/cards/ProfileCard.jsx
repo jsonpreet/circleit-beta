@@ -18,7 +18,6 @@ function ProfileCard({circle}) {
     const [follows, setFollows] = useState(0);
     const [followings, setFollowings] = useState(0);
     const [isFollowing, setisFollowing] = useState(false);
-    const [exchange, setExchangeRate] = useState(0);
     const [readMore, setReadMore] = useState(false);
     
     const payload = circle.ExtraData?.CircleIt ? JSON.parse(circle.ExtraData.CircleIt) : null;
@@ -27,14 +26,7 @@ function ProfileCard({circle}) {
 
 
     useEffect(() => {
-        async function getExchangeRate() {
-            try {
-                const response = await deso.metaData.getExchangeRate();
-                setExchangeRate(response);
-            } catch (error) {
-                console.log(error);
-            }
-        }
+        
         async function fetchFollowers() {
             try {
                 const followRequest = {
@@ -82,7 +74,7 @@ function ProfileCard({circle}) {
 
         fetchFollowings();
         fetchFollowers();
-        getExchangeRate();
+       
         
         if (isLoggedIn) {
             checkFollowing();
@@ -95,8 +87,7 @@ function ProfileCard({circle}) {
     }, [circle.Description]);
 
     
-    const exchangeRate = exchange.USDCentsPerDeSoExchangeRate/100
-    const coinPrice = (circle.CoinPriceDeSoNanos / 1000000000) * exchangeRate;
+   
     const settingsURL = isCircle ? `/circle` : `/u`;
     return (
         <>
@@ -154,10 +145,7 @@ function ProfileCard({circle}) {
                         <span className='font-bold text-xl'>{followings}</span>
                         <span className="text-sm">{isCircle ? `Mods` : `Followings`}</span>
                     </div>
-                    <div className="flex flex-col items-center space-y-1">
-                        <span className='font-bold text-xl'>${coinPrice.toFixed(2)}</span>
-                        <span className="text-sm">USD</span>
-                    </div>
+                   
                 </div>
                 <div className="divider"></div>
                 <div className="px-6 py-4 items-center justify-center flex">
