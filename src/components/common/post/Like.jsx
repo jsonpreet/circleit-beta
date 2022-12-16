@@ -35,6 +35,7 @@ function LikeButton({ isRepost, post }) {
         type: "LIKE",
       });
       setLiked(!isLiked);
+      setLikes(isLiked ? likes - 1 : likes + 1);
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong!");

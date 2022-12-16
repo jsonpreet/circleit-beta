@@ -14,7 +14,16 @@ async function ExecuteTransaction(transaction, desoObject) {
   const request = transaction.request;
 
   if (transactinoType === "LIKE") {
-    const response = await desoObject.social.createLikeStateless(request);
+    let response = null;
+    try {
+      response = await desoObject.social.createLikeStateless(request);
+    } catch (e) {
+      console.log(e);
+      response = e;
+    } finally {
+      return response;
+    }
+
     return response;
     //TODO: make an awaited loop to hit get-txn api to check if transaction is in mempool.
     // I can't do rn bcz fucking desjs packakge does'nt return tranactionHashHex smh
