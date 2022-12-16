@@ -59,6 +59,8 @@ const MemPoolState = (props) => {
     return () => clearInterval(interval);
   }, [memPool]);
 
+
+  // this useEffect is for getting appstate and exchange rate. Just only need to run once and we can use it from anywhere
   useEffect(() => {
     async function initStates() {
       const request = {
