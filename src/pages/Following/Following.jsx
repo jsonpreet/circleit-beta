@@ -119,7 +119,8 @@ function Following() {
   const { observe } = useInView({
     rootMargin: "1000px 0px",
     onEnter: async () => {
-      const deso = new Deso(DESO_CONFIG);
+      console.log("finding more posts");
+
       setFeedLoading(true);
       setHasMore(true);
       const request = {
@@ -139,7 +140,8 @@ function Following() {
       };
       try {
         const response = await deso.posts.getPostsStateless(request);
-        if (response.PostsFound === null) {
+        if (response.PostsFound === null || response.PostsFound.length == 0) {
+          console.log("is it really happening?");
           setHasMore(false);
         }
         let feedDataList = response.PostsFound;
@@ -150,11 +152,13 @@ function Following() {
         ]);
 
         //store postHashHex of each post in hotFeed
-        setLastPostHashHex(feedDataList[feedDataList.length - 1].PostHashHex);
+        if (feedDataList.length > 0) {
+          setLastPostHashHex(feedDataList[feedDataList.length - 1].PostHashHex);
+        }
       } catch (error) {
+        console.log(error);
         toast.error("Something went wrong");
       } finally {
-        setHasMore(false);
         setFeedLoading(false);
       }
     },

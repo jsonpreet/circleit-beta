@@ -132,7 +132,6 @@ function Home() {
       } catch (error) {
         toast.error("Something went wrong");
       } finally {
-        setHasMore(false);
         setFeedLoading(false);
       }
     },
