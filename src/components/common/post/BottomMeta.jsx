@@ -16,22 +16,36 @@ import ShareModal from "../../modals/Share";
 
 function PostBottomMeta({ circle, isCircle, isRepost, post }) {
   const { isLoggedIn } = useApp();
-  const [diamondBestowed, setDiamondBestowed] = useState(post.PostEntryReaderState.DiamondLevelBestowed)
-  const [diamonds, setDiamonds] = useState(post.DiamondCount)
-  const [showDiamond, setShowDiamond] = useState(false)
-  const [showShareModal, setShowShareModal] = useState(false)
+  const [diamondBestowed, setDiamondBestowed] = useState(
+    post.PostEntryReaderState.DiamondLevelBestowed
+  );
+  const [diamonds, setDiamonds] = useState(post.DiamondCount);
+  const [showDiamond, setShowDiamond] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
   const navigate = useNavigate();
 
   const showDiamondModal = () => {
     if (!isLoggedIn) {
-      return toast.error('You must be logged in!')
-    } 
-    setShowDiamond(!showDiamond)
-  }
+      return toast.error("You must be logged in!");
+    }
+    setShowDiamond(!showDiamond);
+  };
   return (
     <>
-      <DiamondModal setDiamonds={setDiamonds} diamonds={diamonds} diamondBestowed={diamondBestowed} setDiamondBestowed={setDiamondBestowed} show={showDiamond} setShowDiamondModal={setShowDiamond} post={post} />
-      <ShareModal show={showShareModal} setShowShare={setShowShareModal} post={post} />
+      <DiamondModal
+        setDiamonds={setDiamonds}
+        diamonds={diamonds}
+        diamondBestowed={diamondBestowed}
+        setDiamondBestowed={setDiamondBestowed}
+        show={showDiamond}
+        setShowDiamondModal={setShowDiamond}
+        post={post}
+      />
+      <ShareModal
+        show={showShareModal}
+        setShowShare={setShowShareModal}
+        post={post}
+      />
       <div className='flex w-full items-center mt-2 primaryTextColor'>
         <div className='flex -ml-3'>
           {isRepost && (
@@ -44,20 +58,41 @@ function PostBottomMeta({ circle, isCircle, isRepost, post }) {
               <span>{formatNumber(post.LikeCount)}</span>
             </div>
           )}
-          {isMobile ? <LikeButton post={post} /> : null }
-          <button onClick={() => navigate(`/${isCircle ? `circle` : `u`}/${circle.Username}/${post.PostHashHex}#comments`)} className='px-3 flex text-sm items-center cursor-pointer justify-center font-semibold extralightText'>
+          <button
+            onClick={() =>
+              navigate(
+                `/${isCircle ? `circle` : `u`}/${circle.Username}/${
+                  post.PostHashHex
+                }#comments`
+              )
+            }
+            className='px-3 flex text-sm items-center cursor-pointer justify-center font-semibold extralightText'>
             <BsChatLeft size={17} className='mt-1 mr-1' />
             <span>{formatNumber(post.CommentCount)}</span>
           </button>
           <div className='px-3 flex text-sm items-center justify-center font-semibold extralightText'>
             <FiRefreshCcw size={17} className='mt-1 mr-1' />
-            <span>{formatNumber(post.RepostCount + post.QuoteRepostCount)}</span>
+            <span>
+              {formatNumber(post.RepostCount + post.QuoteRepostCount)}
+            </span>
           </div>
-          <button onClick={showDiamondModal} className={`px-3 flex text-sm items-center cursor-pointer justify-center font-semibold ${diamondBestowed > 0 ? `text-pink-600`: `extralightText`}`}>
+          {isMobile ? (
+            <div className='px-3'>
+              <LikeButton post={post} />
+            </div>
+          ) : null}
+
+          <button
+            onClick={showDiamondModal}
+            className={`px-3 flex text-sm items-center cursor-pointer justify-center font-semibold ${
+              diamondBestowed > 0 ? `text-blue-400` : `extralightText`
+            }`}>
             <IoDiamondOutline size={17} className='mt-1 mr-1' />
             <span>{formatNumber(diamonds)}</span>
           </button>
-          <button onClick={() => setShowShareModal(!showShareModal)} className='px-3 cursor-pointer flex text-sm items-center justify-center font-semibold extralightText'>
+          <button
+            onClick={() => setShowShareModal(!showShareModal)}
+            className='px-3 cursor-pointer flex text-sm items-center justify-center font-semibold extralightText'>
             <FaRegShareSquare size={17} className='mt-1 mr-1' />
             <span className='mt-[1px]'></span>
           </button>

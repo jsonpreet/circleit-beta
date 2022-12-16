@@ -155,7 +155,7 @@ function Home() {
             </div>
           </div>
         )}
-        <div className='grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-8 mt-4'>
+        <div className='grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-8 mt-14 sm:mt-4'>
           <div className='grid grid-cols-1 gap-4 lg:col-span-2'>
             <div className='flex w-full items-center'>
               <div className='hidden md:flex md:float-left mr-4 text-white brandGradientBg dark:border-[#18181C] border-transparent border rounded-md p-3'>
@@ -213,7 +213,7 @@ function Home() {
                 </div>
               ))}
           </div>
-          <div className='mt-[20px] md:mt-[75px]'>
+          <div className='mt-[20px] md:mt-[75px] hidden sm:visible'>
             <SidebarRight />
           </div>
         </div>

@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 @import 'tippy.js/dist/tippy.css';
+body{
+
+
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
 
 .primaryBg {
   @apply dark:bg-[#121214] bg-[#fff];
@@ -114,6 +119,8 @@
 .brandGradientBg {
     @apply bg-gradient-to-r from-pink-600 dark:from-pink-500 to-brand-600 dark:to-brand-500;
 }
+
+
 
 .brandGradientText {
     @apply text-transparent bg-clip-text bg-gradient-to-r from-pink-600 dark:from-pink-400 to-brand-600 dark:to-brand-400 hover:text-brand-600 dark:hover:text-brand-300 transition;

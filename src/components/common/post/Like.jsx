@@ -80,7 +80,7 @@ function LikeButton({ isRepost, post }) {
                 />
               ) : (
                 <HeartIcon
-                  classes={`h-5 w-5 mr-1 group-hover:text-red-500 text-red-500`}
+                  classes={`h-5 w-5 mr-1 group-hover:text-red-500 `}
                 />
               )
             ) : (

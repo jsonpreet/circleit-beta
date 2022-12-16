@@ -31,7 +31,7 @@ function PostCardShimmer() {
                         </div>
                     </div>
                 </div>
-                <div className="flex-1 pt-2 pb-2 pr-3 lg:pr-5 lg:pt-7 lg:pb-7 h-24 lg:h-36">
+                <div className="hidden sm:flex-1 pt-2 pb-2 pr-3 lg:pr-5 lg:pt-7 lg:pb-7 h-24 lg:h-36">
                     <div className="bg-gray-300 rounded-xl w-16 h-20 dark:bg-gray-700" />
                 </div>
              </div>

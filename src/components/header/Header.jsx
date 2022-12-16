@@ -19,11 +19,11 @@ const deso = new Deso(DESO_CONFIG);
 function Header() {
   const { user, isLoggedIn, setLoggedIn, setUser, setCircle, isCircle } =
     useApp((state) => state);
-
-  const [currentRoute, setCurrentRoute] = React.useState(
-    window.location.pathname
+  const path = window.location.pathname;
+  const [currentTab, setCurrentTab] = React.useState(
+    path === "/" ? "home" : path.split("/")[1]
   );
-  console.log(currentRoute);
+
   const [showModal, setShowModal] = React.useState(false);
   const navigate = useNavigate();
 
@@ -100,10 +100,10 @@ function Header() {
   return (
     <>
       <div
-        className={`dark:bg-[#121214] bg-white dark:border-[#2D2D33] border-gray-100 border-b fixed items-center flex justify-between ${
+        className={`dark:bg-[#121214] bg-white dark:border-[#2D2D33] border-gray-100 border-b fixed  flex justify-between ${
           isMobile ? "flex-col" : "flex-row"
         } z-30 md:left-56 left-0 w-full md:w-[calc(100%-224px)] right-0 top-0 bg-opacity-70 bg-clip-padding backdrop-blur-xl backdrop-filter`}>
-        <div className='flex flex-row items-center w-full h-16 px-4 justify-start md:justify-between'>
+        <div className='flex flex-row items-center w-full h-16 px-2 justify-start md:justify-between'>
           {isMobile ? (
             <div className='flex-1 flex flex-row items-center'>
               <Link to='/'>
@@ -218,9 +218,26 @@ function Header() {
             )}
           </div>
         </div>
-        <div className='flex  justify-end items-center sm:hidden flex-row space-x-5 md:space-x-0'>
-          hi
-        </div>
+        {(currentTab == "home" || currentTab == "following") && (
+          <div className='flex sm:hidden space-x-5 px-2 mt-1 pt-1 '>
+            <Link
+              to='/'
+              className={` menu font-semibold flex flex-row  transition delay-75 ${
+                currentTab == "home" ? "border-b-4 border-[#8b5cf6]" : ""
+              }`}>
+              <BiHomeAlt size={24} />
+              <span className='ml-1'>Home</span>
+            </Link>
+            <Link
+              to='/following'
+              className={` menu font-semibold flex flex-row  transition delay-75 ${
+                currentTab == "following" ? "border-b-4 border-[#8b5cf6]" : ""
+              }`}>
+              <FiSunrise size={24} />
+              <span className='ml-1'>Following</span>
+            </Link>
+          </div>
+        )}
       </div>
       <BraveBrowserModal
         showModal={showModal}

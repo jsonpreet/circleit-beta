@@ -224,7 +224,7 @@ function Following() {
             </div>
           </div>
         )}
-        <div className='grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-8 mt-4'>
+        <div className='grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-8 sm:mt-4 mt-14'>
           <div className='grid grid-cols-1 gap-4 lg:col-span-2'>
             <div className='flex items-center justify-between w-full'>
               <div className='flex  items-center'>
@@ -291,7 +291,7 @@ function Following() {
                 </div>
               ))}
           </div>
-          <div className='mt-[20px] md:mt-[75px]'>
+          <div className='mt-[20px] md:mt-[75px] hidden sm:visible'>
             <SidebarRight />
           </div>
         </div>
