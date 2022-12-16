@@ -1,11 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import 'tippy.js/dist/tippy.css';
-body{
-
-
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
+@import "tippy.js/dist/tippy.css";
+body {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 .primaryBg {
@@ -17,15 +15,15 @@ body{
 }
 
 .primaryTextColor {
-    @apply  dark:text-gray-100 text-gray-900
+  @apply dark:text-gray-100 text-gray-900;
 }
 
 .secondaryTextColor {
-    @apply  dark:text-gray-100 text-gray-700
+  @apply dark:text-gray-100 text-gray-700;
 }
 
 .secondaryBg {
-    @apply dark:bg-[#212126]  bg-white;
+  @apply dark:bg-[#212126]  bg-white;
 }
 
 /* .secondaryBg {
@@ -33,224 +31,238 @@ body{
 } */
 
 .secondaryBorder {
-    @apply dark:border-[#2D2D33] hover:dark:border-[#43434d] border-gray-100 hover:border-gray-200;
+  @apply dark:border-[#2D2D33] hover:dark:border-[#43434d] border-gray-100 hover:border-gray-200;
 }
 
 .secondaryHoverBg {
-    @apply dark:hover:bg-[#1D1D21] hover:bg-gray-100;
+  @apply dark:hover:bg-[#1D1D21] hover:bg-gray-100;
 }
 
 .extralightText {
-    @apply dark:text-gray-400 text-[#3e3e46] dark:hover:text-pink-400 hover:text-pink-600;
+  @apply dark:text-gray-400 text-[#3e3e46] dark:hover:text-pink-400 hover:text-pink-600;
 }
 
-.lightText{
-    @apply dark:text-gray-200 text-[#3e3e46]
+.lightText {
+  @apply dark:text-gray-200 text-[#3e3e46];
 }
 
 .darkenBg {
-    @apply dark:bg-[#1D1D21] bg-gray-50 dark:text-white text-gray-600;
+  @apply dark:bg-[#1D1D21] bg-gray-50 dark:text-white text-gray-600;
 }
 
 .darkenHoverBg {
-    @apply dark:hover:bg-[#121214] hover:bg-gray-100;
+  @apply dark:hover:bg-[#121214] hover:bg-gray-100;
 }
 
 .darkenBorder {
-    @apply dark:border-[#18181C] border-gray-100;
+  @apply dark:border-[#18181C] border-gray-100;
 }
 
 .theme-divider {
-    @apply dark:divide-[#2D2D33] divide-gray-200;
+  @apply dark:divide-[#2D2D33] divide-gray-200;
 }
 
 .anotherBG {
-    @apply dark:bg-[#18181C] bg-gray-100;
+  @apply dark:bg-[#18181C] bg-gray-100;
 }
 
 .anotherDarkBG {
-    @apply dark:bg-[#18181C] bg-gray-200;
+  @apply dark:bg-[#18181C] bg-gray-200;
 }
 
 .anotherBGhover {
-    @apply dark:hover:bg-[#18181C] hover:bg-gray-100;
+  @apply dark:hover:bg-[#18181C] hover:bg-gray-100;
 }
 
-.menu{
-    @apply dark:text-[#b3b8c0] dark:hover:text-pink-400 hover:text-pink-600 text-gray-900
+.menu {
+  @apply dark:text-[#b3b8c0] dark:hover:text-pink-400 hover:text-pink-600 text-gray-900;
 }
 
 .search {
-    @apply dark:text-white dark:placeholder:text-white placeholder:text-gray-700 text-gray-700 bg-gray-50 dark:ring-[#18181C] ring-gray-200;
+  @apply dark:text-white dark:placeholder:text-white placeholder:text-gray-700 text-gray-700 bg-gray-50 dark:ring-[#18181C] ring-gray-200;
 }
 
 .logo {
-    @apply dark:text-[#b3b8c0] text-gray-700
+  @apply dark:text-[#b3b8c0] text-gray-700;
 }
 
 .heading {
-    @apply text-gray-700 dark:text-white
+  @apply text-gray-700 dark:text-white;
 }
 
 .subHeader {
-    @apply bg-white dark:bg-[#18181C]
+  @apply bg-white dark:bg-[#18181C];
 }
 
 .subHeaderBorder {
-    @apply border-gray-100 dark:border-[#2D2D33]
+  @apply border-gray-100 dark:border-[#2D2D33];
 }
 
 .hoverEffect {
-    @apply dark:hover:bg-[#172430] hover:bg-gray-100;
+  @apply dark:hover:bg-[#172430] hover:bg-gray-100;
 }
 
 .activeEffect {
-    @apply border-none outline-none;
+  @apply border-none outline-none;
 }
 
 .buttonBG {
-    @apply bg-gradient-to-r from-pink-600 to-brand-600 hover:from-brand-600 hover:to-brand-600 dark:from-pink-500 dark:to-brand-500 dark:hover:from-brand-600 dark:hover:to-brand-600 text-white;
+  @apply bg-gradient-to-r from-pink-600 to-brand-600 hover:from-brand-600 hover:to-brand-600 dark:from-pink-500 dark:to-brand-500 dark:hover:from-brand-600 dark:hover:to-brand-600 text-white;
 }
 
 .colorText {
-    @apply text-transparent bg-clip-text bg-gradient-to-r from-pink-600 dark:from-pink-400 to-brand-600 dark:to-brand-400;
+  @apply text-transparent bg-clip-text bg-gradient-to-r from-pink-600 dark:from-pink-400 to-brand-600 dark:to-brand-400;
 }
 
 .brandGradientBg {
-    @apply bg-gradient-to-r from-pink-600 dark:from-pink-500 to-brand-600 dark:to-brand-500;
+  @apply bg-gradient-to-r from-pink-600 dark:from-pink-500 to-brand-600 dark:to-brand-500;
 }
 
-
-
 .brandGradientText {
-    @apply text-transparent bg-clip-text bg-gradient-to-r from-pink-600 dark:from-pink-400 to-brand-600 dark:to-brand-400 hover:text-brand-600 dark:hover:text-brand-300 transition;
+  @apply text-transparent bg-clip-text bg-gradient-to-r from-pink-600 dark:from-pink-400 to-brand-600 dark:to-brand-400 hover:text-brand-600 dark:hover:text-brand-300 transition;
 }
 
 .divider {
-    @apply h-[1px] w-full dark:bg-[#2D2D33] bg-gray-200
+  @apply h-[1px] w-full dark:bg-[#2D2D33] bg-gray-200;
 }
 
 .thread::after {
-	left: 18px;
-	position: absolute;
-	width: 2px;
-	height: calc(100% - 40px);
-	background: rgb(228 228 231);
-	content: '';
-	top: 40px;
+  left: 18px;
+  position: absolute;
+  width: 2px;
+  height: calc(100% - 40px);
+  background: rgb(228 228 231);
+  content: "";
+  top: 40px;
 }
 
 .dark .thread::after {
-    background: #2D2D33;
+  background: #2d2d33;
 }
 
-html, body{
-    height: 100%;
-    position: relative;
-    overflow: hidden;
+html,
+body {
+  height: 100%;
+  position: relative;
+  overflow: hidden;
 }
 
-body{
-    background-color: #F4F7FA;
+body {
+  background-color: #f4f7fa;
 }
 
-.dark body{
-    background-color: #121214;
+.dark body {
+  background-color: #121214;
 }
 
 .media-gradient {
-	background: linear-gradient(249.9deg,rgba(126,143,255,.21) 57.04%,rgba(198,85,255,.18) 92.38%);
-	background-blend-mode: multiply;
-	mix-blend-mode: normal;
-	filter: blur(250px);
-	transform: rotate(-120deg);
+  background: linear-gradient(
+    249.9deg,
+    rgba(126, 143, 255, 0.21) 57.04%,
+    rgba(198, 85, 255, 0.18) 92.38%
+  );
+  background-blend-mode: multiply;
+  mix-blend-mode: normal;
+  filter: blur(250px);
+  transform: rotate(-120deg);
 }
 
 * {
-	scrollbar-width: thin;
-	scrollbar-color: #616161;
+  scrollbar-width: thin;
+  scrollbar-color: #616161;
 }
 
 .boxShadow {
-    background-image: radial-gradient(circle farthest-side at 30% 0,hsla(0,0%,100%,.12),transparent);
-    box-shadow: inset 1px 1px 2px 0 hsla(0,0%,100%,.24),0 1px 3px 0 rgba(255, 70, 49,.24),0 2px 6px 0 rgba(255, 70, 49,.24),0 4px 8px 0 rgba(255, 70, 49,.12),0 16px 32px -8px rgba(255, 70, 49,.48);
-    -webkit-transition: .3s;
-    transition: .3s;
+  background-image: radial-gradient(
+    circle farthest-side at 30% 0,
+    hsla(0, 0%, 100%, 0.12),
+    transparent
+  );
+  box-shadow: inset 1px 1px 2px 0 hsla(0, 0%, 100%, 0.24),
+    0 1px 3px 0 rgba(255, 70, 49, 0.24), 0 2px 6px 0 rgba(255, 70, 49, 0.24),
+    0 4px 8px 0 rgba(255, 70, 49, 0.12),
+    0 16px 32px -8px rgba(255, 70, 49, 0.48);
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
 }
 
 @keyframes rotate {
-	100% {
-		transform: rotate(1turn);
-	}
+  100% {
+    transform: rotate(1turn);
+  }
 }
 
 .rainbow {
-	position: relative;
-	z-index: 0;
-	width: 64px;
-	height: 88px;
-	border-radius: 0.5rem;
-	overflow: hidden;
+  position: relative;
+  z-index: 0;
+  width: 64px;
+  height: 88px;
+  border-radius: 0.5rem;
+  overflow: hidden;
 }
 
 .rainbow::before {
-    content: '';
-    position: absolute;
-    z-index: -2;
-    left: -50%;
-    top: -50%;
-    width: 200%;
-    height: 200%;
-    background-repeat: no-repeat;
-    background-size: 50% 50%, 50% 50%;
-    background-position: 0 0, 100% 0, 100% 100%, 0 100%;
-    background-color: #db2777;
-    background-image: linear-gradient(#7c3aed, #7c3aed), linear-gradient(#db2777, #db2777), linear-gradient(#a78bfa, #a78bfa), linear-gradient(#f472b6, #f472b6);
-    animation: rotate 4s linear infinite;
+  content: "";
+  position: absolute;
+  z-index: -2;
+  left: -50%;
+  top: -50%;
+  width: 200%;
+  height: 200%;
+  background-repeat: no-repeat;
+  background-size: 50% 50%, 50% 50%;
+  background-position: 0 0, 100% 0, 100% 100%, 0 100%;
+  background-color: #db2777;
+  background-image: linear-gradient(#7c3aed, #7c3aed),
+    linear-gradient(#db2777, #db2777), linear-gradient(#a78bfa, #a78bfa),
+    linear-gradient(#f472b6, #f472b6);
+  animation: rotate 4s linear infinite;
 }
 
 .dark .rainbow::before {
-    /* background-color: #399953;
+  /* background-color: #399953;
     background-image: linear-gradient(#399953, #399953), linear-gradient(#fbb300, #fbb300), linear-gradient(#d53e33, #d53e33), linear-gradient(#377af5, #377af5); */
-    background-color: #db2777;
-    background-image: linear-gradient(#7c3aed, #7c3aed), linear-gradient(#db2777, #db2777), linear-gradient(#a78bfa, #a78bfa), linear-gradient(#f472b6, #f472b6);
-    animation: rotate 4s linear infinite;
+  background-color: #db2777;
+  background-image: linear-gradient(#7c3aed, #7c3aed),
+    linear-gradient(#db2777, #db2777), linear-gradient(#a78bfa, #a78bfa),
+    linear-gradient(#f472b6, #f472b6);
+  animation: rotate 4s linear infinite;
 }
-	
+
 .rainbow::after {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    left: 2px;
-    top: 2px;
-    width: calc(100% - 4px);
-    height: calc(100% - 4px);
-    background: rgb(243 244 246);
-    border-radius: 0.5rem;
-    animation: opacityChange 3s infinite alternate;
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 2px;
+  top: 2px;
+  width: calc(100% - 4px);
+  height: calc(100% - 4px);
+  background: rgb(243 244 246);
+  border-radius: 0.5rem;
+  animation: opacityChange 3s infinite alternate;
 }
 
 .dark .rainbow::after {
-    background: rgb(24 24 28);
+  background: rgb(24 24 28);
 }
 
 .middot:after {
-  content: '•';
+  content: "•";
   @apply flex text-[10px];
 }
 
 .__react_modal_image__header {
-	display: none!important;
+  display: none !important;
 }
 
 .rsis-image {
-    z-index: 1;
+  z-index: 1;
 }
 
 .simpleImageSlider button {
-    z-index: 1;
+  z-index: 1;
 }
 
-.customShadow{
-    box-shadow: 0 0 10px 10px rgba(0,0,0,.05),0 1px 2px 0 rgba(0,0,0,.05);
+.customShadow {
+  box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
