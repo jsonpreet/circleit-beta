@@ -1,15 +1,10 @@
 import React, { useRef, useState, useContext } from "react";
 import toast from "react-hot-toast";
 import useApp from "../../../store/app";
-
-import Deso from "deso-protocol";
 import { HeartFillIcon, HeartIcon } from "../../../utils/Icons";
 import { useEffect } from "react";
-import { DESO_CONFIG } from "../../../utils/Constants";
-import party from "party-js";
 import { isBrowser } from "react-device-detect";
 import MemPoolContext from "../../../MemoryPool/MemPoolContext";
-const deso = new Deso(DESO_CONFIG);
 
 function LikeButton({ isRepost, post }) {
   const memPoolContextValue = useContext(MemPoolContext);
@@ -41,7 +36,7 @@ function LikeButton({ isRepost, post }) {
       });
       setLiked(!isLiked);
     } catch (error) {
-      console.log(error)
+      console.log(error);
       toast.error("Something went wrong!");
     }
   };

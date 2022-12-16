@@ -136,3 +136,52 @@ export const getIsCircle = (circle) => {
     return isCircle;
 }
 
+export function abbreviateNumber(value, decimals, toUSD ) {
+  let shortValue;
+  const suffixes = ["", "K", "M", "B", "T"];
+  const suffixNum = Math.floor((("" + value.toFixed(0)).length - 1) / 3);
+  if (suffixNum === 0) {
+    // if the number is less than 1000, we should only show at most 2 decimals places
+    decimals = Math.min(2, decimals);
+  }
+  shortValue = (value / Math.pow(1000, suffixNum)).toFixed(decimals);
+  if (toUSD) {
+    shortValue = formatUSD(shortValue, decimals);
+  }
+  return shortValue + suffixes[suffixNum];
+}
+
+export function nanosToUSDNumber(nanos) {
+  return nanos / 1e9;
+}
+
+export function formatUSD(num, decimal) {
+
+  let formatUSDMemo;
+
+  formatUSDMemo = Number(num).toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: decimal,
+    maximumFractionDigits: decimal,
+  });
+  return formatUSDMemo;
+}
+
+export const formatNumber = (num) => {
+  if (num > 999 && num < 1000000) {
+    return `${(num / 1000).toPrecision(3)}k`
+  } else if (num > 1000000) {
+    return `${(num / 1000000).toPrecision(3)}m`
+  } else if (num < 1000) {
+    return num
+  }
+}
+
+export const truncate = (str, max, suffix = '...') =>
+  str.length < max
+    ? str
+    : `${str.substring(
+        0,
+        str.substring(0, max - suffix.length).lastIndexOf(' ')
+      )}${suffix}`
