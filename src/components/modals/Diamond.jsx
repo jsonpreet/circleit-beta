@@ -33,24 +33,18 @@ const DiamondModal = ({
   const labels = ["1", "2", "3", "4", "5", "6", "7"];
 
   useEffect(() => {
-    const deso = new Deso();
-    setDeso(deso);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (deso) {
-      getExchange();
-      getState();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deso]);
+    getExchange();
+    getState();
+  }, [
+    memPoolContextValue.appState.DiamondLevelMap,
+    memPoolContextValue.exchangeRates,
+  ]);
 
   const getState = async () => {
     setDiamondLevels(memPoolContextValue.appState.DiamondLevelMap);
   };
   const getExchange = async () => {
-    setExchange(memPoolContextValue.appState.exchangeRates);
+    setExchange(memPoolContextValue.exchangeRates);
   };
 
   function diamondPrice(diamond) {
