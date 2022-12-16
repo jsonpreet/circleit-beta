@@ -4465,10 +4465,10 @@
   "resolved" "https://registry.npmjs.org/deso-protocol-types/-/deso-protocol-types-0.3.2.tgz"
   "version" "0.3.2"
 
-"deso-protocol@^0.7.17":
-  "integrity" "sha512-ygjTQe+ByIptluUe2IF6EvzdzlX53E9PBAsUXjxvEYiPKfFu+8G7ll/BVJBEID57EONgq+5sPV1tN0yRaFZCsw=="
-  "resolved" "https://registry.npmjs.org/deso-protocol/-/deso-protocol-0.7.21.tgz"
-  "version" "0.7.21"
+"deso-protocol@^0.7.25":
+  "integrity" "sha512-nKOMHXBMw8wk1/XLeyJeqP3VEOr3rHuE1EwhtVqEJ834/iFkzECdaQ3bFzWNcJCGRsnqECxp1K2gJW5EQ0T+aA=="
+  "resolved" "https://registry.npmjs.org/deso-protocol/-/deso-protocol-0.7.25.tgz"
+  "version" "0.7.25"
   dependencies:
     "@types/bs58check" "^2.1.0"
     "assert" "^2.0.0"
@@ -5818,8 +5818,7 @@
     "minimalistic-assert" "^1.0.1"
 
 "hdkey@github:deso-protocol/hdkey":
-  "integrity" "sha512-KAv1c7c0aOKdDBrYfa1egkVzeaGrm4y4qzuzh891spr+u6flyKJ8ykA8ltDnFv4nj7aVct6UO7GwLIrwh067rQ=="
-  "resolved" "https://codeload.github.com/deso-protocol/hdkey/tar.gz/be4f98118664c8e8a4dc671de3a87d57e674b4bc"
+  "resolved" "git+ssh://git@github.com/deso-protocol/hdkey.git#be4f98118664c8e8a4dc671de3a87d57e674b4bc"
   "version" "2.0.1"
   dependencies:
     "bs58check" "^2.1.2"

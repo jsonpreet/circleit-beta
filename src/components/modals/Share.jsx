@@ -124,7 +124,7 @@ const ShareModal = ({ rootRef, show, setShowShare, post, autoClose = true }) => 
                                             <div className='md:mr-4 mr-0'>
                                                 <LinkedinShareButton
                                                     source={`${APP.URL}/${post.PostHashHex}`}
-                                                    title={`Post by ${post.ProfileEntryResponse.Username}`}
+                                                    title={post.Body ? truncate(post.Body, 200) : APP.Description}
                                                     summary={`${post.Body ? truncate(post.Body, 200) : APP.Description}`}>
                                                     <LinkedinIcon size={44} round />
                                                 </LinkedinShareButton>
