@@ -47,7 +47,7 @@ const MemPoolState = (props) => {
           console.log(tempMemPool);
         }
 
-        console.log("letsee");
+        console.log("transactions in memepool executed");
         if (tempMemPool.length === 0) {
           isLookingIntoMempool = false;
           setMemPool([]);
