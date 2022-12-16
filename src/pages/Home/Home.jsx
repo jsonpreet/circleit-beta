@@ -1,6 +1,6 @@
 import { DefaultLayout } from "../../components/layouts";
 import Deso from "deso-protocol";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useInView } from "react-cool-inview";
 import useApp from "../../store/app";
 import { Loader } from "../../utils/Loader";
@@ -10,13 +10,13 @@ import PostCard from "../../components/cards/PostCard";
 import FeedShimmer from "../../components/shimmers/Feed";
 import { DESO_CONFIG } from "../../utils/Constants";
 import toast from "react-hot-toast";
-
+import GlobalContext from "../../utils/GlobalContext/GlobalContext";
 function Home() {
+  const GlobalContextValue = useContext(GlobalContext);
   const { isLoggedIn, user } = useApp();
   const [isLoading, setIsLoading] = useState(true);
   const [feedLoading, setFeedLoading] = useState(false);
-  const [feedData, setFeedData] = useState([]);
-  const [circleProfile, setCircleProfile] = useState([]);
+
   const [seenPosts, setSeenPosts] = useState([]);
   const [hasMore, setHasMore] = useState(false);
   const [noPosts, setNoPosts] = useState(false);
@@ -25,28 +25,30 @@ function Home() {
   const userPublicKey = isLoggedIn
     ? user.profile.PublicKeyBase58Check
     : "BC1YLhBLE1834FBJbQ9JU23JbPanNYMkUsdpJZrFVqNGsCe7YadYiUg";
-
+  const deso = new Deso(DESO_CONFIG);
   useEffect(() => {
     async function fetchData() {
-      const deso = new Deso(DESO_CONFIG);
       try {
-        const profileRequest = {
-          Username: `${circle}`,
-        };
-        const profileResponse = await deso.user.getSingleProfile(
-          profileRequest
-        );
-        console.log(profileResponse);
-        if (profileResponse?.Profile !== null) {
-          setCircleProfile(profileResponse.Profile);
-          const request = {
-            ReaderPublicKeyBase58Check: userPublicKey,
-            SeenPosts: [],
-            Tag: `@${circle.toLowerCase()}`,
-            SortByNew: false,
-            ResponseLimit: 20,
+        if (Object.keys(GlobalContextValue.circleItProfile).length == 0) {
+          const profileRequest = {
+            Username: `${circle}`,
           };
-          try {
+          const profileResponse = await deso.user.getSingleProfile(
+            profileRequest
+          );
+          GlobalContextValue.updateCircleItProfile(profileResponse.Profile);
+        }
+
+        const request = {
+          ReaderPublicKeyBase58Check: userPublicKey,
+          SeenPosts: [],
+          Tag: `@${circle.toLowerCase()}`,
+          SortByNew: false,
+          ResponseLimit: 20,
+        };
+        try {
+          if (GlobalContextValue.homeFeed.length == 0) {
+            console.log("looking for posts");
             setHasMore(true);
             const response = await deso.posts.getHotFeed(request);
             if (response.HotFeedPage === null) {
@@ -57,19 +59,25 @@ function Home() {
             feedDataList = feedDataList.filter(
               (post) => post.RecloutedPostEntryResponse === null
             );
-            setFeedData(feedDataList);
+            GlobalContextValue.updateHomeFeed(feedDataList);
             //store postHashHex of each post in hotFeed
             const seenPostLists = response.HotFeedPage.map(
               (post) => post.PostHashHex
             );
             setSeenPosts(seenPostLists);
-          } catch (error) {
-            console.log(error);
-            //toast.error("Something went wrong");
+          } else {
             setIsLoading(false);
-          } finally {
-            setIsLoading(false);
+            const seenPostLists = GlobalContextValue.homeFeed.map(
+              (post) => post.PostHashHex
+            );
+            setSeenPosts(seenPostLists);
           }
+        } catch (error) {
+          console.log(error);
+          //toast.error("Something went wrong");
+          setIsLoading(false);
+        } finally {
+          setIsLoading(false);
         }
       } catch (error) {
         toast.error("Something went wrong");
@@ -81,12 +89,12 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    if (feedData && feedData.length > 0) {
+    if (GlobalContextValue.homeFeed && GlobalContextValue.homeFeed.length > 0) {
       setNoPosts(false);
     } else {
       setNoPosts(true);
     }
-  }, [feedData]);
+  }, [GlobalContextValue.homeFeed]);
 
   const { observe } = useInView({
     rootMargin: "1000px 0px",
@@ -111,7 +119,10 @@ function Home() {
         feedDataList = feedDataList.filter(
           (post) => post.RecloutedPostEntryResponse === null
         );
-        setFeedData([...feedData, ...feedDataList]);
+        GlobalContextValue.updateHomeFeed([
+          ...GlobalContextValue.homeFeed,
+          ...feedDataList,
+        ]);
 
         //store postHashHex of each post in hotFeed
         const seenPostLists = response.HotFeedPage.map(
@@ -165,14 +176,16 @@ function Home() {
               </h1>
             </div>
             {isLoading && <FeedShimmer cols={20} />}
-            {!isLoading && feedData && feedData.length > 0 ? (
-              feedData.map((post) => (
+            {!isLoading &&
+            GlobalContextValue.homeFeed &&
+            GlobalContextValue.homeFeed.length > 0 ? (
+              GlobalContextValue.homeFeed.map((post) => (
                 <PostCard
                   post={post}
                   key={post.PostHashHex}
                   isCommunityPost={false}
                   isRepost={false}
-                  circle={circleProfile}
+                  circle={GlobalContextValue.circleItProfile}
                   onCirclePage={false}
                 />
               ))

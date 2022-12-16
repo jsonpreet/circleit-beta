@@ -1,6 +1,6 @@
 import { DefaultLayout } from "../../components/layouts";
 import Deso from "deso-protocol";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useInView } from "react-cool-inview";
 import useApp from "../../store/app";
 import { Loader } from "../../utils/Loader";
@@ -11,12 +11,14 @@ import FeedShimmer from "../../components/shimmers/Feed";
 import { DESO_CONFIG } from "../../utils/Constants";
 import toast from "react-hot-toast";
 import FeedChanger from "./FeedChanger";
+import GlobalContext from "../../utils/GlobalContext/GlobalContext";
 
 function Following() {
+  const GlobalContextValue = useContext(GlobalContext);
   const { isLoggedIn, user } = useApp();
   const [isLoading, setIsLoading] = useState(true);
   const [feedLoading, setFeedLoading] = useState(false);
-  const [feedData, setFeedData] = useState([]);
+
   const [circleProfile, setCircleProfile] = useState([]);
   const [lastPostHashHex, setLastPostHashHex] = useState("");
   const [hasMore, setHasMore] = useState(false);
@@ -28,36 +30,45 @@ function Following() {
     ? user.profile.PublicKeyBase58Check
     : "BC1YLhBLE1834FBJbQ9JU23JbPanNYMkUsdpJZrFVqNGsCe7YadYiUg";
 
-    const [feedUser, setFeedUser] = useState({PublicKeyBase58Check:userPublicKey});
+  const [feedUser, setFeedUser] = useState(
+    Object.keys(GlobalContextValue.followingFeedInfo).length == 0
+      ? {
+          PublicKeyBase58Check: userPublicKey,
+        }
+      : GlobalContextValue.followingFeedInfo
+  );
 
   useEffect(() => {
     async function fetchData() {
       try {
-        const profileRequest = {
-          Username: `${circle}`,
-        };
-        const profileResponse = await deso.user.getSingleProfile(
-          profileRequest
-        );
-        console.log(profileResponse);
-        if (profileResponse?.Profile !== null) {
-          setCircleProfile(profileResponse.Profile);
-          const request = {
-            PostHashHex: "",
-            ReaderPublicKeyBase58Check: userPublicKey,
-            OrderBy: "newest",
-            StartTstampSecs: null,
-            PostContent: "",
-            NumToFetch: 50,
-            FetchSubcomments: false,
-            GetPostsForFollowFeed: true,
-            GetPostsForGlobalWhitelist: false,
-            GetPostsByDESO: false,
-            MediaRequired: false,
-            PostsByDESOMinutesLookback: 0,
-            AddGlobalFeedBool: false,
+        if (Object.keys(GlobalContextValue.circleItProfile).length == 0) {
+          const profileRequest = {
+            Username: `${circle}`,
           };
-          try {
+          const profileResponse = await deso.user.getSingleProfile(
+            profileRequest
+          );
+          GlobalContextValue.updateCircleItProfile(profileResponse.Profile);
+        }
+
+        const request = {
+          PostHashHex: "",
+          ReaderPublicKeyBase58Check: userPublicKey,
+          OrderBy: "newest",
+          StartTstampSecs: null,
+          PostContent: "",
+          NumToFetch: 50,
+          FetchSubcomments: false,
+          GetPostsForFollowFeed: true,
+          GetPostsForGlobalWhitelist: false,
+          GetPostsByDESO: false,
+          MediaRequired: false,
+          PostsByDESOMinutesLookback: 0,
+          AddGlobalFeedBool: false,
+        };
+        try {
+          if (GlobalContextValue.followingFeed.length == 0) {
+            console.log("looking for post");
             setHasMore(true);
             const response = await deso.posts.getPostsStateless(request);
             if (response.PostsFound === null) {
@@ -68,14 +79,22 @@ function Following() {
             setLastPostHashHex(
               feedDataList[feedDataList.length - 1].PostHashHex
             );
-            setFeedData(feedDataList);
-          } catch (error) {
-            console.log(error);
-            //toast.error("Something went wrong");
+            GlobalContextValue.updateFollowingFeed(feedDataList);
+          } else {
+            console.log("already have post");
             setIsLoading(false);
-          } finally {
-            setIsLoading(false);
+            setLastPostHashHex(
+              GlobalContextValue.followingFeed[
+                GlobalContextValue.followingFeed.length - 1
+              ].PostHashHex
+            );
           }
+        } catch (error) {
+          console.log(error);
+          //toast.error("Something went wrong");
+          setIsLoading(false);
+        } finally {
+          setIsLoading(false);
         }
       } catch (error) {
         toast.error("Something went wrong");
@@ -87,12 +106,15 @@ function Following() {
   }, []);
 
   useEffect(() => {
-    if (feedData && feedData.length > 0) {
+    if (
+      GlobalContextValue.followingFeed &&
+      GlobalContextValue.followingFeed.length > 0
+    ) {
       setNoPosts(false);
     } else {
       setNoPosts(true);
     }
-  }, [feedData]);
+  }, [GlobalContextValue.followingFeed]);
 
   const { observe } = useInView({
     rootMargin: "1000px 0px",
@@ -122,7 +144,10 @@ function Following() {
         }
         let feedDataList = response.PostsFound;
 
-        setFeedData([...feedData, ...feedDataList]);
+        GlobalContextValue.updateFollowingFeed([
+          ...GlobalContextValue.followingFeed,
+          ...feedDataList,
+        ]);
 
         //store postHashHex of each post in hotFeed
         setLastPostHashHex(feedDataList[feedDataList.length - 1].PostHashHex);
@@ -158,15 +183,15 @@ function Following() {
         if (response.PostsFound === null) {
           setHasMore(false);
         }
-        if(response.PostsFound.length ==0){
-          setHasMore(false)
-          setFeedData([])
-          setIsLoading(false)
-          return
+        if (response.PostsFound.length == 0) {
+          setHasMore(false);
+          GlobalContextValue.updateFollowingFeed([]);
+          setIsLoading(false);
+          return;
         }
         let feedDataList = response.PostsFound;
         setLastPostHashHex(feedDataList[feedDataList.length - 1].PostHashHex);
-        setFeedData(feedDataList);
+        GlobalContextValue.updateFollowingFeed(feedDataList);
       } catch (error) {
         console.log(error);
         //toast.error("Something went wrong");
@@ -175,9 +200,10 @@ function Following() {
         setIsLoading(false);
       }
     }
-    setFeedUser(feedUser)
+    setFeedUser(feedUser);
+    GlobalContextValue.updateFollowingFeedInfo(feedUser);
     setIsLoading(true);
-   
+
     getFeed();
   };
 
@@ -229,8 +255,10 @@ function Following() {
               />
             </div>
             {isLoading && <FeedShimmer cols={20} />}
-            {!isLoading && feedData && feedData.length > 0 ? (
-              feedData.map((post, index) => (
+            {!isLoading &&
+            GlobalContextValue.followingFeed &&
+            GlobalContextValue.followingFeed.length > 0 ? (
+              GlobalContextValue.followingFeed.map((post, index) => (
                 <PostCard
                   post={post}
                   key={index}
