@@ -14,7 +14,7 @@ import { formatNumber } from "../../../utils/Functions";
 import { useNavigate } from "react-router-dom";
 import ShareModal from "../../modals/Share";
 
-function PostBottomMeta({ circle, isCircle, isRepost, post }) {
+function PostBottomMeta({ circle, isCircle, isRepost, post, desoObj }) {
   const { isLoggedIn } = useApp();
   const [diamondBestowed, setDiamondBestowed] = useState(
     post.PostEntryReaderState.DiamondLevelBestowed
@@ -40,6 +40,7 @@ function PostBottomMeta({ circle, isCircle, isRepost, post }) {
         show={showDiamond}
         setShowDiamondModal={setShowDiamond}
         post={post}
+        desoObj={desoObj}
       />
       <ShareModal
         show={showShareModal}

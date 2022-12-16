@@ -1,13 +1,10 @@
-// Do'nt fuckin touch this component as it is used in a lot of places.
-// Proceed only if you know what you are doing
-
 import Linkify from "linkify-react";
 import "linkify-plugin-hashtag";
 import "linkify-plugin-mention";
 import { LinkifyOptions } from "../../utils/Functions";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import {
   LikeButton,
   PostBottomMeta,
@@ -21,6 +18,8 @@ import {
 } from "../../utils/EmbedUrls";
 import { isBrowser } from "react-device-detect";
 
+import GlobalContext from "../../utils/GlobalContext/GlobalContext";
+
 export default function PostCard({
   post,
   circle,
@@ -28,6 +27,9 @@ export default function PostCard({
   isRepost,
   onCirclePage,
 }) {
+  const GlobalContextValue = useContext(GlobalContext);
+
+
   const navigate = useNavigate();
   const [videoEmbed, setEmbed] = useState("");
   const [postTitle, setPostTitle] = useState("");
@@ -62,15 +64,13 @@ export default function PostCard({
   }, [post]);
 
   useEffect(() => {
- 
     const regex = /Posted on @\w+ in @\w+/;
     const output = post.Body.replace(regex, "");
-    
 
     const regex2 = /Posted via @\w+/;
     const output2 = output.replace(regex2, "");
     output2.length > 240 ? setReadMore(true) : setReadMore(false);
-    setPostBody(output2.trimRight())
+    setPostBody(output2.trimRight());
   }, [post.Body]);
 
   const onPostClicked = (event) => {
@@ -121,13 +121,13 @@ export default function PostCard({
         />
         <div className='flex flex-col w-full'>
           <div className='flex flex-col space-y-4 my-2 '>
-            {postTitle ? 
+            {postTitle ? (
               <h2 className='w-full font-bold text-xl lightText'>
                 {postTitle}
               </h2>
-            : null}
+            ) : null}
             <div className='w-full lightText break-words'>
-              <Linkify options={LinkifyOptions} >
+              <Linkify options={LinkifyOptions}>
                 {!readMore ? postBody : `${postBody.substring(0, 200)}`}
               </Linkify>
               {readMore && (
@@ -138,7 +138,7 @@ export default function PostCard({
                 </span>
               )}
             </div>
-            {post.ImageURLs?.length > 0 && post.ImageURLs[0] !== '' &&  (
+            {post.ImageURLs?.length > 0 && post.ImageURLs[0] !== "" && (
               <PostImages images={post.ImageURLs} circle={circle} />
             )}
             {post.VideoURLs && post.VideoURLs[0] !== "" && (
@@ -153,7 +153,8 @@ export default function PostCard({
             )}
             {post.PostExtraData?.EmbedVideoURL &&
               post.PostExtraData?.EmbedVideoURL !== "" &&
-              videoEmbed !== "" && typeof videoEmbed != "undefined" &&(
+              videoEmbed !== "" &&
+              typeof videoEmbed != "undefined" && (
                 <div className='mt-2 embed-container w-full flex flex-row items-center justify-center rounded-xl overflow-hidden'>
                   <iframe
                     title='extraembed-video'
@@ -186,6 +187,7 @@ export default function PostCard({
             }
             isCircle={isCircle}
             circle={circle}
+            desoObj={GlobalContextValue.desoObj}
           />
         </div>
       </div>

@@ -1,6 +1,8 @@
 import GlobalContext from "./GlobalContext";
 import { useState } from "react";
-
+import Deso from "deso-protocol";
+import { DESO_CONFIG } from "../Constants";
+const deso = new Deso(DESO_CONFIG);
 const GlobalState = (props) => {
   const [homeFeed, setHomeFeed] = useState([]);
   const [followingFeed, setFollowingFeed] = useState([]);
@@ -10,6 +12,7 @@ const GlobalState = (props) => {
   const [diamondInfoMap, setDiamondInfoMap] = useState({});
   const [followingFeedInfo, setFollowingFeedInfo] = useState({});
   const [newCircles, setNewCircles] = useState([]);
+  const [desoObj, setDesoObj] = useState(deso);
 
   const updateHomeFeed = (newHomeFeed) => {
     setHomeFeed(newHomeFeed);
@@ -46,6 +49,7 @@ const GlobalState = (props) => {
         diamondInfoMap,
         followingFeedInfo,
         newCircles,
+        desoObj,
         updateHomeFeed,
         updateFollowingFeed,
         updateCircleItProfile,

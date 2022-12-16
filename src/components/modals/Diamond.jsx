@@ -1,5 +1,4 @@
 import { Dialog, Transition } from "@headlessui/react";
-import Deso from "deso-protocol";
 import { useEffect, useState, useContext } from "react";
 import { Slider } from "rsuite";
 import { Fragment } from "react";
@@ -21,13 +20,15 @@ const DiamondModal = ({
   show,
   post,
   setShowDiamondModal,
+  desoObj,
 }) => {
+ 
   const memPoolContextValue = useContext(MemPoolContext);
 
   const { user } = useApp();
   const [diamondLevels, setDiamondLevels] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [deso, setDeso] = useState(null);
+ 
   const [exchange, setExchange] = useState(null);
   const [value, setValue] = useState(diamondBestowed + 1);
   const labels = ["1", "2", "3", "4", "5", "6", "7"];
@@ -70,7 +71,8 @@ const DiamondModal = ({
         DiamondLevel: value,
         InTutorial: false,
       };
-      const response = await deso.social.sendDiamonds(request);
+    
+      const response = await desoObj.social.sendDiamonds(request);
       if (response && response.TxnHashHex) {
         setDiamondBestowed(value);
         setLoading(false);

@@ -1,11 +1,8 @@
-import Deso from "deso-protocol";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import toast from "react-hot-toast";
-import { Link, useParams } from "react-router-dom";
-import { Header } from "../../components/header";
+import { useParams } from "react-router-dom";
 import PostShimmer from "../../components/shimmers/Post";
 import SidebarShimmer from "../../components/shimmers/Sidebar";
-import { SidebarLeft } from "../../components/sidebar";
 import { SidebarRight } from "../../components/sidebar/circle";
 import useApp from "../../store/app";
 import { LinkifyOptions, toastOptions } from "../../utils/Functions";
@@ -21,163 +18,210 @@ import {
   PostImages,
 } from "../../components/common/post";
 
-import { DefaultLayout } from '../../components/layouts';
-import { getEmbedHeight, getEmbedURL, getEmbedWidth } from '../../utils/EmbedUrls';
-import { DESO_CONFIG } from "../../utils/Constants";
+import { DefaultLayout } from "../../components/layouts";
+import {
+  getEmbedHeight,
+  getEmbedURL,
+  getEmbedWidth,
+} from "../../utils/EmbedUrls";
 import { isBrowser } from "react-device-detect";
-
-const deso = new Deso(DESO_CONFIG);
+import GlobalContext from "../../utils/GlobalContext/GlobalContext";
 
 function Post() {
-    const {circle, postID} = useParams();
-    const { isLoggedIn, user, isCircle: userIsCircle } = useApp();
-    const [post, setPost] = useState('');
-    const [circleProfile, setCircleProfile] = useState('');
-    const [isLoading, setisLoading] = useState(true);
-    const [body, setBody] = useState('');
-    const [isCircle, setisCircle] = useState(false);
-    const [videoEmbed, setEmbed] = useState('')
+  const GlobalContextValue = useContext(GlobalContext);
+  const deso = GlobalContextValue.desoObj;
+  const { circle, postID } = useParams();
+  const { isLoggedIn, user, isCircle: userIsCircle } = useApp();
+  const [post, setPost] = useState("");
+  const [circleProfile, setCircleProfile] = useState("");
+  const [isLoading, setisLoading] = useState(true);
+  const [body, setBody] = useState("");
+  const [isCircle, setisCircle] = useState(false);
+  const [videoEmbed, setEmbed] = useState("");
 
   const userPublicKey = isLoggedIn
     ? user.profile.PublicKeyBase58Check
     : "BC1YLhBLE1834FBJbQ9JU23JbPanNYMkUsdpJZrFVqNGsCe7YadYiUg";
 
   useEffect(() => {
-      async function fetchData() {
-          const request1 = {
-              Username: circle,
+    async function fetchData() {
+      const request1 = {
+        Username: circle,
+      };
+      try {
+        const profileResponse = await deso.user.getSingleProfile(request1);
+        if (profileResponse && profileResponse.Profile) {
+          setCircleProfile(profileResponse.Profile);
+          const payload = profileResponse.Profile.ExtraData?.CircleIt
+            ? JSON.parse(profileResponse.Profile.ExtraData.CircleIt)
+            : null;
+          const isCircle =
+            payload !== null && payload.isCircle === "true" ? true : false;
+          setisCircle(isCircle);
+
+          const request = {
+            ReaderPublicKeyBase58Check: userPublicKey,
+            PostHashHex: postID,
+            FetchParents: true,
+            CommentOffset: 0,
+            CommentLimit: 20,
+            AddGlobalFeedBool: false,
+            ThreadLevelLimit: 2,
+            ThreadLeafLimit: 1,
+            LoadAuthorThread: true,
           };
           try {
-              const profileResponse = await deso.user.getSingleProfile(request1);
-              if (profileResponse && profileResponse.Profile) {
-                  setCircleProfile(profileResponse.Profile);
-                  const payload = profileResponse.Profile.ExtraData?.CircleIt
-                      ? JSON.parse(profileResponse.Profile.ExtraData.CircleIt)
-                      : null;
-                  const isCircle =
-                      payload !== null && payload.isCircle === "true" ? true : false;
-                  setisCircle(isCircle);
-
-                  const request = {
-                      ReaderPublicKeyBase58Check: userPublicKey,
-                      PostHashHex: postID,
-                      FetchParents: true,
-                      CommentOffset: 0,
-                      CommentLimit: 20,
-                      AddGlobalFeedBool: false,
-                      ThreadLevelLimit: 2,
-                      ThreadLeafLimit: 1,
-                      LoadAuthorThread: true,
-                  };
-                  try {
-                        const response = await deso.posts.getSinglePost(request);
-                        if (response && response.PostFound) {
-                            let post = response.PostFound;
-                            setPost(post);
-                            setisLoading(false);
-                            const regex = /Posted on @\w+ in @\w+/;
-                            const output = post.Body.replace(regex, "");
-                            
-                         
-                            setBody(output.trimRight());
-                            if (post.PostExtraData && post.PostExtraData['EmbedVideoURL'] !== null) {
-                                const response = getEmbedURL(post.PostExtraData['EmbedVideoURL']);
-                                setEmbed(response)
-                            }
-                        }
-                  } catch (error) {
-                      console.log(error);
-                      toast.error("Something went wrong!", toastOptions);
-                      setisLoading(false);
-                  }
-              }
-          } catch (error) {
-              console.log(error);
-              toast.error("Something went wrong!", toastOptions);
+            const response = await deso.posts.getSinglePost(request);
+            if (response && response.PostFound) {
+              let post = response.PostFound;
+              setPost(post);
               setisLoading(false);
-          }
-      }
-        fetchData();
-    }, [postID, circle, userPublicKey])
+              const regex = /Posted on @\w+ in @\w+/;
+              const output = post.Body.replace(regex, "");
 
-    
-    
-  
-    return (
-        <>
-            <DefaultLayout>
-                <div className='grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-8'>
-                    <div className='grid grid-cols-1 gap-4 lg:col-span-2 mt-9'>
-                        {isLoading ?
-                            <PostShimmer/>
-                        : (
-                        <>
-                            <div className='flex flex-col min-h-24 lg:min-h-36 w-full secondaryBg secondaryBorder border primaryTextColor rounded-md mb-2'>
-                                <div className='flex items-start justify-between w-full'>
-                                    <div className='flex flex-col w-full p-4'>
-                                        <PostTopMeta post={post} circle={circleProfile} isCircle={isCircle} />
-                                        <div className='flex flex-col w-full'>
-                                            <div className='flex flex-col space-y-4 my-2'>
-                                                <div className='w-full lightText'>
-                                                <Linkify options={LinkifyOptions}>
-                                                    {body}
-                                                </Linkify>
-                                                </div>
-                                                {post.ImageURLs?.length > 0 && (
-                                                    <PostImages images={post.ImageURLs} circle={circle} />
-                                                )}
-                                                {post.VideoURLs && post.VideoURLs[0] !== '' &&
-                                                    <div className='mt-2 feed-post__video-container relative pt-[56.25%] w-full rounded-xl max-h-[700px] overflow-hidden'>
-                                                        <iframe title='embed-video' src={post.VideoURLs[0]} className='w-full absolute left-0 right-0 top-0 bottom-0 h-full feed-post__video' allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;" allowFullScreen></iframe>
-                                                    </div>
-                                                    }
-                                                    {post.PostExtraData?.EmbedVideoURL && post.PostExtraData?.EmbedVideoURL !== '' && videoEmbed !== '' &&
-                                                        <div className='mt-2 embed-container w-full flex flex-row items-center justify-center rounded-xl overflow-hidden'>
-                                                            <iframe title='extraembed-video' id="embed-iframe" className='w-full flex-shrink-0 feed-post__image' height={getEmbedHeight(videoEmbed)} style={{ maxWidth: getEmbedWidth(videoEmbed) }} src={videoEmbed} frameBorder="0" allow="picture-in-picture; clipboard-write; encrypted-media; gyroscope; accelerometer; encrypted-media;" allowFullScreen ></iframe>
-                                                        </div>
-                                                    }
-                                            </div>
-                                            {post.RepostedPostEntryResponse !== null && (
-                                                <div>
-                                                    <PostCard post={post.RepostedPostEntryResponse} isRepost={true} circle={circleProfile} />
-                                                </div>
-                                            )}
-                                            <PostBottomMeta post={post} circleProfile={circleProfile} isCircle={isCircle} />
-                                        </div>
-                                    </div>
-                                    {isBrowser ? <LikeButton isRepost={false} post={post} /> : null }
-                                </div>
-                                <div className='divider mt-2'></div>        
-                                <div className='w-full pt-4'>
-                                    <div className="flex flex-col">
-                                        {isLoggedIn &&
-                                            <div className='mb-2 flex px-4 items-center space-x-1'>
-                                                <span>Comment as</span>
-                                                <p to={`/${userIsCircle ? `circle` : `u`}/${user.profile.Username}`} className='brandGradientText'>
-                                                    <span>{user.profile.Username}</span>
-                                                </p>
-                                            </div>
-                                        }    
-                                        <div>
-                                            <PostComments post={post} circle={circleProfile} isCircle={isCircle} />
-                                        </div>
-                                    </div>
-                                </div>   
+              setBody(output.trimRight());
+              if (
+                post.PostExtraData &&
+                post.PostExtraData["EmbedVideoURL"] !== null
+              ) {
+                const response = getEmbedURL(
+                  post.PostExtraData["EmbedVideoURL"]
+                );
+                setEmbed(response);
+              }
+            }
+          } catch (error) {
+            console.log(error);
+            toast.error("Something went wrong!", toastOptions);
+            setisLoading(false);
+          }
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error("Something went wrong!", toastOptions);
+        setisLoading(false);
+      }
+    }
+    fetchData();
+  }, [postID, circle, userPublicKey]);
+
+  return (
+    <>
+      <DefaultLayout>
+        <div className='grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-8'>
+          <div className='grid grid-cols-1 gap-4 lg:col-span-2 mt-9'>
+            {isLoading ? (
+              <PostShimmer />
+            ) : (
+              <>
+                <div className='flex flex-col min-h-24 lg:min-h-36 w-full secondaryBg secondaryBorder border primaryTextColor rounded-md mb-2'>
+                  <div className='flex items-start justify-between w-full'>
+                    <div className='flex flex-col w-full p-4'>
+                      <PostTopMeta
+                        post={post}
+                        circle={circleProfile}
+                        isCircle={isCircle}
+                      />
+                      <div className='flex flex-col w-full'>
+                        <div className='flex flex-col space-y-4 my-2'>
+                          <div className='w-full lightText'>
+                            <Linkify options={LinkifyOptions}>{body}</Linkify>
+                          </div>
+                          {post.ImageURLs?.length > 0 && (
+                            <PostImages
+                              images={post.ImageURLs}
+                              circle={circle}
+                            />
+                          )}
+                          {post.VideoURLs && post.VideoURLs[0] !== "" && (
+                            <div className='mt-2 feed-post__video-container relative pt-[56.25%] w-full rounded-xl max-h-[700px] overflow-hidden'>
+                              <iframe
+                                title='embed-video'
+                                src={post.VideoURLs[0]}
+                                className='w-full absolute left-0 right-0 top-0 bottom-0 h-full feed-post__video'
+                                allow='accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;'
+                                allowFullScreen></iframe>
                             </div>
-                        </>
+                          )}
+                          {post.PostExtraData?.EmbedVideoURL &&
+                            post.PostExtraData?.EmbedVideoURL !== "" &&
+                            videoEmbed !== "" && (
+                              <div className='mt-2 embed-container w-full flex flex-row items-center justify-center rounded-xl overflow-hidden'>
+                                <iframe
+                                  title='extraembed-video'
+                                  id='embed-iframe'
+                                  className='w-full flex-shrink-0 feed-post__image'
+                                  height={getEmbedHeight(videoEmbed)}
+                                  style={{
+                                    maxWidth: getEmbedWidth(videoEmbed),
+                                  }}
+                                  src={videoEmbed}
+                                  frameBorder='0'
+                                  allow='picture-in-picture; clipboard-write; encrypted-media; gyroscope; accelerometer; encrypted-media;'
+                                  allowFullScreen></iframe>
+                              </div>
+                            )}
+                        </div>
+                        {post.RepostedPostEntryResponse !== null && (
+                          <div>
+                            <PostCard
+                              post={post.RepostedPostEntryResponse}
+                              isRepost={true}
+                              circle={circleProfile}
+                            />
+                          </div>
                         )}
+                        <PostBottomMeta
+                          post={post}
+                          circleProfile={circleProfile}
+                          isCircle={isCircle}
+                          desoObj={deso}
+                        />
+                      </div>
                     </div>
-                    <div className='md:mt-[35px]'>
-                        {!isLoading ? (
-                        <SidebarRight circle={circleProfile} />
-                        ) : (
-                        <SidebarShimmer />
-                        )}
+                    {isBrowser ? (
+                      <LikeButton isRepost={false} post={post} />
+                    ) : null}
+                  </div>
+                  <div className='divider mt-2'></div>
+                  <div className='w-full pt-4'>
+                    <div className='flex flex-col'>
+                      {isLoggedIn && (
+                        <div className='mb-2 flex px-4 items-center space-x-1'>
+                          <span>Comment as</span>
+                          <p
+                            to={`/${userIsCircle ? `circle` : `u`}/${
+                              user.profile.Username
+                            }`}
+                            className='brandGradientText'>
+                            <span>{user.profile.Username}</span>
+                          </p>
+                        </div>
+                      )}
+                      <div>
+                        <PostComments
+                          post={post}
+                          circle={circleProfile}
+                          isCircle={isCircle}
+                        />
+                      </div>
                     </div>
+                  </div>
                 </div>
-            </DefaultLayout>
-        </>
-    );
+              </>
+            )}
+          </div>
+          <div className='md:mt-[35px]'>
+            {!isLoading ? (
+              <SidebarRight circle={circleProfile} />
+            ) : (
+              <SidebarShimmer />
+            )}
+          </div>
+        </div>
+      </DefaultLayout>
+    </>
+  );
 }
 
 export default Post;
