@@ -123,50 +123,10 @@ export function constructTwitchEmbedURL(url) {
     return twitchParsed ? `https://${twitchParsed}` : "";
   }
 
-export function extractTikTokVideoID(fullTikTokURL) {
-    const regExp = /^.*((tiktok\.com\/)(v\/)|(@[A-Za-z0-9_-]{2,24}\/video\/)|(embed\/v2\/))(\d{0,30}).*/;
-    const match = fullTikTokURL.match(regExp);
-    return match && match[6] ? match[6] : false;
-  }
 
-export function tiktokParser(
-    url
-  ) {
-    let tiktokURL;
-    try {
-      tiktokURL = new URL(url);
-    } catch (e) {
-      return false;
-    }
-    if (tiktokURL.hostname === "vm.tiktok.com") {
-      const regExp = /^.*(vm\.tiktok\.com\/)([A-Za-z0-9]{6,12}).*/;
-      const match = url.match(regExp);
-      if (!match || !match[2]) {
-        return false;
-      }
-      return getFullTikTokURL(match[2]).then((res) => {
-            return extractTikTokVideoID(res);
-        });
-    } else {
-      return extractTikTokVideoID(url);
-    }
-}
- 
-async function getFullTikTokURL(id) {
-    const request = {
-        'TikTokShortVideoID': id
-    }
-    const { data } = await axios.post(`https://node.deso.org/api/v0/get-full-tiktok-url`, request)
-    console.log(data);
-}
 
-export function constructTikTokEmbedURL(
-    url
-  ) {
-    return tiktokParser(url.toString()).map((res) => {
-        return res ? `https://www.tiktok.com/embed/v2/${res}` : "";
-      });
-  }
+
+
 
 export function getEmbedURL(
     embedURL
@@ -193,9 +153,7 @@ export function getEmbedURL(
     if (isVimeoFromURL(url)) {
       return constructVimeoEmbedURL(url)
     }
-    if (isTiktokFromURL(url)) {
-      return constructTikTokEmbedURL(url);
-    }
+ 
     if (isGiphyFromURL(url)) {
       return constructGiphyEmbedURL(url)
     }
@@ -253,19 +211,9 @@ export function isMousaiFromURL(url) {
     return pattern.test(url.hostname);
   }
 
-export function isTikTokLink(link) {
-    try {
-      const url = new URL(link);
-      return isTiktokFromURL(url);
-    } catch (e) {
-      return false;
-    }
-  }
 
-export function isTiktokFromURL(url) {
-    const pattern = /\btiktok\.com$/;
-    return pattern.test(url.hostname);
-  }
+
+
 
 export function isGiphyLink(link) {
     try {
@@ -338,10 +286,7 @@ export function isValidMousaiEmbedURL(link) {
     return !!link.match(regExp);
   }
 
-export function isValidTiktokEmbedURL(link) {
-    const regExp = /(https:\/\/www\.tiktok\.com\/embed\/v2\/(\d{0,30}))$/;
-    return !!link.match(regExp);
-  }
+
 
 export function isValidGiphyEmbedURL(link) {
     const regExp = /(https:\/\/giphy\.com\/embed\/([A-Za-z0-9]{0,20}))$/;
@@ -376,7 +321,7 @@ export function isValidEmbedURL(link) {
         isValidVimeoEmbedURL(link) ||
         isValidYoutubeEmbedURL(link) ||
         isValidMousaiEmbedURL(link) ||
-        isValidTiktokEmbedURL(link) ||
+      
         isValidGiphyEmbedURL(link) ||
         isValidSpotifyEmbedURL(link) ||
         isValidSoundCloudEmbedURL(link) ||
@@ -388,9 +333,7 @@ export function isValidEmbedURL(link) {
   }
 
 export function getEmbedHeight(link) {
-    if (isValidTiktokEmbedURL(link)) {
-      return 700;
-    }
+   
     if (isValidSpotifyEmbedURL(link)) {
       return link.indexOf("embed-podcast") > -1 ? 232 : 380;
     }
@@ -404,5 +347,5 @@ export function getEmbedHeight(link) {
   }
 
 export function getEmbedWidth(link) {
-    return isValidTiktokEmbedURL(link) ? "325px" : "";
+    return  "";
   }

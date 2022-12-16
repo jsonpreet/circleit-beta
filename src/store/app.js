@@ -5,7 +5,7 @@ import { persist } from 'zustand/middleware';
 const useApp = create(
     persist(
         (set, get) => ({
-            theme: 'dark',
+            theme: 'light',
             recentSearch: [],
             isLoggedIn: false,
             isCircle: false,

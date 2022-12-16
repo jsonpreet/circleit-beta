@@ -13,12 +13,17 @@ import toast from "react-hot-toast";
 import { MobileSearch, Search } from "../common/search";
 import logo from "../../assets/logo.svg";
 import { isMobile } from "react-device-detect";
-
+import logoPng from "../../assets/logoPng.png";
 const deso = new Deso(DESO_CONFIG);
 
 function Header() {
   const { user, isLoggedIn, setLoggedIn, setUser, setCircle, isCircle } =
     useApp((state) => state);
+
+  const [currentRoute, setCurrentRoute] = React.useState(
+    window.location.pathname
+  );
+  console.log(currentRoute);
   const [showModal, setShowModal] = React.useState(false);
   const navigate = useNavigate();
 
@@ -94,14 +99,17 @@ function Header() {
 
   return (
     <>
-      <div className='dark:bg-[#121214] bg-white dark:border-[#2D2D33] border-gray-100 border-b fixed items-center flex justify-between flex-row z-30 md:left-56 left-0 w-full md:w-[calc(100%-224px)] right-0 top-0 bg-opacity-70 bg-clip-padding backdrop-blur-xl backdrop-filter'>
+      <div
+        className={`dark:bg-[#121214] bg-white dark:border-[#2D2D33] border-gray-100 border-b fixed items-center flex justify-between ${
+          isMobile ? "flex-col" : "flex-row"
+        } z-30 md:left-56 left-0 w-full md:w-[calc(100%-224px)] right-0 top-0 bg-opacity-70 bg-clip-padding backdrop-blur-xl backdrop-filter`}>
         <div className='flex flex-row items-center w-full h-16 px-4 justify-start md:justify-between'>
           {isMobile ? (
             <div className='flex-1 flex flex-row items-center'>
               <Link to='/'>
                 <div className='relative text-4xl font-bold dark:text-white sm:text-4xl lg:text-5xl leading-none rounded-full z-10'>
                   {/* <span className="brandGradientBg blur-2xl filter opacity-40 dark:opacity-30 w-full h-full absolute inset-0 rounded-full"></span> */}
-                  <img src={logo} className='h-10' alt='Circleit Logo'></img>
+                  <img src={logoPng} className='h-10' alt='Circleit Logo'></img>
                 </div>
               </Link>
             </div>
@@ -209,6 +217,9 @@ function Header() {
               </div>
             )}
           </div>
+        </div>
+        <div className='flex  justify-end items-center sm:hidden flex-row space-x-5 md:space-x-0'>
+          hi
         </div>
       </div>
       <BraveBrowserModal
