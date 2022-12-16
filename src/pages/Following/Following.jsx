@@ -263,7 +263,7 @@ function Following() {
                   post={post}
                   key={index}
                   isRepost={false}
-                  circle={circleProfile}
+                  circle={GlobalContextValue.circleItProfile}
                   onCirclePage={false}
                 />
               ))
