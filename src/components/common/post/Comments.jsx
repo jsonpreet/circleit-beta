@@ -11,7 +11,6 @@ import { BiImageAdd, BiVideoPlus } from "react-icons/bi";
 import { ImEmbed2 } from "react-icons/im";
 import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
-import * as tus from "tus-js-client";
 import {
   getEmbedHeight,
   getEmbedURL,
@@ -24,7 +23,7 @@ import EmojiPicker from "emoji-picker-react";
 
 const deso = new Deso(DESO_CONFIG);
 
-function PostComments({ post }) {
+function PostComments({ post, circleProfile }) {
   const { isLoggedIn, user, isCircle: userIsCircle } = useApp();
   const { circle } = useParams();
   const [comment, setComment] = useState("");
@@ -45,6 +44,23 @@ function PostComments({ post }) {
     ? user.profile.PublicKeyBase58Check
     : "BC1YLhBLE1834FBJbQ9JU23JbPanNYMkUsdpJZrFVqNGsCe7YadYiUg";
 
+  let verifiedPayload = null;
+  try {
+    verifiedPayload = circleProfile
+      ? circleProfile.ExtraData.CircleIt !== undefined
+        ? JSON.parse(circleProfile.ExtraData.CircleIt)
+        : null
+      : null;
+  } catch {
+    verifiedPayload = null;
+  }
+  const [listOfVerifiedUsers, setListOfVerifiedUsers] = useState(
+    verifiedPayload?.VerifiedUsers.length > 0
+      ? verifiedPayload.VerifiedUsers.map((user) => user.PublicKeyBase58Check)
+      : []
+  );
+
+  
   useEffect(() => {
     if (postEmoji && postEmoji.emoji.trim().length > 0) {
       setComment(comment + postEmoji.emoji);
@@ -257,71 +273,74 @@ function PostComments({ post }) {
 
   return (
     <>
-      <div id="comments" className='flex flex-col w-full'>
+      <div id="comments" className="flex flex-col w-full">
         {isLoggedIn ? (
-          <div className='flex w-full px-4'>
-            <div className='transition w-full delay-50 border secondaryBorder rounded-md p-[1px]'>
+          <div className="flex w-full px-4">
+            <div className="transition w-full delay-50 border secondaryBorder rounded-md p-[1px]">
               <textarea
-                className='w-full h-32 auto-resize primaryBg dark:text-white outline-none p-2 focus:ring-0'
-                placeholder='Write a comment...'
+                className="w-full h-32 auto-resize primaryBg dark:text-white outline-none p-2 focus:ring-0"
+                placeholder="Write a comment..."
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 onKeyDown={handleKeyDown}
               />
               {postImage !== "" ? (
-                <div className='relative m-4'>
+                <div className="relative m-4">
                   <img
                     src={postImage}
-                    alt=''
-                    className='w-full darkenBorder border rounded-lg'
+                    alt=""
+                    className="w-full darkenBorder border rounded-lg"
                   />
-                  <div className='absolute top-4 right-4 '>
+                  <div className="absolute top-4 right-4 ">
                     <button
                       onClick={() => {
                         setPostImage("");
                       }}
-                      className='bg-red-500 group hover:bg-red-700  rounded-full w-10 h-10 drop-shadow-lg flex items-center justify-center'>
-                      <BsTrash size={24} className='text-white' />
+                      className="bg-red-500 group hover:bg-red-700  rounded-full w-10 h-10 drop-shadow-lg flex items-center justify-center"
+                    >
+                      <BsTrash size={24} className="text-white" />
                     </button>
                   </div>
                 </div>
               ) : null}
               {showLinkField ? (
-                <div className='m-4'>
+                <div className="m-4">
                   <input
                     onChange={handleEmbedLink}
                     value={postLink}
                     className={`focus:ring-0 focus:outline-none outline-none darkenBg darkenHoverBg border dark:border-[#2D2D33] hover:dark:border-[#43434d] border-gray-200 hover:border-gray-200 resize-none w-full heading px-4 py-2 rounded-md`}
-                    placeholder='Embed Youtube, Vimeo, TikTok, Giphy, Spotify, Mousai, or SoundCloud'
+                    placeholder="Embed Youtube, Vimeo, TikTok, Giphy, Spotify, Mousai, or SoundCloud"
                   />
                 </div>
               ) : null}
               {postEmbedLink !== "" && postEmbedLink !== null ? (
-                <div className='m-2 embed-container w-full flex flex-row items-center justify-center rounded-xl overflow-hidden'>
+                <div className="m-2 embed-container w-full flex flex-row items-center justify-center rounded-xl overflow-hidden">
                   <iframe
-                    id='embed-iframe'
-                    className='w-full flex-shrink-0'
+                    id="embed-iframe"
+                    className="w-full flex-shrink-0"
                     height={getEmbedHeight(postEmbedLink)}
                     style={{ maxWidth: getEmbedWidth(postEmbedLink) }}
                     src={postEmbedLink}
-                    frameBorder='0'
-                    allow='picture-in-picture; clipboard-write; encrypted-media; gyroscope; accelerometer; encrypted-media;'
-                    allowFullScreen></iframe>
+                    frameBorder="0"
+                    allow="picture-in-picture; clipboard-write; encrypted-media; gyroscope; accelerometer; encrypted-media;"
+                    allowFullScreen
+                  ></iframe>
                 </div>
               ) : null}
-              <div className='bg-gray-100 -mt-[1px] dark:bg-[#121214] p-2 flex w-full'>
-                <div className='flex items-center space-x-4 my-2 px-2'>
+              <div className="bg-gray-100 -mt-[1px] dark:bg-[#121214] p-2 flex w-full">
+                <div className="flex items-center space-x-4 my-2 px-2">
                   <div>
-                    <Tippy content='Add Image' placement='bottom'>
+                    <Tippy content="Add Image" placement="bottom">
                       <button
                         onClick={() => {
                           handleImage();
                           setShowLinkField(false);
-                        }}>
+                        }}
+                      >
                         {uploadingImage ? (
-                          <Loader className='w-5 h-5' />
+                          <Loader className="w-5 h-5" />
                         ) : (
-                          <BiImageAdd size={21} className='text-gray-500' />
+                          <BiImageAdd size={21} className="text-gray-500" />
                         )}
                       </button>
                     </Tippy>
@@ -335,18 +354,19 @@ function PostComments({ post }) {
                   </Tippy>
                 </div> */}
                   <div>
-                    <Tippy content='Add Embed' placement='bottom'>
+                    <Tippy content="Add Embed" placement="bottom">
                       <button
                         onClick={() => {
                           setUploadingImage(false);
                           setShowLinkField(true);
-                        }}>
-                        <ImEmbed2 size={21} className='text-gray-500' />
+                        }}
+                      >
+                        <ImEmbed2 size={21} className="text-gray-500" />
                       </button>
                     </Tippy>
                   </div>
-                  <div className='relative'>
-                    <Popover className='relative'>
+                  <div className="relative">
+                    <Popover className="relative">
                       {({ open }) => (
                         <>
                           <Popover.Button
@@ -358,20 +378,22 @@ function PostComments({ post }) {
                             }}
                             className={`
                               ${open ? "" : "text-opacity-90"}
-                              group inline-flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75`}>
-                            <BsEmojiSmile size={19} className='text-gray-500' />
+                              group inline-flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75`}
+                          >
+                            <BsEmojiSmile size={19} className="text-gray-500" />
                           </Popover.Button>
                           <Transition
                             as={Fragment}
-                            enter='transition ease-out duration-200'
-                            enterFrom='opacity-0 translate-y-1'
-                            enterTo='opacity-100 translate-y-0'
-                            leave='transition ease-in duration-150'
-                            leaveFrom='opacity-100 translate-y-0'
-                            leaveTo='opacity-0 translate-y-1'>
-                            <Popover.Panel className='absolute left-1/2 z-20 mt-3 w-screen max-w-sm -translate-x-1/2 transform'>
+                            enter="transition ease-out duration-200"
+                            enterFrom="opacity-0 translate-y-1"
+                            enterTo="opacity-100 translate-y-0"
+                            leave="transition ease-in duration-150"
+                            leaveFrom="opacity-100 translate-y-0"
+                            leaveTo="opacity-0 translate-y-1"
+                          >
+                            <Popover.Panel className="absolute left-1/2 z-20 mt-3 w-screen max-w-sm -translate-x-1/2 transform">
                               <EmojiPicker
-                                emojiStyle='twitter'
+                                emojiStyle="twitter"
                                 onEmojiClick={setEmoji}
                               />
                             </Popover.Panel>
@@ -381,11 +403,12 @@ function PostComments({ post }) {
                     </Popover>
                   </div>
                 </div>
-                <div className='flex w-full justify-end'>
+                <div className="flex w-full justify-end">
                   <button
                     onClick={(e) => submitComment(e)}
-                    className='buttonBG dark:text-white flex items-center px-4 py-2 rounded-md'>
-                    {loading && <Loader className='mr-2 w-5 h-5' />}{" "}
+                    className="buttonBG dark:text-white flex items-center px-4 py-2 rounded-md"
+                  >
+                    {loading && <Loader className="mr-2 w-5 h-5" />}{" "}
                     <span>Post</span>
                   </button>
                 </div>
@@ -393,19 +416,22 @@ function PostComments({ post }) {
             </div>
           </div>
         ) : (
-          <div className='mb-2 flex px-4 items-center'>
-            <span className='text-lg brandGradientText font-semibold'>
+          <div className="mb-2 flex px-4 items-center">
+            <span className="text-lg brandGradientText font-semibold">
               Comments
             </span>
           </div>
         )}
-        <div className='flex flex-col space-y-4 mt-4'>
+        <div className="flex flex-col space-y-4 mt-4">
           {comments &&
             comments.length > 0 &&
             comments.map((comment, index) => {
               return (
                 <div key={index}>
                   <CommentCard
+                    isVerified={listOfVerifiedUsers.includes(
+                      comment.ProfileEntryResponse.PublicKeyBase58Check
+                    )}
                     isSubComment={false}
                     post={post}
                     comment={comment}
@@ -414,19 +440,19 @@ function PostComments({ post }) {
               );
             })}
           {!loadingComments && comments && comments.length === 0 && (
-            <div className='text-sm text-gray-500 dark:text-gray-400'>
+            <div className="text-sm text-gray-500 dark:text-gray-400">
               No comments yet
             </div>
           )}
           {!loadingComments &&
             comments &&
             (hasMore ? (
-              <span ref={observe} className='flex justify-center pb-4'>
+              <span ref={observe} className="flex justify-center pb-4">
                 <Loader />
               </span>
             ) : (
-              <div className='flex justify-center pb-4'>
-                <p className='text-gray-500 dark:text-gray-400'>
+              <div className="flex justify-center pb-4">
+                <p className="text-gray-500 dark:text-gray-400">
                   No more comments
                 </p>
               </div>

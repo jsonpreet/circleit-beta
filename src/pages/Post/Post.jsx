@@ -201,7 +201,8 @@ function Post() {
                       <div>
                         <PostComments
                           post={post}
-                          circle={circleProfile}
+
+                          circleProfile={circleProfile}
                           isCircle={isCircle}
                         />
                       </div>

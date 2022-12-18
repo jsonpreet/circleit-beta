@@ -16,8 +16,16 @@ import SubProfileCard from "./SubProfileCard";
 import { isBrowser, isMobile } from "react-device-detect";
 
 import GlobalContext from "../../utils/GlobalContext/GlobalContext";
-
-function CommentCard({ post, comment, isSubComment, parent = null }) {
+import greenCheck from "../../assets/greenCheck.svg";
+function CommentCard({
+  post,
+  comment,
+  isSubComment,
+  isVerified,
+  parent = null,
+ 
+}) {
+  console.log(isVerified)
   const GlobalContextValue = useContext(GlobalContext);
   const deso = GlobalContextValue.desoObj;
   const { isLoggedIn, user, isCircle: userIsCircle } = useApp();
@@ -122,18 +130,20 @@ function CommentCard({ post, comment, isSubComment, parent = null }) {
           isSubComment
             ? `ml-2 px-0 rounded-none`
             : `border-b pb-4 px-4 last:border-transparent`
-        }`}>
-        <div className='flex space-y-3 md:divide-y-0 divide-y theme-divider md:space-y-0 space-x-0 md:space-x-3'>
+        }`}
+      >
+        <div className="flex space-y-3 md:divide-y-0 divide-y theme-divider md:space-y-0 space-x-0 md:space-x-3">
           {isBrowser ? (
-            <div className='flex thread relative'>
+            <div className="flex thread relative">
               <Link
                 to={`/${isCircle ? `circle` : `u`}/${
                   comment.ProfileEntryResponse.Username
                 }`}
-                className='flex items-start justify-start space-x-1'>
+                className="flex items-start justify-start space-x-1"
+              >
                 <img
                   src={`${NODE_URL}/get-single-profile-picture/${comment.ProfileEntryResponse.PublicKeyBase58Check}?fallback=https://diamondapp.com/assets/img/default_profile_pic.png`}
-                  className='w-9 h-9 rounded-full'
+                  className="w-9 h-9 rounded-full"
                   alt={
                     comment.ProfileEntryResponse.ExtraData?.DisplayName
                       ? comment.ProfileEntryResponse.ExtraData?.DisplayName
@@ -143,31 +153,33 @@ function CommentCard({ post, comment, isSubComment, parent = null }) {
               </Link>
             </div>
           ) : null}
-          <div className='md:flex-1'>
-            <div className='flex items-center space-x-2'>
+          <div className="md:flex-1">
+            <div className="flex items-center space-x-2">
               {isMobile ? (
-                <div className='thread relative'>
+                <div className="thread relative">
                   <Link
                     to={`/${isCircle ? `circle` : `u`}/${
                       comment.ProfileEntryResponse.Username
                     }`}
-                    className='flex items-start justify-center space-x-1'>
+                    className="flex items-start justify-center space-x-1"
+                  >
                     <img
                       src={`${NODE_URL}/get-single-profile-picture/${comment.ProfileEntryResponse.PublicKeyBase58Check}?fallback=https://diamondapp.com/assets/img/default_profile_pic.png`}
-                      className='w-9 h-9 rounded-full'
+                      className="w-9 h-9 rounded-full"
                       alt={
                         comment.ProfileEntryResponse.ExtraData?.DisplayName
                           ? comment.ProfileEntryResponse.ExtraData?.DisplayName
                           : comment.ProfileEntryResponse.Username
                       }
                     />
+                    
                   </Link>
                 </div>
               ) : null}
-              <span className='text-sm font-semibold'>
+              <span className="text-sm font-semibold">
                 <Tippy
                   followCursor={true}
-                  placement='bottom'
+                  placement="bottom"
                   interactive={true}
                   maxWidth={300}
                   interactiveDebounce={100}
@@ -178,45 +190,51 @@ function CommentCard({ post, comment, isSubComment, parent = null }) {
                       profile={comment.ProfileEntryResponse}
                       {...attrs}
                     />
-                  )}>
+                  )}
+                >
                   <Link
-                    className='extralightText text-sm cursor-pointer relative hover:underline flex items-center justify-center space-x-1'
+                    className="extralightText text-sm cursor-pointer relative hover:underline flex items-center justify-center space-x-1"
                     to={`/${isCircle ? `circle` : `u`}/${
                       comment.ProfileEntryResponse.Username
-                    }`}>
+                    }`}
+                  >
                     {/* <span>{comment.ProfileEntryResponse.ExtraData?.DisplayName ? comment.ProfileEntryResponse.ExtraData?.DisplayName : comment.ProfileEntryResponse.Username}</span> */}
                     <span>{comment.ProfileEntryResponse.Username}</span>
+                    {isVerified && <img src={greenCheck} className="w-4 h-4" />}
                   </Link>
                 </Tippy>
               </span>
-              <span className='middot'></span>
+              <span className="middot"></span>
               <span
-                className='text-sm extralightText'
-                title={dateFormat(comment.TimestampNanos)}>
+                className="text-sm extralightText"
+                title={dateFormat(comment.TimestampNanos)}
+              >
                 {timeStampToTimeAgo(comment.TimestampNanos)}
               </span>
             </div>
             {parent && (
-              <div className='text-sm'>
+              <div className="text-sm">
                 Replying to{" "}
                 <Link
                   to={`/${isCircle ? `circle` : `u`}/${
                     parent.ProfileEntryResponse.Username
                   }`}
-                  className='font-semibold brandGradientText text-sm'>
+                  className="font-semibold brandGradientText text-sm"
+                >
                   {parent.ProfileEntryResponse.Username}
                 </Link>
               </div>
             )}
-            <div className='mt-1 w-full lightText'>
+            <div className="mt-1 w-full lightText">
               <Linkify options={LinkifyOptions}>
                 {!readMore ? commentBody : `${commentBody.substring(0, 200)}`}
               </Linkify>
               {readMore && (
                 <span
-                  className='brandGradientText cursor-pointer'
-                  onClick={() => setReadMore(false)}>
-                  ... <span className='ml-1 font-medium'>Read more</span>
+                  className="brandGradientText cursor-pointer"
+                  onClick={() => setReadMore(false)}
+                >
+                  ... <span className="ml-1 font-medium">Read more</span>
                 </span>
               )}
             </div>
@@ -227,37 +245,39 @@ function CommentCard({ post, comment, isSubComment, parent = null }) {
               />
             )}
             {comment.VideoURLs && comment.VideoURLs[0] !== "" && (
-              <div className='mt-2 feed-post__video-container relative pt-[56.25%] w-full rounded-xl max-h-[700px] overflow-hidden'>
+              <div className="mt-2 feed-post__video-container relative pt-[56.25%] w-full rounded-xl max-h-[700px] overflow-hidden">
                 <iframe
-                  title='embed-video'
+                  title="embed-video"
                   src={comment.VideoURLs[0]}
-                  className='w-full absolute left-0 right-0 top-0 bottom-0 h-full feed-post__video'
-                  allow='accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;'
-                  allowFullScreen></iframe>
+                  className="w-full absolute left-0 right-0 top-0 bottom-0 h-full feed-post__video"
+                  allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;"
+                  allowFullScreen
+                ></iframe>
               </div>
             )}
 
             {comment.PostExtraData?.EmbedVideoURL &&
               comment.PostExtraData?.EmbedVideoURL !== "" &&
               videoEmbed !== "" && (
-                <div className='mt-2 embed-container w-full flex flex-row items-center justify-center rounded-xl overflow-hidden'>
+                <div className="mt-2 embed-container w-full flex flex-row items-center justify-center rounded-xl overflow-hidden">
                   <iframe
-                    title='extraembed-video'
-                    id='embed-iframe'
-                    className='w-full flex-shrink-0 feed-post__image'
+                    title="extraembed-video"
+                    id="embed-iframe"
+                    className="w-full flex-shrink-0 feed-post__image"
                     height={getEmbedHeight(videoEmbed)}
                     style={{ maxWidth: getEmbedWidth(videoEmbed) }}
                     src={videoEmbed}
-                    frameBorder='0'
-                    allow='picture-in-picture; clipboard-write; encrypted-media; gyroscope; accelerometer; encrypted-media;'
-                    allowFullScreen></iframe>
+                    frameBorder="0"
+                    allow="picture-in-picture; clipboard-write; encrypted-media; gyroscope; accelerometer; encrypted-media;"
+                    allowFullScreen
+                  ></iframe>
                 </div>
               )}
-            <div className='mb-2'>
+            <div className="mb-2">
               <PostBottomMeta post={comment} isRepost={false} desoObj={deso} />
             </div>
             {comments && comments.length > 0 && (
-              <div className='mt-4 mb-2'>
+              <div className="mt-4 mb-2">
                 {comments.map((subcomment, index) => {
                   return (
                     <CommentCard
@@ -274,12 +294,14 @@ function CommentCard({ post, comment, isSubComment, parent = null }) {
             {hasMore && comments.length > 0 && (
               <div
                 data-id={isSubComment ? lastID : comment.PostHashHex}
-                className='flex items-center justify-start mt-2'>
+                className="flex items-center justify-start mt-2"
+              >
                 <button
-                  className='text-sm brandGradientText font-medium'
+                  className="text-sm brandGradientText font-medium"
                   onClick={(e) =>
                     loadMore(e, isSubComment ? lastID : comment.PostHashHex)
-                  }>
+                  }
+                >
                   {!loading
                     ? `View more comments`
                     : `Fetching more comments...`}
