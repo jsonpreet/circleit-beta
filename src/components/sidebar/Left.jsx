@@ -29,7 +29,7 @@ function SidebarLeft({ rootRef }) {
           (thing, index, self) =>
             index === self.findIndex((t) => t.Username === thing.Username)
         );
-        let reversedCircles = uniqueCircles.reverse().slice(0, 10);
+        let reversedCircles = uniqueCircles.reverse().slice(0, 9);
         setCircles(reversedCircles);
         GlobalContextValue.updateNewCircles(reversedCircles);
       }
