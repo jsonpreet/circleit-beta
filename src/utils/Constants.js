@@ -10,6 +10,10 @@ export const defaultCircles = [
     {
         Username: "CircleIt",
         PublicKeyBase58Check: "BC1YLgbXw1u8M3Sf6812pfewa2ozzK8SGQfkKU162QJf59xe1YaFfuU"
+    },
+    {
+        Username: "CyberPunkApes",
+        PublicKeyBase58Check: "BC1YLhM4vH9FTepmEm9jCBrKmR46vW5n517YEopsuLT49JQHw674KE2"
     }
 ]
 
