@@ -23,7 +23,7 @@ export default function CreatePostBox({ circle }) {
   const { user } = useApp((state) => state);
   const [postTitle, setPostTitle] = useState("");
   const [postBody, setPostBody] = useState("");
-  const [postImage, setPostImage] = useState("");
+  const [postImageList, setPostImageList] = useState([]);
   const [postVideo, setPostVideo] = useState("");
   const [postEmoji, setEmoji] = useState("");
   const [postLink, setPostLink] = useState("");
@@ -60,7 +60,7 @@ export default function CreatePostBox({ circle }) {
     };
     const response = await deso.media.uploadImage(request);
     if (response.ImageURL !== "") {
-      setPostImage(response.ImageURL);
+      setPostImageList([...postImageList, response.ImageURL]);
       setUploadingImage(false);
     }
   };
@@ -117,7 +117,7 @@ export default function CreatePostBox({ circle }) {
       );
       const data = await response.json();
       if (data.ImageURL !== "") {
-        setPostImage(data.ImageURL);
+        setPostImageList([...postImageList, data.ImageURL]);
       }
       setUploadingImage(false);
     } catch (e) {
@@ -228,7 +228,7 @@ export default function CreatePostBox({ circle }) {
   };
 
   const submitPost = async () => {
-    if(isLoading) return;
+    if (isLoading) return;
     setIsLoading(true);
 
     try {
@@ -245,7 +245,7 @@ export default function CreatePostBox({ circle }) {
         BodyObj: {
           Body: body,
           VideoURLs: postVideo !== "" ? [postVideo] : [],
-          ImageURLs: postImage !== "" ? [postImage] : [],
+          ImageURLs: postImageList,
         },
         PostExtraData: {
           EmbedVideoURL: postEmbedLink,
@@ -261,7 +261,7 @@ export default function CreatePostBox({ circle }) {
     } finally {
       setPostBody("");
       setPostTitle("");
-      setPostImage("");
+      setPostImageList([]);
       setPostVideo("");
       setPostEmbedLink("");
       setEmoji("");
@@ -331,24 +331,29 @@ export default function CreatePostBox({ circle }) {
                   />
                 </div>
                 <div>
-                  {postImage !== "" ? (
-                    <div className='relative mt-4'>
+                  {postImageList.map((image, index) => (
+                    <div key={index} className='relative mt-4 grid grid-cols-2 gap-2 mx-auto '>
+                      <div className="container">
                       <img
-                        src={postImage}
+                        src={image}
                         alt=''
                         className='w-full darkenBorder border rounded-lg'
                       />
-                      <div className='absolute top-4 right-4 '>
+                      <div className='absolute top-2 right-2 '>
                         <button
                           onClick={() => {
-                            setPostImage("");
+                            let temp = [...postImageList];
+                            temp.splice(index, 1);
+                            setPostImageList(temp);
                           }}
                           className='bg-red-500 group hover:bg-red-700  rounded-full w-10 h-10 drop-shadow-lg flex items-center justify-center'>
                           <BsTrash size={24} className='text-white' />
                         </button>
                       </div>
+                      </div>
                     </div>
-                  ) : null}
+                  ))}
+
                   {isVideoReady && postVideo !== "" ? (
                     <div className='relative mt-4'>
                       <div className='mt-2 relative pt-[56.25%] w-full rounded-xl max-h-[700px] overflow-hidden'>
@@ -490,13 +495,15 @@ export default function CreatePostBox({ circle }) {
                     </div>
                   </div>
                   <div className='flex w-full justify-end'>
-                  <button
-                    onClick={(e) => submitPost(e)}
-                    className={`buttonBG dark:text-white flex items-center ${isLoading? 'px-4': 'px-8'} py-2 rounded-full`}>
-                    {isLoading && <Loader className='mr-2 w-5 h-5' />}{" "}
-                    <span>Post</span>
-                  </button>
-                </div>
+                    <button
+                      onClick={(e) => submitPost(e)}
+                      className={`buttonBG dark:text-white flex items-center ${
+                        isLoading ? "px-4" : "px-8"
+                      } py-2 rounded-full`}>
+                      {isLoading && <Loader className='mr-2 w-5 h-5' />}{" "}
+                      <span>Post</span>
+                    </button>
+                  </div>
                 </div>
               </>
             ) : null}
