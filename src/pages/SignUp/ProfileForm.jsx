@@ -8,19 +8,14 @@ import { Loader } from "../../utils/Loader";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import party from "party-js";
+import { getBase64FromFile } from "../../utils/Functions";
+
 export default function ProfileForm({ desoObj, publicKey, rootRef }) {
   const profileExtraInfo = {};
   const navigate = useNavigate();
-  const { isLoggedIn, user, setUser, setLoggedIn } = useApp();
+  const { user, setUser, setLoggedIn } = useApp();
   const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState("");
-  const [displayName, setDisplayName] = useState("");
-  const [telegramURL, setTelegramURL] = useState("");
-  const [twitterURL, setTwitterURL] = useState("");
-  const [websiteURL, setWebsiteURL] = useState("");
-  const [instagramURL, setInstagramURL] = useState("");
-  const [githubURL, setGithubURL] = useState("");
-  const [linkedinURL, setLinkedinURL] = useState("");
   const [profileDescription, setProfileDescription] = useState("");
   const [profileImage, setProfileImage] = useState(
     "https://node.deso.org/assets/img/default_profile_pic.png"
@@ -47,15 +42,6 @@ export default function ProfileForm({ desoObj, publicKey, rootRef }) {
       console.log(error);
       setIsUploadingBanner(false);
     }
-  };
-
-  const getBase64FromFile = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
   };
 
   const handleProfilePicUpload = async (e) => {
@@ -155,13 +141,13 @@ export default function ProfileForm({ desoObj, publicKey, rootRef }) {
       NewProfilePic: base68Image,
       ExtraData: {
         NewProfilePic: profileImage,
-        DisplayName: displayName,
-        TelegramURL: telegramURL,
-        TwitterURL: twitterURL,
-        WebsiteURL: websiteURL,
-        InstagramURL: instagramURL,
-        GithubURL: githubURL,
-        LinkedinURL: linkedinURL,
+        DisplayName: "",
+        TelegramURL: "",
+        TwitterURL: "",
+        WebsiteURL: "",
+        InstagramURL: "",
+        GithubURL: "",
+        LinkedinURL: "",
         FeaturedImageURL: profileExtraInfo.FeaturedImageURL,
         LargeProfilePicURL: profileExtraInfo.LargeProfilePicURL,
       },
