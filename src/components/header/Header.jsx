@@ -14,6 +14,7 @@ import { MobileSearch, Search } from "../common/search";
 import logo from "../../assets/logo.svg";
 import { isMobile } from "react-device-detect";
 import logoPng from "../../assets/logoPng.png";
+import LoginPopup from "../modals/LoginPopup";
 const deso = new Deso(DESO_CONFIG);
 
 function Header() {
@@ -25,6 +26,7 @@ function Header() {
   );
 
   const [showModal, setShowModal] = React.useState(false);
+  const [showLoginPopup, setShowLoginPopup] = React.useState(false);
   const navigate = useNavigate();
 
   const logout = async () => {
@@ -46,7 +48,7 @@ function Header() {
     }
   };
 
-  const loginWithDeso = async (ignoreBrowser) => {
+  const loginWithDeso = async (ignoreBrowser, showPopup) => {
     //check if browsers is brave
     if (!ignoreBrowser) {
       if ((navigator.brave && (await navigator.brave.isBrave())) || false) {
@@ -55,6 +57,12 @@ function Header() {
       }
     }
     setShowModal(false);
+    if (showPopup) {
+      setShowLoginPopup(true);
+      return;
+    }
+    setShowLoginPopup(false);
+
     try {
       const request = 4;
       const response = await deso.identity.login(request);
@@ -85,6 +93,7 @@ function Header() {
           // toast.error("Something went wrong");
           // console.log(error);
           //route to /sign-up
+          
           localStorage.setItem("newDeSoPublicKey", response.key);
           navigate("/sign-up");
         }
@@ -142,7 +151,7 @@ function Header() {
             </div>
             {!isLoggedIn ? (
               <button
-                onClick={() => loginWithDeso(false)}
+                onClick={() => loginWithDeso(false, true)}
                 className='font-medium text-white px-6 py-2 rounded-full buttonBG ml-2 md:mr-6'>
                 <span>Get Started </span>
               </button>
@@ -242,6 +251,11 @@ function Header() {
       <BraveBrowserModal
         showModal={showModal}
         setShowModal={setShowModal}
+        loginWithDeso={loginWithDeso}
+      />
+      <LoginPopup
+        showLoginPopup={showLoginPopup}
+        setShowLoginPopup={setShowLoginPopup}
         loginWithDeso={loginWithDeso}
       />
     </>

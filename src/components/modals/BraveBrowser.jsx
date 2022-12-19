@@ -44,7 +44,7 @@ function BraveBrowserModal({ showModal, setShowModal, loginWithDeso }) {
                                         <button
                                             type="button"
                                             className={`relative flex items-center justify-center space-x-2 rounded-full border border-transparent px-4 py-2 text-sm font-medium buttonBG focus:outline-none`}
-                                            onClick={() => loginWithDeso(true)}
+                                            onClick={() => loginWithDeso(true, true)}
                                         >
                                             <span>Continue Anyway</span>
                                         </button>
