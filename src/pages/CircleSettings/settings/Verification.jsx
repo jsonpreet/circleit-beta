@@ -8,7 +8,11 @@ import toast from "react-hot-toast";
 import useApp from "../../../store/app";
 import { useEffect } from "react";
 export default function Verification({ user, sidebar }) {
-  const profileExtraDataJson = JSON.parse(user.profile.ExtraData.CircleIt);
+  const profileExtraDataJson = JSON.parse(
+    typeof user.profile.ExtraData.CircleIt === "undefined"
+      ? "{}"
+      : user.profile.ExtraData.CircleIt
+  );
   const { setUser } = useApp((state) => state);
   const [searchPrefix, setSearchPrefix] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,7 +23,7 @@ export default function Verification({ user, sidebar }) {
   const [showSearchBox, setShowSearchBox] = useState(false);
 
   useEffect(() => {
-    const getData = setTimeout(async() => {
+    const getData = setTimeout(async () => {
       if (searchPrefix.length > 0) {
         const deso = new Deso(DESO_CONFIG);
         const request = {
@@ -47,9 +51,9 @@ export default function Verification({ user, sidebar }) {
       } else {
         setShowSearchBox(false);
       }
-    }, 700)
-    return () => clearTimeout(getData)
-  }, [searchPrefix])
+    }, 700);
+    return () => clearTimeout(getData);
+  }, [searchPrefix]);
 
   const updateProfile = async () => {
     const profileExtraInfo = user.profile.ExtraData;
