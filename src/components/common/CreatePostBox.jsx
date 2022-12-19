@@ -308,7 +308,7 @@ export default function CreatePostBox({ circle }) {
                 className={`focus:ring-0 focus:outline-none outline-none darkenBg darkenHoverBg border dark:border-[#2D2D33] hover:dark:border-[#43434d] border-gray-200 hover:border-gray-200 resize-none w-full heading px-4 py-2 ${
                   isExpanded ? "rounded-md" : "rounded-full"
                 }`}
-                placeholder={`${!isExpanded ? "Create Post" : "Title"}`}
+                placeholder={`${!isExpanded ? "Create Post" : "Title (optional)"}`}
                 value={postTitle}
                 handleKeyDown={handleKeyDown}
                 onChange={(e) => setPostTitle(e.target.value)}
