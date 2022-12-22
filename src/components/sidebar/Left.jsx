@@ -6,7 +6,6 @@ import { useEffect, useState, useContext } from "react";
 import CreateCircleModal from "../modals/CreateCircle";
 import GlobalContext from "../../utils/GlobalContext/GlobalContext";
 import logo from "../../assets/logo.svg";
-import { supabase } from "../../utils/supabase";
 
 function SidebarLeft({ rootRef }) {
   const GlobalContextValue = useContext(GlobalContext);
@@ -20,19 +19,24 @@ function SidebarLeft({ rootRef }) {
 
   useEffect(() => {
     async function fetchCircles() {
-      const { data, error, status } = await supabase.from("circles").select();
-      if (error && status !== 406) {
-        console.log(error.error_description || error.message);
-      }
-      if (data && data.length > 0) {
-        const uniqueCircles = data.filter(
-          (thing, index, self) =>
-            index === self.findIndex((t) => t.Username === thing.Username)
-        );
-        let reversedCircles = uniqueCircles.reverse().slice(0, 9);
-        setCircles(reversedCircles);
-        GlobalContextValue.updateNewCircles(reversedCircles);
-      }
+      console.log("fetching circles...");
+      const response = await fetch("https://tipdeso.com/get-latest-circles", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          limit: 12,
+          lastTimeStampOfCircleCreated: null,
+        }),
+      });
+      let uniqueCircles = await response.json();
+      console.log(uniqueCircles);
+
+      uniqueCircles = uniqueCircles.data.slice(0, 9);
+
+      setCircles(uniqueCircles);
+      GlobalContextValue.updateNewCircles(uniqueCircles);
     }
     if (GlobalContextValue.newCircles.length == 0) {
       fetchCircles();
@@ -69,10 +73,7 @@ function SidebarLeft({ rootRef }) {
         {circles && circles.length > 0 ? (
           <>
             <div className='divider'></div>
-            <CircleList
-              name='New Circles'
-              list={circles}
-            />
+            <CircleList name='New Circles' list={circles} />
           </>
         ) : null}
       </div>

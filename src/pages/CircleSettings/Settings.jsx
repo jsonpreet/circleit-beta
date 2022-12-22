@@ -76,7 +76,7 @@ export const Sidebar = ({ activeTab, handleTabChange, currentActiveTab }) => {
                       className={`${
                         activeTab === "delete" ? "anotherBG" : null
                       }  font-semibold text-red-500 anotherBGhover rounded-lg px-4 text-left transition w-full delay-75 py-2`}>
-                      Delete Account
+                     Delete Circle
                     </button>
                   </>
                 ) : null}
