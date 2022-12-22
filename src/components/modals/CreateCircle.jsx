@@ -35,7 +35,9 @@ function CreateCircleModal({ rootRef, showModal, setShowModal }) {
     };
     try {
       const response = await deso.social.updateProfile(request);
+
       if (response) {
+        setCircle(true);
         try {
           const jwt = await deso.identity.getJwt(undefined);
           const response2 = await fetch("https://tipdeso.com/add-new-circle", {
@@ -61,7 +63,7 @@ function CreateCircleModal({ rootRef, showModal, setShowModal }) {
               count: party.variation.range(100, 2000),
               size: party.variation.range(0.5, 2.0),
             });
-            setCircle(true);
+
             setTimeout(
               () => redirect(`/circle/${user.profile.Username}`),
               1500

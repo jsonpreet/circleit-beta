@@ -7,6 +7,7 @@ import CreateCircleModal from "../modals/CreateCircle";
 import GlobalContext from "../../utils/GlobalContext/GlobalContext";
 import logo from "../../assets/logo.svg";
 
+
 function SidebarLeft({ rootRef }) {
   const GlobalContextValue = useContext(GlobalContext);
   const { isLoggedIn, isCircle } = useApp();

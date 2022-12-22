@@ -38,6 +38,7 @@ export default function Delete({ user, sidebar }) {
     try {
       const response = await deso.social.updateProfile(request);
       const jwt = await deso.identity.getJwt(undefined);
+    
       if (response) {
         const response2 = await fetch("https://tipdeso.com/delete-circle", {
           method: "POST",
