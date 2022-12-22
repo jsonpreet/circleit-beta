@@ -31,7 +31,7 @@ function Following() {
     : "BC1YLhBLE1834FBJbQ9JU23JbPanNYMkUsdpJZrFVqNGsCe7YadYiUg";
 
   const [feedUser, setFeedUser] = useState(
-    Object.keys(GlobalContextValue.followingFeedInfo).length == 0
+    Object.keys(GlobalContextValue.followingFeedInfo).length === 0
       ? {
           PublicKeyBase58Check: userPublicKey,
         }
@@ -41,7 +41,7 @@ function Following() {
   useEffect(() => {
     async function fetchData() {
       try {
-        if (Object.keys(GlobalContextValue.circleItProfile).length == 0) {
+        if (Object.keys(GlobalContextValue.circleItProfile).length === 0) {
           const profileRequest = {
             Username: `${circle}`,
           };
@@ -67,7 +67,7 @@ function Following() {
           AddGlobalFeedBool: false,
         };
         try {
-          if (GlobalContextValue.followingFeed.length == 0) {
+          if (GlobalContextValue.followingFeed.length === 0) {
             console.log("looking for post");
             setHasMore(true);
             const response = await deso.posts.getPostsStateless(request);
@@ -140,7 +140,7 @@ function Following() {
       };
       try {
         const response = await deso.posts.getPostsStateless(request);
-        if (response.PostsFound === null || response.PostsFound.length == 0) {
+        if (response.PostsFound === null || response.PostsFound.length === 0) {
           console.log("is it really happening?");
           setHasMore(false);
         }
@@ -187,7 +187,7 @@ function Following() {
         if (response.PostsFound === null) {
           setHasMore(false);
         }
-        if (response.PostsFound.length == 0) {
+        if (response.PostsFound.length === 0) {
           setHasMore(false);
           GlobalContextValue.updateFollowingFeed([]);
           setIsLoading(false);

@@ -29,7 +29,7 @@ function Home() {
   useEffect(() => {
     async function fetchData() {
       try {
-        if (Object.keys(GlobalContextValue.circleItProfile).length == 0) {
+        if (Object.keys(GlobalContextValue.circleItProfile).length === 0) {
           const profileRequest = {
             Username: `${circle}`,
           };
@@ -47,7 +47,7 @@ function Home() {
           ResponseLimit: 20,
         };
         try {
-          if (GlobalContextValue.homeFeed.length == 0) {
+          if (GlobalContextValue.homeFeed.length === 0) {
             console.log("looking for posts");
             setHasMore(true);
             const response = await deso.posts.getHotFeed(request);

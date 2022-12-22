@@ -15,11 +15,12 @@ import logo from "../../assets/logo.svg";
 import { isMobile } from "react-device-detect";
 import logoPng from "../../assets/logoPng.png";
 import LoginPopup from "../modals/LoginPopup";
+import { NotificationMenu } from "../notifications";
+
 const deso = new Deso(DESO_CONFIG);
 
 function Header() {
-  const { user, isLoggedIn, setLoggedIn, setUser, setCircle, isCircle } =
-    useApp((state) => state);
+  const { user, isLoggedIn, setLoggedIn, setUser, setCircle, isCircle } = useApp((state) => state);
   const path = window.location.pathname;
   const [currentTab, setCurrentTab] = React.useState(
     path === "/" ? "home" : path.split("/")[1]
@@ -145,9 +146,10 @@ function Header() {
           </div>
           <Search />
           <div className='justify-end items-center flex flex-row space-x-5 md:space-x-0'>
-            <div className='md:flex-col flex justify-center space-x-5 md:space-x-0 items-center md:ml-6 md:mr-2'>
+            <div className='flex justify-center space-x-5 items-center md:ml-6 md:mr-2'>
               {isMobile ? <MobileSearch /> : null}
               <ThemeSwitch />
+              <NotificationMenu isCircle={isCircle} />
             </div>
             {!isLoggedIn ? (
               <button
@@ -227,12 +229,12 @@ function Header() {
             )}
           </div>
         </div>
-        {(currentTab == "home" || currentTab == "following") && (
+        {(currentTab === "home" || currentTab === "following") && (
           <div className='flex sm:hidden space-x-5 px-2 mt-1 pt-1 '>
             <Link
               to='/'
               className={` menu font-semibold flex flex-row  transition delay-75 ${
-                currentTab == "home" ? "border-b-4 border-[#8b5cf6]" : ""
+                currentTab === "home" ? "border-b-4 border-[#8b5cf6]" : ""
               }`}>
               <BiHomeAlt size={24} />
               <span className='ml-1'>Home</span>
@@ -240,7 +242,7 @@ function Header() {
             <Link
               to='/following'
               className={` menu font-semibold flex flex-row  transition delay-75 ${
-                currentTab == "following" ? "border-b-4 border-[#8b5cf6]" : ""
+                currentTab === "following" ? "border-b-4 border-[#8b5cf6]" : ""
               }`}>
               <FiSunrise size={24} />
               <span className='ml-1'>Following</span>

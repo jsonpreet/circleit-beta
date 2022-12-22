@@ -11,6 +11,7 @@ import RedirectRoute from "./pages/RedirectRoute";
 import { SignUp } from "./pages/SignUp";
 import MemPoolState from "../src/MemoryPool/MemPoolState"
 import GlobalState from "./utils/GlobalContext/GlobalState";
+import { Notifications } from "./pages/Notifications";
 function App() {
   return (
     <>
@@ -33,6 +34,7 @@ function App() {
           <Route path='/circle/:circle/settings' element={<ProtectedRoute><CircleSettings /></ProtectedRoute>} />
           <Route path='/circle/:circle/create/:type' element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
           <Route path='/u/:username/settings' element={<ProtectedRoute><CircleSettings /></ProtectedRoute>} />
+          <Route path='/notifications/:username' element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
         </Routes>
       </BrowserRouter>
       </GlobalState>

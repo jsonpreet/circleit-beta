@@ -343,7 +343,7 @@ export function getEmbedHeight(link) {
     if (isValidMousaiEmbedURL(link)) {
       return 165;
     }
-    return 315;
+    return 480;
   }
 
 export function getEmbedWidth(link) {

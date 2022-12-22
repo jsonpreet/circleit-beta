@@ -16,10 +16,10 @@ import ShareModal from "../../modals/Share";
 
 function PostBottomMeta({ circle, isCircle, isRepost, post, desoObj }) {
   const { isLoggedIn } = useApp();
-  const [diamondBestowed, setDiamondBestowed] = useState(
-    post.PostEntryReaderState.DiamondLevelBestowed
-  );
-  const [diamonds, setDiamonds] = useState(post.DiamondCount);
+  const postDiamonds = post.DiamondCount;
+  const Bestowed = post.PostEntryReaderState.DiamondLevelBestowed;
+  const [diamondBestowed, setDiamondBestowed] = useState(Bestowed);
+  const [diamonds, setDiamonds] = useState(0);
   const [showDiamond, setShowDiamond] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ function PostBottomMeta({ circle, isCircle, isRepost, post, desoObj }) {
     <>
       <DiamondModal
         setDiamonds={setDiamonds}
-        diamonds={diamonds}
+        diamonds={post.DiamondCount}
         diamondBestowed={diamondBestowed}
         setDiamondBestowed={setDiamondBestowed}
         show={showDiamond}
@@ -89,7 +89,7 @@ function PostBottomMeta({ circle, isCircle, isRepost, post, desoObj }) {
               diamondBestowed > 0 ? `text-blue-400` : `extralightText`
             }`}>
             <IoDiamondOutline size={17} className='mt-1 mr-1' />
-            <span>{formatNumber(diamonds)}</span>
+            <span>{formatNumber(diamonds > 0 ? diamonds : postDiamonds)}</span>
           </button>
           <button
             onClick={() => setShowShareModal(!showShareModal)}

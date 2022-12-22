@@ -39,9 +39,10 @@ function SidebarLeft({ rootRef }) {
       setCircles(uniqueCircles);
       GlobalContextValue.updateNewCircles(uniqueCircles);
     }
-    if (GlobalContextValue.newCircles.length == 0) {
+    if (GlobalContextValue.newCircles.length === 0) {
       fetchCircles();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <>

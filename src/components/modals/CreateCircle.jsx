@@ -54,7 +54,7 @@ function CreateCircleModal({ rootRef, showModal, setShowModal }) {
           const insertResponse = await response2.json();
           const statusResponse = insertResponse.status;
           // const { data, error, status } = await supabase.from('circles').insert([{ Username: user.profile.Username, PublicKeyBase58Check: user.profile.PublicKeyBase58Check }]).eq('PublicKeyBase58Check', user.profile.PublicKeyBase58Check).select()
-          if (statusResponse != "success") {
+          if (statusResponse !== "success") {
             toast.error("Something went wrong!");
           }
           if (statusResponse === "success") {

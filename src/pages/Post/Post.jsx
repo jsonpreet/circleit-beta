@@ -103,6 +103,7 @@ function Post() {
       }
     }
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postID, circle, userPublicKey]);
 
   return (
@@ -201,7 +202,6 @@ function Post() {
                       <div>
                         <PostComments
                           post={post}
-
                           circleProfile={circleProfile}
                           isCircle={isCircle}
                         />
