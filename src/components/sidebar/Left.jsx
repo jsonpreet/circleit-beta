@@ -33,7 +33,7 @@ function SidebarLeft({ rootRef }) {
       let uniqueCircles = await response.json();
       console.log(uniqueCircles);
 
-      uniqueCircles = uniqueCircles.data.slice(0, 8);
+      uniqueCircles = uniqueCircles.data.slice(0, 7);
 
       setCircles(uniqueCircles);
       GlobalContextValue.updateNewCircles(uniqueCircles);

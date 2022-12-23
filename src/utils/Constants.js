@@ -18,6 +18,10 @@ export const defaultCircles = [
     {
         circleName: "RandomOpinions",
         publicKey: "BC1YLhk1nid26BsyYgaJ1z2pp4tkmfc5PdrdgGcsTe2Yqvc2yrTk2BG"
+    },
+    {
+        circleName: "DevCircle",
+        publicKey: "BC1YLgjBP7W4nT3SmPAEHx1Lioa8CaauXZzS7M7X95zyZZ3TgwAKK6f"
     }
 ]
 
