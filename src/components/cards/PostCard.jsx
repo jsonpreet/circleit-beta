@@ -267,6 +267,8 @@ export default function PostCard({
                 post={post.RepostedPostEntryResponse}
                 isRepost={true}
                 circle={circle}
+                isLoggedIn={isLoggedIn}
+                readerPublicKey={readerPublicKey}
               />
             )}
           </div>
