@@ -128,15 +128,7 @@ export default function PostCard({
     if (loadingDecrypted) return;
     setLoadingDecrypted(true);
     try {
-      const diamondBestowed = post.PostEntryReaderState.DiamondLevelBestowed;
-      if (diamondBestowed < diamondLevelGatedWith) {
-        if (readerPublicKey !== post.PosterPublicKeyBase58Check) {
-          toast.error(
-            `You need to give ${diamondLevelGatedWith} diamonds to view this post`
-          );
-          return;
-        }
-      }
+  
       const jwt = await GlobalContextValue.desoObj.identity.getJwt(undefined);
 
       const requestPayload = {
@@ -159,6 +151,11 @@ export default function PostCard({
         setVideoList([data.response.postVideo]);
         setPostBody(data.response.content);
         setDecryptedData(data.response);
+        setLoadingDecrypted(false);
+      }
+      else{
+        toast.error(`Error loading gated content.`);
+  
         setLoadingDecrypted(false);
       }
       console.log(data);
@@ -221,7 +218,7 @@ export default function PostCard({
 
             {loadingDecrypted && (
               <div className='w-full lightText break-words flex justify-center items-center flex-col'>
-                <Loader/>
+                <Loader />
               </div>
             )}
 
