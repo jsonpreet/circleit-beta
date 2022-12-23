@@ -285,6 +285,7 @@ export default function Circle() {
                         isRepost={false}
                         isCommunityPost={true}
                         onCirclePage={true}
+                        readerPublicKey={userPublicKey}
                       />
                     ))
                   ) : (

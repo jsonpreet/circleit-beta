@@ -293,6 +293,7 @@ export default function Circle() {
                         isRepost={false}
                         isCommunityPost={false}
                         onCirclePage={true}
+                        readerPublicKey={userPublicKey}
                       />
                     ))
                   ) : (
@@ -325,6 +326,7 @@ export default function Circle() {
                         isRepost={false}
                         isCommunityPost={false}
                         onCirclePage={true}
+                        readerPublicKey={userPublicKey}
                       />
                     ))
                   ) : (
@@ -357,6 +359,7 @@ export default function Circle() {
                         isRepost={false}
                         isCommunityPost={true}
                         onCirclePage={true}
+                        readerPublicKey={userPublicKey}
                       />
                     ))
                   ) : (

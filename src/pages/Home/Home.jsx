@@ -186,6 +186,7 @@ function Home() {
                   isRepost={false}
                   circle={GlobalContextValue.circleItProfile}
                   onCirclePage={false}
+                  readerPublicKey={userPublicKey}
                 />
               ))
             ) : (

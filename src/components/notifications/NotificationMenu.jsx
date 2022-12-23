@@ -84,7 +84,7 @@ function NotificationMenu() {
                                 <div className="inline-flex items-center justify-between p-2 pt-1 pb-3 space-x-2 rounded-lg">
                                     <span className="text-base truncate leading-4">Notifications</span>
                                     <Link
-                                        to={`/notifications/${username ? username : user.profile.Username}`}
+                                        to={`/notifications/${username ? username : username}`}
                                         className="flex items-center justify-center text-sm font-medium"
                                     >
                                         View All

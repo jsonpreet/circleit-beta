@@ -269,6 +269,7 @@ function Following() {
                   isRepost={false}
                   circle={GlobalContextValue.circleItProfile}
                   onCirclePage={false}
+                  readerPublicKey={userPublicKey}
                 />
               ))
             ) : (
