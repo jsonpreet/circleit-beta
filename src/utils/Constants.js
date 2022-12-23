@@ -14,6 +14,10 @@ export const defaultCircles = [
     {
         circleName: "CyberPunkApes",
         publicKey: "BC1YLhM4vH9FTepmEm9jCBrKmR46vW5n517YEopsuLT49JQHw674KE2"
+    },
+    {
+        circleName: "RandomOpinions",
+        publicKey: "BC1YLhk1nid26BsyYgaJ1z2pp4tkmfc5PdrdgGcsTe2Yqvc2yrTk2BG"
     }
 ]
 
