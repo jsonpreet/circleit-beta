@@ -162,7 +162,7 @@ function Post() {
         setDecryptedData(data.response);
         setLoadingDecrypted(false);
       } else {
-        toast.error(`Error loading gated content.`);
+        toast.error(data.message || `Error loading gated content`);
 
         setLoadingDecrypted(false);
       }

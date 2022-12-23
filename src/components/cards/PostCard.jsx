@@ -128,7 +128,6 @@ export default function PostCard({
     if (loadingDecrypted) return;
     setLoadingDecrypted(true);
     try {
-  
       const jwt = await GlobalContextValue.desoObj.identity.getJwt(undefined);
 
       const requestPayload = {
@@ -152,10 +151,9 @@ export default function PostCard({
         setPostBody(data.response.content);
         setDecryptedData(data.response);
         setLoadingDecrypted(false);
-      }
-      else{
-        toast.error(`Error loading gated content.`);
-  
+      } else {
+        toast.error(data.message || `Error loading gated content`);
+
         setLoadingDecrypted(false);
       }
       console.log(data);
