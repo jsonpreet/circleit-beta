@@ -18,9 +18,9 @@ function PostImages({ images, circle }) {
   };
   return (
     <>
-      <div className='relative mt-4 justify-center rounded-sm'>
+      <div className='relative mt-4 justify-center rounded-sm overflow-hidden'>
         {images.length > 1 ? (
-          <div className='rounded-3xl simpleImageSlider w-full min-h-[50px] max-h-[300px] md:min-h-[200px] md:max-h-[700px] h-full'>
+          <div className='rounded-3xl simpleImageSlider w-full min-h-[50px] max-h-[300px] md:min-h-[200px] md:max-h-[700px] h-full overflow-hidden'>
             <SimpleImageSlider
               width={`100%`}
               height={`600px`}
