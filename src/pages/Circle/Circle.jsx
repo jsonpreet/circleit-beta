@@ -14,7 +14,6 @@ import { DefaultLayout } from "../../components/layouts";
 import { DESO_CONFIG } from "../../utils/Constants";
 import CircleTabs from "../../components/common/CircleTabs";
 
-
 export default function Circle() {
   const { isLoggedIn, user } = useApp();
   const { circle } = useParams();
@@ -171,8 +170,8 @@ export default function Circle() {
                 setCommunityHasMore(false);
               }
               let feedDataList = response.Posts;
-             
-              setLastPostHashHex(response.LastPostHashHex)
+
+              setLastPostHashHex(response.LastPostHashHex);
               setCommunityPostFeed(feedDataList);
               setIsLoading(false);
             } catch (error) {
@@ -236,9 +235,9 @@ export default function Circle() {
           console.log(error);
         }
       }
-      console.log(activeTab)
+      console.log(activeTab);
       if (activeTab === "community") {
-        console.log("in it should work wtf")
+        console.log("in it should work wtf");
         const request = {
           Username: circle.toLowerCase(),
           ReaderPublicKeyBase58Check: userPublicKey,
@@ -253,8 +252,8 @@ export default function Circle() {
             setCommunityHasMore(false);
           }
           let feedDataList = response.Posts;
-        
-          setLastPostHashHex(response.LastPostHashHex)
+
+          setLastPostHashHex(response.LastPostHashHex);
           setCommunityPostFeed([...communityPostFeed, ...feedDataList]);
         } catch (error) {
           console.log(error);
@@ -267,6 +266,16 @@ export default function Circle() {
     localStorage.setItem("circleTab", tab);
     setActiveTab(tab);
   };
+
+  useEffect(() => {
+    setIsLoading(true);
+    setHotFeed([]);
+    setNewFeed([]);
+    setSeenHotPosts([]);
+    setSeenNewPosts([]);
+    setCommunityPostFeed([]);
+    setLastPostHashHex("");
+  }, [circle]);
   return (
     <>
       <DefaultLayout>
@@ -282,9 +291,9 @@ export default function Circle() {
             </div>
             <div>
               {isLoading || feedLoading ? <FeedShimmer cols={20} /> : null}
-              {(currentActiveTab === "hot") && (
+              {currentActiveTab === "hot" && (
                 <>
-                  {hotFeed? (
+                  {hotFeed ? (
                     hotFeed.map((post) => (
                       <PostCard
                         circle={circleProfile}
@@ -352,7 +361,7 @@ export default function Circle() {
               )}
               {currentActiveTab === "community" && (
                 <>
-                  {communityPostFeed? (
+                  {communityPostFeed ? (
                     communityPostFeed.map((post) => (
                       <PostCard
                         circle={circleProfile}
@@ -369,7 +378,8 @@ export default function Circle() {
                     <NoPostCard />
                   )}
                   {!isLoading &&
-                    !feedLoading && communityPostFeed &&
+                    !feedLoading &&
+                    communityPostFeed &&
                     communityPostFeed.length === 0 && <NoPostCard />}
                   {!isLoading &&
                     !feedLoading &&
