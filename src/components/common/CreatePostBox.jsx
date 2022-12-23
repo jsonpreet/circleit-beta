@@ -43,7 +43,7 @@ export default function CreatePostBox({ circle }) {
   const [uploadingImage, setUploadingImage] = useState(false);
   const [showLinkField, setShowLinkField] = useState(false);
 
-  const [postConfigure, setPostConfigure] = useState(false);
+  const [postConfigure, setPostConfigure] = useState(true);
   const [diamondLevelToGateWith, setDiamondLevelToGateWith] = useState(1);
   const [isDropdowExpanded, setIsDropdownExpanded] = useState(false);
   const videoStreamInterval = null;
