@@ -7,10 +7,12 @@ import CreateCircleModal from "../modals/CreateCircle";
 import GlobalContext from "../../utils/GlobalContext/GlobalContext";
 import logo from "../../assets/logo.svg";
 
-
 function SidebarLeft({ rootRef }) {
   const GlobalContextValue = useContext(GlobalContext);
-  const { isLoggedIn, isCircle } = useApp();
+  const { user, isLoggedIn, isCircle } = useApp((state) => state);
+  console.log(user);
+  console.log(isLoggedIn);
+  console.log(isCircle);
   const [showModal, setShowModal] = useState(false);
   const [circles, setCircles] = useState(
     GlobalContextValue.newCircles.length > 0
@@ -70,6 +72,7 @@ function SidebarLeft({ rootRef }) {
             rootRef={rootRef}
             showModal={showModal}
             setShowModal={setShowModal}
+            loggedInUsername={user.profile.Username}
           />
         </div>
         {circles && circles.length > 0 ? (
