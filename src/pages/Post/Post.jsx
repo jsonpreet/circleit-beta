@@ -260,6 +260,8 @@ function Post() {
                               post={post.RepostedPostEntryResponse}
                               isRepost={true}
                               circle={circleProfile}
+                              isLoggedIn={isLoggedIn}
+                              readerPublicKey={userPublicKey}
                             />
                           </div>
                         )}

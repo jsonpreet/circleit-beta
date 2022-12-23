@@ -252,6 +252,8 @@ export default function Circle() {
                         isRepost={false}
                         isCommunityPost={false}
                         onCirclePage={true}
+                        isLoggedIn={isLoggedIn}
+                        readerPublicKey={userPublicKey}
                       />
                     ))
                   ) : (
@@ -286,6 +288,7 @@ export default function Circle() {
                         isCommunityPost={true}
                         onCirclePage={true}
                         readerPublicKey={userPublicKey}
+                        isLoggedIn={isLoggedIn}
                       />
                     ))
                   ) : (

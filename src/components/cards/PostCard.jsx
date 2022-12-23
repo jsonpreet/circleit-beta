@@ -29,6 +29,7 @@ export default function PostCard({
   isRepost,
   onCirclePage,
   readerPublicKey,
+  isLoggedIn,
 }) {
   const GlobalContextValue = useContext(GlobalContext);
 
@@ -45,9 +46,12 @@ export default function PostCard({
   const [loadingDecrypted, setLoadingDecrypted] = useState(false);
   const [decryptedData, setDecryptedData] = useState(null);
 
-  const [imagelist, setImageList] = useState(post.ImageURLs? post.ImageURLs : []);
-  const [videoList, setVideoList] = useState(post.VideoURLs? post.VideoURLs : []);
-
+  const [imagelist, setImageList] = useState(
+    post.ImageURLs ? post.ImageURLs : []
+  );
+  const [videoList, setVideoList] = useState(
+    post.VideoURLs ? post.VideoURLs : []
+  );
 
   const payload = circle.ExtraData?.CircleIt
     ? JSON.parse(circle.ExtraData.CircleIt)
@@ -127,7 +131,12 @@ export default function PostCard({
 
   const loadGatedContent = async () => {
     if (loadingDecrypted) return;
+    if (!isLoggedIn) {
+      toast.error("Please login to view this content");
+      return;
+    }
     setLoadingDecrypted(true);
+
     try {
       const jwt = await GlobalContextValue.desoObj.identity.getJwt(undefined);
 
@@ -224,7 +233,7 @@ export default function PostCard({
             {imagelist.length > 0 && imagelist[0] !== "" && (
               <PostImages images={imagelist} circle={circle} />
             )}
-            {videoList.length>0 && videoList[0] !== "" && (
+            {videoList.length > 0 && videoList[0] !== "" && (
               <div className='mt-2 feed-post__video-container relative pt-[56.25%] w-full rounded-xl max-h-[700px] overflow-hidden'>
                 <iframe
                   title='embed-video'

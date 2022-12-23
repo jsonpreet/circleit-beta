@@ -13,7 +13,7 @@ import { useInView } from "react-cool-inview";
 import { DefaultLayout } from "../../components/layouts";
 import { DESO_CONFIG } from "../../utils/Constants";
 import CircleTabs from "../../components/common/CircleTabs";
-import { act } from "react-dom/test-utils";
+
 
 export default function Circle() {
   const { isLoggedIn, user } = useApp();
@@ -294,6 +294,7 @@ export default function Circle() {
                         isCommunityPost={false}
                         onCirclePage={true}
                         readerPublicKey={userPublicKey}
+                        isLoggedIn={isLoggedIn}
                       />
                     ))
                   ) : (
@@ -327,6 +328,7 @@ export default function Circle() {
                         isCommunityPost={false}
                         onCirclePage={true}
                         readerPublicKey={userPublicKey}
+                        isLoggedIn={isLoggedIn}
                       />
                     ))
                   ) : (
@@ -360,6 +362,7 @@ export default function Circle() {
                         isCommunityPost={true}
                         onCirclePage={true}
                         readerPublicKey={userPublicKey}
+                        isLoggedIn={isLoggedIn}
                       />
                     ))
                   ) : (
@@ -381,41 +384,6 @@ export default function Circle() {
                     ))}
                 </>
               )}
-
-              {/* {!isLoading && feedData && feedData.length > 0 ? (
-                feedData.map((post) => (
-                  <PostCard
-                    circle={circleProfile}
-                    key={post.PostHashHex}
-                    post={post}
-                    isRepost={false}
-                    isCommunityPost={currentActiveTab === "community"}
-                    onCirclePage={true}
-                  />
-                ))
-              ) : (
-                <>
-                  <NoPostCard />
-                </>
-              )}
-              {!isLoading && !feedLoading && noPosts && (
-                <>
-                  <NoPostCard />
-                </>
-              )} */}
-              {/* {!isLoading &&
-                !feedLoading &&
-                (hasMore ? (
-                  <span ref={observe} className='flex justify-center p-10'>
-                    <Loader />
-                  </span>
-                ) : (
-                  <div className='flex justify-center p-10'>
-                    <p className='text-gray-500 dark:text-gray-400'>
-                      No more posts
-                    </p>
-                  </div>
-                ))} */}
             </div>
           </div>
           <div className='mt-[20px] md:mt-[35px]'>
