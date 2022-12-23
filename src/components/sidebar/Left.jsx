@@ -72,7 +72,7 @@ function SidebarLeft({ rootRef }) {
             rootRef={rootRef}
             showModal={showModal}
             setShowModal={setShowModal}
-            loggedInUsername={user.profile.Username}
+            loggedInUsername={user.profile?user.profile.Username: ""}
           />
         </div>
         {circles && circles.length > 0 ? (
