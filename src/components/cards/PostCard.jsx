@@ -45,8 +45,9 @@ export default function PostCard({
   const [loadingDecrypted, setLoadingDecrypted] = useState(false);
   const [decryptedData, setDecryptedData] = useState(null);
 
-  const [imagelist, setImageList] = useState(post.ImageURLs);
-  const [videoList, setVideoList] = useState(post.VideoURLs);
+  const [imagelist, setImageList] = useState(post.ImageURLs? post.ImageURLs : []);
+  const [videoList, setVideoList] = useState(post.VideoURLs? post.VideoURLs : []);
+
 
   const payload = circle.ExtraData?.CircleIt
     ? JSON.parse(circle.ExtraData.CircleIt)
@@ -220,10 +221,10 @@ export default function PostCard({
               </div>
             )}
 
-            {imagelist?.length > 0 && imagelist[0] !== "" && (
+            {imagelist.length > 0 && imagelist[0] !== "" && (
               <PostImages images={imagelist} circle={circle} />
             )}
-            {videoList && videoList[0] !== "" && (
+            {videoList.length>0 && videoList[0] !== "" && (
               <div className='mt-2 feed-post__video-container relative pt-[56.25%] w-full rounded-xl max-h-[700px] overflow-hidden'>
                 <iframe
                   title='embed-video'
