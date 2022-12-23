@@ -1,5 +1,11 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
-import { BiImageAdd, BiVideoPlus } from "react-icons/bi";
+import {
+  BiImageAdd,
+  BiVideoPlus,
+  BiSlider,
+  BiQuestionMark,
+} from "react-icons/bi";
+
 import { ImEmbed2 } from "react-icons/im";
 import useApp from "../../store/app";
 import { DESO_CONFIG, NODE_URL } from "../../utils/Constants";
@@ -18,7 +24,8 @@ import {
 } from "../../utils/EmbedUrls";
 import { Popover, Transition } from "@headlessui/react";
 import EmojiPicker from "emoji-picker-react";
-
+import { IoDiamondOutline } from "react-icons/io5";
+import { useDetectClickOutside } from "react-detect-click-outside";
 export default function CreatePostBox({ circle }) {
   const { user } = useApp((state) => state);
   const [postTitle, setPostTitle] = useState("");
@@ -35,8 +42,26 @@ export default function CreatePostBox({ circle }) {
   const [isLoading, setIsLoading] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [showLinkField, setShowLinkField] = useState(false);
+
+  const [postConfigure, setPostConfigure] = useState(false);
+  const [diamondLevelToGateWith, setDiamondLevelToGateWith] = useState(1);
+  const [isDropdowExpanded, setIsDropdownExpanded] = useState(false);
   const videoStreamInterval = null;
   const inputFileRef = useRef(null);
+  const [enableDiamondGate, setEnableDiamondGate] = useState(false);
+  const closeModal = () => {
+    setIsDropdownExpanded(false);
+  };
+  const ref = useDetectClickOutside({ onTriggered: closeModal });
+
+  const diamondLevelsMap = [
+    { value: 1, label: "$0.005" },
+    { value: 2, label: "$0.01" },
+    { value: 3, label: "$0.04" },
+    { value: 4, label: "$0.4" },
+    { value: 5, label: "$4" },
+    { value: 6, label: "$40" },
+  ];
   const deso = new Deso(DESO_CONFIG);
   useEffect(() => {
     if (postEmoji && postEmoji.emoji.trim().length > 0) {
@@ -232,48 +257,138 @@ export default function CreatePostBox({ circle }) {
     setIsLoading(true);
 
     try {
+      let body = "";
       let payload = {
         Title: postTitle,
       };
       let extraBody = `Posted on @CircleIt${
         circle.Username !== "CircleIt" ? " in @" + circle.Username : ""
       }`;
-      let body =
-        postBody.trim().length > 0 ? postBody + `\n\n ${extraBody}` : null;
-      const request = {
-        UpdaterPublicKeyBase58Check: user.profile.PublicKeyBase58Check,
-        BodyObj: {
-          Body: body,
-          VideoURLs: postVideo !== "" ? [postVideo] : [],
-          ImageURLs: postImageList,
-        },
-        PostExtraData: {
-          EmbedVideoURL: postEmbedLink,
-          CircleIt: JSON.stringify(payload),
-          CircleUsername: circle.Username,
-          CirclePublicKey: circle.PublicKeyBase58Check,
-        },
-      };
-      await deso.posts.submitPost(request);
+
+      if (enableDiamondGate) {
+        const ContentToEncrypt = JSON.stringify({
+          content: postBody,
+          image: postImageList,
+          dimaondLevel: diamondLevelToGateWith,
+          postVideo: postVideo,
+        });
+        const requestPayload = {
+          content: ContentToEncrypt,
+        };
+        const requestURL = "https://tipdeso.com/encrypt-diamond-gated-content";
+        const encryptedResponse = await fetch(requestURL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestPayload),
+        });
+        const data = await encryptedResponse.json();
+        if (data.status) {
+          const encryptedBody = data.response;
+          let diamondString = `💎💎💎💎💎💎`.slice(
+            0,
+            parseInt(diamondLevelToGateWith) * 2
+          );
+          body = `This Post is Gated by ${diamondString} diamond${
+            diamondLevelToGateWith > 1 ? "s" : ""
+          } using @CircleIt`;
+
+          const request = {
+            UpdaterPublicKeyBase58Check: user.profile.PublicKeyBase58Check,
+            BodyObj: {
+              Body: body,
+              VideoURLs: [],
+              ImageURLs: [],
+            },
+            PostExtraData: {
+              EmbedVideoURL: postEmbedLink,
+              CircleIt: JSON.stringify(payload),
+              CircleUsername: circle.Username,
+              CirclePublicKey: circle.PublicKeyBase58Check,
+              gatedDiamondLevel: `${parseInt(diamondLevelToGateWith)}`,
+              isGatedWithDiamondOnCircleIt: `${enableDiamondGate}`,
+              EncryptedData: encryptedBody,
+            },
+          };
+          const response2 = await deso.posts.submitPost(request);
+
+          //editing the post to add circleItPostLink
+          const createdPostHashHex =
+            response2.submittedTransactionResponse.PostEntryResponse
+              .PostHashHex;
+          if (!createdPostHashHex) {
+            toast.error("Something went wrong. Please try again later");
+            return;
+          }
+          // make a delay of 2 seconds bcz deso will rip the post lol
+          await new Promise((r) => setTimeout(r, 2000));
+          const EditpostRequest = {
+            UpdaterPublicKeyBase58Check: user.profile.PublicKeyBase58Check,
+            BodyObj: {
+              Body: `${body}\n\nView at https://beta.circleit.app/circle/${circle.Username}/${createdPostHashHex}\n\n${extraBody}`,
+              VideoURLs: [],
+              ImageURLs: [],
+            },
+            PostExtraData: {
+              EmbedVideoURL: postEmbedLink,
+              CircleIt: JSON.stringify(payload),
+              CircleUsername: circle.Username,
+              CirclePublicKey: circle.PublicKeyBase58Check,
+              gatedDiamondLevel: `${parseInt(diamondLevelToGateWith)}`,
+              isGatedWithDiamondOnCircleIt: `${enableDiamondGate}`,
+              EncryptedData: encryptedBody,
+            },
+            PostHashHexToModify: createdPostHashHex,
+          };
+          const response3 = await deso.posts.submitPost(EditpostRequest);
+          if (response3) {
+            setPostBody("");
+            setPostImageList([]);
+            setPostVideo("");
+            setPostEmbedLink("");
+            setPostTitle("");
+            toast.success("Congratulations! Post Created.");
+          }
+        } else {
+          toast.error("Something went wrong. Please try again later.");
+          setIsLoading(false);
+          return;
+        }
+      } else {
+        body =
+          postBody.trim().length > 0 ? postBody + `\n\n ${extraBody}` : null;
+        const request = {
+          UpdaterPublicKeyBase58Check: user.profile.PublicKeyBase58Check,
+          BodyObj: {
+            Body: body,
+            VideoURLs: postVideo !== "" ? [postVideo] : [],
+            ImageURLs: postImageList,
+          },
+          PostExtraData: {
+            EmbedVideoURL: postEmbedLink,
+            CircleIt: JSON.stringify(payload),
+            CircleUsername: circle.Username,
+            CirclePublicKey: circle.PublicKeyBase58Check,
+            gatedDiamondLevel: `${parseInt(diamondLevelToGateWith)}`,
+            isGatedWithDiamondOnCircleIt: `${enableDiamondGate}`,
+          },
+        };
+        const submitPostRes = await deso.posts.submitPost(request);
+        if (submitPost) {
+          setPostBody("");
+          setPostImageList([]);
+          setPostVideo("");
+          setPostEmbedLink("");
+          setPostTitle("");
+          toast.success("Congratulations! Post Created.");
+        }
+      }
     } catch (error) {
       console.log(error);
       toast.error(`Error: ${error.message}`);
     } finally {
-      setPostBody("");
-      setPostTitle("");
-      setPostImageList([]);
-      setPostVideo("");
-      setPostEmbedLink("");
-      setEmoji("");
-      setPostLink("");
-      setVideoFile(null);
       setIsLoading(false);
-      setShowLinkField(false);
-      toast.success("Congratulations! Post Created.");
-      // party.confetti(rootRef.current, {
-      //   ount: party.variation.range(100, 2000),
-      //   size: party.variation.range(0.5, 2.0),
-      // })
     }
   };
   // look for ctrl + enter
@@ -308,7 +423,9 @@ export default function CreatePostBox({ circle }) {
                 className={`focus:ring-0 focus:outline-none outline-none darkenBg darkenHoverBg border dark:border-[#2D2D33] hover:dark:border-[#43434d] border-gray-200 hover:border-gray-200 resize-none w-full heading px-4 py-2 ${
                   isExpanded ? "rounded-md" : "rounded-full"
                 }`}
-                placeholder={`${!isExpanded ? "Create Post" : "Title (optional)"}`}
+                placeholder={`${
+                  !isExpanded ? "Create Post" : "Title (optional)"
+                }`}
                 value={postTitle}
                 handleKeyDown={handleKeyDown}
                 onChange={(e) => setPostTitle(e.target.value)}
@@ -330,26 +447,128 @@ export default function CreatePostBox({ circle }) {
                     onKeyDown={handleKeyDown}
                   />
                 </div>
+
+                {/* Show only when user is configuring post...*/}
+                {postConfigure && (
+                  <div className='flex space-x-3 items-center mt-1'>
+                    <div className='flex items-center space-x-1'>
+                      <input
+                        type='checkbox'
+                        checked={enableDiamondGate}
+                        onChange={() =>
+                          setEnableDiamondGate(!enableDiamondGate)
+                        }
+                        className=' dark:border-[#2d2d33] hover:dark:border-[#43434d] border-gray-200 hover:border-gray-200 active:border-none'
+                      />
+                      <div className='flex items-center space-x-1'>
+                        <p className='text-xs text-gray-400'>Diamond Gate</p>
+                        <Tippy
+                          content='When you gate your content with diamonds, the viewer has to give diamond first in order to view your content. Title remains visible to everyone. You can set number of dimonds to gate with between 1-6'
+                          placement='bottom'>
+                          <span>
+                            <BiQuestionMark
+                              size={16}
+                              className='text-gray-200 bg-gray-700 rounded-full'
+                            />
+                          </span>
+                        </Tippy>
+                      </div>
+                    </div>
+                    <div ref={ref}>
+                      <button
+                        className='flex space-x-1 items-center text-sm pl-1 rounded-md hover:bg-gray-200 p-1 hover:bg-opacity-20'
+                        onClick={() => {
+                          setIsDropdownExpanded(!isDropdowExpanded);
+                        }}>
+                        <span className='text-gray-400'>
+                          {diamondLevelToGateWith == 1
+                            ? "1 Diamond"
+                            : `${diamondLevelToGateWith} Diamonds`}
+                        </span>
+                        <span className='flex ml-2 lightText'>
+                          <IoDiamondOutline
+                            size={16}
+                            className='text-blue-500'
+                          />
+                        </span>
+                        <svg
+                          xmlns='http://www.w3.org/2000/svg'
+                          viewBox='0 0 20 20'
+                          fill='currentColor'
+                          className='w-5 h-5 dark:text-white'>
+                          <path
+                            d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'
+                            clipRule='evenodd'></path>
+                        </svg>
+                      </button>
+                      <div
+                        className={` ${
+                          isDropdowExpanded ? "flex" : "hidden"
+                        } absolute  drop-shadow-xl  flex-col rounded-md primaryBg border divide-y theme-divider darkenBorder mt-2 px-3 py-2 min-w-[280px] left-1/3 md:left-auto`}
+                        style={{
+                          zIndex: 100,
+                        }}>
+                        <span className='text-sm lightText flex items-center '>
+                          Select Diamond Level to gate with{" "}
+                          <IoDiamondOutline
+                            size={14}
+                            className='text-blue-500 ml-1'
+                          />
+                        </span>
+
+                        <div className='flex flex-col pt-1  '>
+                          {diamondLevelsMap.map((diamond, index) => {
+                            return (
+                              <button
+                                className='flex items-center space-x-1  primaryBg lightText   hover:bg-gray-100 py-3 px-1 rounded-md dark:hover:bg-gray-800'
+                                key={index}
+                                onClick={() => {
+                                  setDiamondLevelToGateWith(diamond.value);
+                                  setIsDropdownExpanded(false);
+                                }}>
+                                <span className='text-xs flex items-center'>
+                                  {
+                                    //loop diamond.value times
+                                    [...Array(diamond.value)].map((e, i) => (
+                                      <IoDiamondOutline
+                                        size={14}
+                                        className='text-blue-500'
+                                      />
+                                    ))
+                                  }
+                                  <span className='ml-1'> {diamond.label}</span>
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div>
                   {postImageList.map((image, index) => (
-                    <div key={index} className='relative mt-4 grid grid-cols-2 gap-2 mx-auto '>
-                      <div className="container">
-                      <img
-                        src={image}
-                        alt=''
-                        className='w-full darkenBorder border rounded-lg'
-                      />
-                      <div className='absolute top-2 right-2 '>
-                        <button
-                          onClick={() => {
-                            let temp = [...postImageList];
-                            temp.splice(index, 1);
-                            setPostImageList(temp);
-                          }}
-                          className='bg-red-500 group hover:bg-red-700  rounded-full w-10 h-10 drop-shadow-lg flex items-center justify-center'>
-                          <BsTrash size={24} className='text-white' />
-                        </button>
-                      </div>
+                    <div
+                      key={index}
+                      className='relative mt-4 grid grid-cols-2 gap-2 mx-auto '>
+                      <div className='container'>
+                        <img
+                          src={image}
+                          alt=''
+                          className='w-full darkenBorder border rounded-lg'
+                        />
+                        <div className='absolute top-2 right-2 '>
+                          <button
+                            onClick={() => {
+                              let temp = [...postImageList];
+                              temp.splice(index, 1);
+                              setPostImageList(temp);
+                            }}
+                            className='bg-red-500 group hover:bg-red-700  rounded-full w-10 h-10 drop-shadow-lg flex items-center justify-center'>
+                            <BsTrash size={24} className='text-white' />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -494,7 +713,12 @@ export default function CreatePostBox({ circle }) {
                       </Popover>
                     </div>
                   </div>
-                  <div className='flex w-full justify-end'>
+                  <div className='flex w-full justify-end space-x-2'>
+                    <Tippy content='Configure Post' placement='bottom'>
+                      <button onClick={() => setPostConfigure(!postConfigure)}>
+                        <BiSlider size={21} className='text-gray-500' />
+                      </button>
+                    </Tippy>
                     <button
                       onClick={(e) => submitPost(e)}
                       className={`buttonBG dark:text-white flex items-center ${
