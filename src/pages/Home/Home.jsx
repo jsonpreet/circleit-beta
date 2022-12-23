@@ -187,6 +187,7 @@ function Home() {
                   circle={GlobalContextValue.circleItProfile}
                   onCirclePage={false}
                   readerPublicKey={userPublicKey}
+                  isLoggedIn={isLoggedIn}
                 />
               ))
             ) : (

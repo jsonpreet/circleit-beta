@@ -136,6 +136,10 @@ function Post() {
 
   const loadGatedContent = async () => {
     if (loadingDecrypted) return;
+    if (!isLoggedIn) {
+      toast.error("Please login to view this content");
+      return;
+    }
     setLoadingDecrypted(true);
     try {
       const jwt = await GlobalContextValue.desoObj.identity.getJwt(undefined);

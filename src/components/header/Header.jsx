@@ -20,7 +20,8 @@ import { NotificationMenu } from "../notifications";
 const deso = new Deso(DESO_CONFIG);
 
 function Header() {
-  const { user, isLoggedIn, setLoggedIn, setUser, setCircle, isCircle } = useApp((state) => state);
+  const { user, isLoggedIn, setLoggedIn, setUser, setCircle, isCircle } =
+    useApp((state) => state);
   const path = window.location.pathname;
   const [currentTab, setCurrentTab] = React.useState(
     path === "/" ? "home" : path.split("/")[1]
@@ -90,11 +91,13 @@ function Header() {
 
           setUser({ profile: data.Profile });
           setLoggedIn(true);
+
+          window.location.reload();
         } catch (error) {
           // toast.error("Something went wrong");
           // console.log(error);
           //route to /sign-up
-          
+
           localStorage.setItem("newDeSoPublicKey", response.key);
           navigate("/sign-up");
         }
