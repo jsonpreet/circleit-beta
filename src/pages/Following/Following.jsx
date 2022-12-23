@@ -297,7 +297,7 @@ function Following() {
                 </div>
               ))}
           </div>
-          <div className='mt-[20px] md:mt-[75px] hidden sm:visible'>
+          <div className='mt-[20px] md:mt-[75px] hidden sm:flex'>
             <SidebarRight />
           </div>
         </div>
