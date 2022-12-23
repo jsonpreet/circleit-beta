@@ -375,7 +375,7 @@ export default function CreatePostBox({ circle }) {
           },
         };
         const submitPostRes = await deso.posts.submitPost(request);
-        if (submitPost) {
+        if (submitPostRes) {
           setPostBody("");
           setPostImageList([]);
           setPostVideo("");
