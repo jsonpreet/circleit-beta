@@ -10,9 +10,6 @@ import logo from "../../assets/logo.svg";
 function SidebarLeft({ rootRef }) {
   const GlobalContextValue = useContext(GlobalContext);
   const { user, isLoggedIn, isCircle } = useApp((state) => state);
-  console.log(user);
-  console.log(isLoggedIn);
-  console.log(isCircle);
   const [showModal, setShowModal] = useState(false);
   const [circles, setCircles] = useState(
     GlobalContextValue.newCircles.length > 0
