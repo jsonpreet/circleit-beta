@@ -294,6 +294,10 @@ export default function CreatePostBox({ circle }) {
             diamondLevelToGateWith > 1 ? "s" : ""
           } using @CircleIt`;
 
+          if (postTitle.trim().length > 0) {
+            body += `\nTitle: ${postTitle}`;
+          }
+
           const request = {
             UpdaterPublicKeyBase58Check: user.profile.PublicKeyBase58Check,
             BodyObj: {
