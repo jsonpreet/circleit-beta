@@ -215,18 +215,25 @@ function Following() {
     <>
       <DefaultLayout>
         {!isLoggedIn && (
-          <div className='relative inline-flex justify-center rounded-full items-center w-full my-20'>
-            <div className='relative text-4xl md:py-10 font-bold text-center dark:text-white sm:text-4xl lg:text-5xl leading-none rounded-full z-10'>
-              <span className='brandGradientBg blur-2xl filter opacity-10 w-full h-full absolute inset-0 rounded-full'></span>
-              <span className='md:px-5'>
-                Your{" "}
-                <span className='text-transparent bg-clip-text brandGradientBg'>
-                  Community
-                </span>{" "}
-                on your terms.
-              </span>
-            </div>
-          </div>
+        <div className='relative inline-flex justify-center rounded-full items-center w-full mt-24 mb-4'>
+        <div className='relative text-4xl md:py-10 font-bold text-center dark:text-white sm:text-4xl lg:text-5xl leading-normal rounded-full z-10'>
+          <span className='brandGradientBg blur-2xl filter opacity-10 w-full h-full absolute inset-0 rounded-full'></span>
+          <span className='md:px-5'>
+            Get paid for{" "}
+            <span className='text-transparent bg-clip-text brandGradientBg'>
+              Building
+            </span>{" "}
+            and{" "}
+            <span className='text-transparent bg-clip-text brandGradientBg'>
+              Contributing
+            </span>{" "}
+            to{" "}
+            <span className='text-transparent bg-clip-text brandGradientBg'>
+              Communities
+            </span>
+          </span>
+        </div>
+      </div>
         )}
         <div className='grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-8 sm:mt-4 mt-14'>
           <div className='grid grid-cols-1  lg:col-span-2'>
