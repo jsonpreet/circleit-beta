@@ -236,7 +236,7 @@ function Header() {
           <div className='flex sm:hidden space-x-5 px-2 mt-1 pt-1 '>
             <Link
               to='/'
-              className={` menu font-semibold flex flex-row  transition delay-75 ${
+              className={` menu font-semibold flex flex-row  transition delay-75 pb-1 ${
                 currentTab === "home" ? "border-b-4 border-[#8b5cf6]" : ""
               }`}>
               <BiHomeAlt size={24} />
@@ -244,7 +244,7 @@ function Header() {
             </Link>
             <Link
               to='/following'
-              className={` menu font-semibold flex flex-row  transition delay-75 ${
+              className={` menu font-semibold flex flex-row  transition delay-75 pb-1 ${
                 currentTab === "following" ? "border-b-4 border-[#8b5cf6]" : ""
               }`}>
               <FiSunrise size={24} />
