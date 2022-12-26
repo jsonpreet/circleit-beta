@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 
 export const Notify = ({ notification }) => {
-    const profileExtra = typeof notification.post.ProfileEntryResponse.ExtraData !== "undefined" ? notification.post.ProfileEntryResponse.ExtraData : null;
+    const profileExtra = typeof notification?.post?.ProfileEntryResponse?.ExtraData !== "undefined" ? notification?.post?.ProfileEntryResponse?.ExtraData : null;
 
     const circleData = profileExtra ? typeof profileExtra.CircleIt !== "undefined" ? JSON.parse(profileExtra.CircleIt) : null : null;
     const isCircle = circleData ? circleData.isCircle : false;
@@ -9,7 +9,7 @@ export const Notify = ({ notification }) => {
     const PostLink = ({ isCircle, notification }) => {
         return (
             <Link
-                to={`${isCircle ? `/circle` : `/u`}/${notification.post.ProfileEntryResponse.Username}/${notification.post.PostHashHex}`}
+                to={`${isCircle ? `/circle` : `/u`}/${notification?.post?.ProfileEntryResponse?.Username}/${notification?.post?.PostHashHex}`}
                 className='colorText font-semibold'
             >
                 {notification.parentPost !== null && notification.parentPost !== '' ? `comment` : `post`}
