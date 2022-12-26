@@ -141,8 +141,8 @@ function Home() {
     <>
       <DefaultLayout>
         {!isLoggedIn && (
-          <div className='relative inline-flex justify-center rounded-full items-center w-full my-20'>
-            <div className='relative text-4xl md:py-10 font-bold text-center dark:text-white sm:text-4xl lg:text-5xl leading-none rounded-full z-10'>
+          <div className='relative inline-flex justify-center rounded-full items-center w-full mt-24 mb-4'>
+            <div className='relative text-4xl md:py-10 font-bold text-center dark:text-white sm:text-4xl lg:text-5xl leading-normal rounded-full z-10'>
               <span className='brandGradientBg blur-2xl filter opacity-10 w-full h-full absolute inset-0 rounded-full'></span>
               <span className='md:px-5'>
                 Get paid for{" "}

@@ -68,11 +68,11 @@ function PostBottomMeta({ circle, isCircle, isRepost, post, desoObj }) {
               )
             }
             className='mx-1 px-2 flex text-sm items-center cursor-pointer justify-center font-semibold extralightText  pt-2'>
-            <BsChatLeft size={22} className='mt-1 mr-1' />
+            <BsChatLeft size={20} className='mt-1 mr-1' />
             <span>{formatNumber(post.CommentCount)}</span>
           </button>
           <div className='px-2 mx-1 flex text-sm items-center justify-center font-semibold extralightText pt-2 '>
-            <FiRefreshCcw size={22} className='mt-1 mr-1' />
+            <FiRefreshCcw size={20} className='mt-1 mr-1' />
             <span>
               {formatNumber(post.RepostCount + post.QuoteRepostCount)}
             </span>
@@ -88,13 +88,13 @@ function PostBottomMeta({ circle, isCircle, isRepost, post, desoObj }) {
             className={`px-3 flex text-sm items-center cursor-pointer justify-center font-semibold ${
               diamondBestowed > 0 ? `text-blue-400` : `extralightText`
             } pt-2 `}>
-            <IoDiamondOutline size={22} className='mt-1 mr-1' />
+            <IoDiamondOutline size={20} className='mt-1 mr-1' />
             <span>{formatNumber(diamonds > 0 ? diamonds : postDiamonds)}</span>
           </button>
           <button
             onClick={() => setShowShareModal(!showShareModal)}
             className='px-3 cursor-pointer flex text-sm items-center justify-center font-semibold extralightText pt-2'>
-            <FaRegShareSquare size={22} className='mt-1 mr-1' />
+            <FaRegShareSquare size={20} className='mt-1 mr-1' />
             <span className='mt-[1px]'></span>
           </button>
         </div>
