@@ -31,7 +31,6 @@ function SidebarLeft({ rootRef }) {
         }),
       });
       let uniqueCircles = await response.json();
-      console.log(uniqueCircles);
 
       uniqueCircles = uniqueCircles.data.slice(0, 7);
 

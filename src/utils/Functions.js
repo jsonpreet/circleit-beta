@@ -211,3 +211,22 @@ export const getBase64FromFile = (file) => {
     reader.onerror = (error) => reject(error);
   });
 };
+
+export const getAttachmentsClass = (attachments, isNew = false) => {
+  if (attachments === 1) {
+    return {
+      aspect: isNew ? 'aspect-w-16 aspect-h-10' : '',
+      row: 'grid-cols-1 grid-rows-1'
+    };
+  } else if (attachments === 2) {
+    return {
+      aspect: 'aspect-w-16 aspect-h-12',
+      row: 'grid-cols-2 grid-rows-1'
+    };
+  } else if (attachments > 2) {
+    return {
+      aspect: 'aspect-w-16 aspect-h-12',
+      row: 'grid-cols-2 grid-rows-2'
+    };
+  }
+};

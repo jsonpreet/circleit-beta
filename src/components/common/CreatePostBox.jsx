@@ -26,6 +26,27 @@ import { Popover, Transition } from "@headlessui/react";
 import EmojiPicker from "emoji-picker-react";
 import { IoDiamondOutline } from "react-icons/io5";
 import { useDetectClickOutside } from "react-detect-click-outside";
+
+export const getAttachmentsClass = (attachments, isNew = false) => {
+  if (attachments === 1) {
+    return {
+      aspect: isNew ? 'aspect-w-16 aspect-h-10' : '',
+      row: 'grid-cols-1 grid-rows-1'
+    };
+  } else if (attachments === 2) {
+    return {
+      aspect: 'aspect-w-16 aspect-h-12',
+      row: 'grid-cols-2 grid-rows-1'
+    };
+  } else if (attachments > 2) {
+    return {
+      aspect: 'aspect-w-16 aspect-h-12',
+      row: 'grid-cols-2 grid-rows-2'
+    };
+  }
+};
+
+
 export default function CreatePostBox({ circle }) {
   const { user } = useApp((state) => state);
   const [postTitle, setPostTitle] = useState("");
@@ -441,15 +462,14 @@ export default function CreatePostBox({ circle }) {
               ) : null}
             </div>
             {isExpanded ? (
-              <>
+              <><>
                 <div className='mt-4'>
                   <textarea
                     className='focus:ring-0 focus:outline-none outline-none darkenBg darkenHoverBg border dark:border-[#2D2D33] hover:dark:border-[#43434d] border-gray-200 hover:border-gray-200 resize-none w-full rounded-lg heading px-4 py-2'
                     placeholder='Write something...'
                     value={postBody}
                     onChange={(e) => setPostBody(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                  />
+                    onKeyDown={handleKeyDown} />
                 </div>
 
                 {/* Show only when user is configuring post...*/}
@@ -459,11 +479,8 @@ export default function CreatePostBox({ circle }) {
                       <input
                         type='checkbox'
                         checked={enableDiamondGate}
-                        onChange={() =>
-                          setEnableDiamondGate(!enableDiamondGate)
-                        }
-                        className=' dark:border-[#2d2d33] hover:dark:border-[#43434d] border-gray-200 hover:border-gray-200 active:border-none'
-                      />
+                        onChange={() => setEnableDiamondGate(!enableDiamondGate)}
+                        className=' dark:border-[#2d2d33] hover:dark:border-[#43434d] border-gray-200 hover:border-gray-200 active:border-none' />
                       <div className='flex items-center space-x-1'>
                         <p className='text-xs text-gray-400'>Diamond Gate</p>
                         <Tippy
@@ -472,8 +489,7 @@ export default function CreatePostBox({ circle }) {
                           <span>
                             <BiQuestionMark
                               size={16}
-                              className='text-gray-200 bg-gray-700 rounded-full'
-                            />
+                              className='text-gray-200 bg-gray-700 rounded-full' />
                           </span>
                         </Tippy>
                       </div>
@@ -483,7 +499,7 @@ export default function CreatePostBox({ circle }) {
                         className='flex space-x-1 items-center text-sm pl-1 rounded-md hover:bg-gray-200 p-1 hover:bg-opacity-20'
                         onClick={() => {
                           setIsDropdownExpanded(!isDropdowExpanded);
-                        }}>
+                        } }>
                         <span className='text-gray-400'>
                           {diamondLevelToGateWith == 1
                             ? "1 Diamond"
@@ -492,8 +508,7 @@ export default function CreatePostBox({ circle }) {
                         <span className='flex ml-2 lightText'>
                           <IoDiamondOutline
                             size={16}
-                            className='text-blue-500'
-                          />
+                            className='text-blue-500' />
                         </span>
                         <svg
                           xmlns='http://www.w3.org/2000/svg'
@@ -506,9 +521,7 @@ export default function CreatePostBox({ circle }) {
                         </svg>
                       </button>
                       <div
-                        className={` ${
-                          isDropdowExpanded ? "flex" : "hidden"
-                        } absolute  drop-shadow-xl  flex-col rounded-md primaryBg border divide-y theme-divider darkenBorder mt-2 px-3 py-2 min-w-[280px] left-1/3 md:left-auto`}
+                        className={` ${isDropdowExpanded ? "flex" : "hidden"} absolute  drop-shadow-xl  flex-col rounded-md primaryBg border divide-y theme-divider darkenBorder mt-2 px-3 py-2 min-w-[280px] left-1/3 md:left-auto`}
                         style={{
                           zIndex: 100,
                         }}>
@@ -516,8 +529,7 @@ export default function CreatePostBox({ circle }) {
                           Select Diamond Level to gate with{" "}
                           <IoDiamondOutline
                             size={14}
-                            className='text-blue-500 ml-1'
-                          />
+                            className='text-blue-500 ml-1' />
                         </span>
 
                         <div className='flex flex-col pt-1  '>
@@ -529,17 +541,15 @@ export default function CreatePostBox({ circle }) {
                                 onClick={() => {
                                   setDiamondLevelToGateWith(diamond.value);
                                   setIsDropdownExpanded(false);
-                                }}>
+                                } }>
                                 <span className='text-xs flex items-center'>
                                   {
                                     //loop diamond.value times
                                     [...Array(diamond.value)].map((e, i) => (
                                       <IoDiamondOutline
                                         size={14}
-                                        className='text-blue-500'
-                                      />
-                                    ))
-                                  }
+                                        className='text-blue-500' />
+                                    ))}
                                   <span className='ml-1'> {diamond.label}</span>
                                 </span>
                               </button>
@@ -551,67 +561,72 @@ export default function CreatePostBox({ circle }) {
                   </div>
                 )}
 
-                <div>
-                  {postImageList.map((image, index) => (
-                    <div
-                      key={index}
-                      className='relative mt-4 grid grid-cols-2 gap-2 mx-auto '>
-                      <div className='container'>
-                        <img
-                          src={image}
-                          alt=''
-                          className='w-full darkenBorder border rounded-lg'
-                        />
-                        <div className='absolute top-2 right-2 '>
-                          <button
-                            onClick={() => {
-                              let temp = [...postImageList];
-                              temp.splice(index, 1);
-                              setPostImageList(temp);
-                            }}
-                            className='bg-red-500 group hover:bg-red-700  rounded-full w-10 h-10 drop-shadow-lg flex items-center justify-center'>
-                            <BsTrash size={24} className='text-white' />
-                          </button>
+                {postImageList.length > 0 ? (
+                  <>
+                    <div className={`${getAttachmentsClass(postImageList.length).row} grid gap-2 pt-3`}>
+                      {postImageList.map((image, index) => (
+                        <div
+                          key={index}
+                          className={`relative ${getAttachmentsClass(postImageList.length).aspect} ${postImageList?.length === 3 && index === 0 ? '' : ''}`}
+                        >
+                          <div className='container'>
+                            <img
+                              src={image}
+                              alt=''
+                              className='w-full darkenBorder border rounded-lg' />
+                            <div className='absolute top-2 right-2 '>
+                              <button
+                                onClick={() => {
+                                  let temp = [...postImageList];
+                                  temp.splice(index, 1);
+                                  setPostImageList(temp);
+                                } }
+                                className='bg-red-500 group hover:bg-red-700  rounded-full w-10 h-10 drop-shadow-lg flex items-center justify-center'>
+                                <BsTrash size={24} className='text-white' />
+                              </button>
+                            </div>
+                          </div>
                         </div>
-                      </div>
+                      ))}
                     </div>
-                  ))}
+                  </>
+                ) : null}
 
-                  {isVideoReady && postVideo !== "" ? (
-                    <div className='relative mt-4'>
-                      <div className='mt-2 relative pt-[56.25%] w-full rounded-xl max-h-[700px] overflow-hidden'>
-                        <iframe
-                          src={postVideo}
-                          className='w-full absolute left-0 right-0 top-0 bottom-0 h-full'
-                          allow='accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;'
-                          allowFullScreen></iframe>
-                      </div>
-                      <div className='absolute top-4 right-4 '>
-                        <button
-                          onClick={() => {
-                            setPostVideo("");
-                            setVideoProcess(false);
-                            setVideoFile(null);
-                            setUploadProgress(0);
-                          }}
-                          className='bg-red-500 group hover:bg-red-700  rounded-full w-10 h-10 drop-shadow-lg flex items-center justify-center'>
-                          <BsTrash size={24} className='text-white' />
-                        </button>
-                      </div>
+                {isVideoReady && postVideo !== "" ? (
+                  <div className='relative mt-4'>
+                    <div className='mt-2 relative pt-[56.25%] w-full rounded-xl max-h-[700px] overflow-hidden'>
+                      <iframe
+                        src={postVideo}
+                        className='w-full absolute left-0 right-0 top-0 bottom-0 h-full'
+                        allow='accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;'
+                        allowFullScreen></iframe>
                     </div>
-                  ) : null}
+                    <div className='absolute top-4 right-4 '>
+                      <button
+                        onClick={() => {
+                          setPostVideo("");
+                          setVideoProcess(false);
+                          setVideoFile(null);
+                          setUploadProgress(0);
+                        } }
+                        className='bg-red-500 group hover:bg-red-700  rounded-full w-10 h-10 drop-shadow-lg flex items-center justify-center'>
+                        <BsTrash size={24} className='text-white' />
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
 
-                  {showLinkField ? (
-                    <div className='mt-4'>
-                      <input
-                        onChange={handleEmbedLink}
-                        value={postLink}
-                        className={`focus:ring-0 focus:outline-none outline-none darkenBg darkenHoverBg border dark:border-[#2D2D33] hover:dark:border-[#43434d] border-gray-200 hover:border-gray-200 resize-none w-full heading px-4 py-2 rounded-md`}
-                        placeholder='Embed Youtube, Vimeo, TikTok, Giphy, Spotify, Mousai, or SoundCloud'
-                      />
-                    </div>
-                  ) : null}
-                  {postEmbedLink !== "" && postEmbedLink !== null ? (
+                {showLinkField ? (
+                  <div className='mt-4'>
+                    <input
+                      onChange={handleEmbedLink}
+                      value={postLink}
+                      className={`focus:ring-0 focus:outline-none outline-none darkenBg darkenHoverBg border dark:border-[#2D2D33] hover:dark:border-[#43434d] border-gray-200 hover:border-gray-200 resize-none w-full heading px-4 py-2 rounded-md`}
+                      placeholder='Embed Youtube, Vimeo, TikTok, Giphy, Spotify, Mousai, or SoundCloud' />
+                  </div>
+                ) : null}
+                {postEmbedLink !== "" && postEmbedLink !== null ? (
+                  <>
                     <div className='mt-2 embed-container w-full flex flex-row items-center justify-center rounded-xl overflow-hidden'>
                       <iframe
                         id='embed-iframe'
@@ -623,9 +638,9 @@ export default function CreatePostBox({ circle }) {
                         allow='picture-in-picture; clipboard-write; encrypted-media; gyroscope; accelerometer; encrypted-media;'
                         allowFullScreen></iframe>
                     </div>
-                  ) : null}
-                </div>
-                <div className='space-y-4'>
+                    </>
+                ) : null}
+              <div className='space-y-4'>
                   {!isVideoReady && postVideo !== "" && (
                     <>
                       <div className='flex mt-4 space-x-2 items-center'>
@@ -639,8 +654,7 @@ export default function CreatePostBox({ circle }) {
                     <ProgressBar
                       bgcolor='#ff00ff'
                       progress={uploadProgress}
-                      height={24}
-                    />
+                      height={24} />
                   )}
                 </div>
                 <div className='flex items-center mt-2 justify-between w-full'>
@@ -662,8 +676,7 @@ export default function CreatePostBox({ circle }) {
                         type='file'
                         className='hidden'
                         name='video'
-                        onChange={handleFileChange}
-                      />
+                        onChange={handleFileChange} />
                       <Tippy content='Add Video' placement='bottom'>
                         <button onClick={() => handleVideo()}>
                           <BiVideoPlus size={21} className='text-gray-500' />
@@ -688,14 +701,13 @@ export default function CreatePostBox({ circle }) {
                                 setShowLinkField(false);
                                 setIsLoading(false);
                                 setShowLinkField(false);
-                              }}
+                              } }
                               className={`
                                   ${open ? "" : "text-opacity-90"}
                                   group inline-flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75`}>
                               <BsEmojiSmile
                                 size={19}
-                                className='text-gray-500'
-                              />
+                                className='text-gray-500' />
                             </Popover.Button>
                             <Transition
                               as={Fragment}
@@ -708,8 +720,7 @@ export default function CreatePostBox({ circle }) {
                               <Popover.Panel className='absolute left-1/2 z-20 mt-3 w-screen max-w-sm -translate-x-1/2 transform'>
                                 <EmojiPicker
                                   emojiStyle='twitter'
-                                  onEmojiClick={setEmoji}
-                                />
+                                  onEmojiClick={setEmoji} />
                               </Popover.Panel>
                             </Transition>
                           </>
@@ -725,14 +736,12 @@ export default function CreatePostBox({ circle }) {
                     </Tippy>
                     <button
                       onClick={(e) => submitPost(e)}
-                      className={`buttonBG dark:text-white flex items-center ${
-                        isLoading ? "px-4" : "px-8"
-                      } py-2 rounded-full`}>
+                      className={`buttonBG dark:text-white flex items-center ${isLoading ? "px-4" : "px-8"} py-2 rounded-full`}>
                       {isLoading && <Loader className='mr-2 w-5 h-5' />}{" "}
                       <span>Post</span>
                     </button>
                   </div>
-                </div>
+                </div></>
               </>
             ) : null}
           </div>
