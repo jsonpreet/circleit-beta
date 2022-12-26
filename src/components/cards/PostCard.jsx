@@ -19,6 +19,8 @@ import {
 import { isBrowser } from "react-device-detect";
 
 import GlobalContext from "../../utils/GlobalContext/GlobalContext";
+import { toast } from "react-hot-toast";
+import { Loader } from "../../utils/Loader";
 
 export default function PostCard({
   post,
@@ -26,19 +28,30 @@ export default function PostCard({
   isCommunityPost,
   isRepost,
   onCirclePage,
+  readerPublicKey,
+  isLoggedIn,
 }) {
   const GlobalContextValue = useContext(GlobalContext);
-
 
   const navigate = useNavigate();
   const [videoEmbed, setEmbed] = useState("");
   const [postTitle, setPostTitle] = useState("");
   const [postBody, setPostBody] = useState("");
-  // let body1 = post.Body.replace( `Posted on @CircleIt in @${circle.Username}`, "" );
-  // let body2 = body1.replace(`Posted on @${circle.Username}`, "");
-  // let body3 = body2.replace(`Posted on @CircleIt in @${post.ProfileEntryResponse.Username}`, "");
-  // let body = body3.replace(`in @undefined`, "");
+
   const [readMore, setReadMore] = useState(false);
+
+  const [isGatedWithDiamond, setIsGatedWithDiamond] = useState(false);
+  const [diamondLevelGatedWith, setDiamondLevelGatedWith] = useState(0);
+
+  const [loadingDecrypted, setLoadingDecrypted] = useState(false);
+  const [decryptedData, setDecryptedData] = useState(null);
+
+  const [imagelist, setImageList] = useState(
+    post.ImageURLs ? post.ImageURLs : []
+  );
+  const [videoList, setVideoList] = useState(
+    post.VideoURLs ? post.VideoURLs : []
+  );
 
   const payload = circle.ExtraData?.CircleIt
     ? JSON.parse(circle.ExtraData.CircleIt)
@@ -60,6 +73,17 @@ export default function PostCard({
           setPostTitle(payload.Title);
         }
       }
+
+      if (post.PostExtraData.isGatedWithDiamondOnCircleIt) {
+        setIsGatedWithDiamond(
+          post.PostExtraData.isGatedWithDiamondOnCircleIt === "true"
+            ? true
+            : false
+        );
+        setDiamondLevelGatedWith(
+          parseInt(post.PostExtraData.gatedDiamondLevel)
+        );
+      }
     }
   }, [post]);
 
@@ -79,8 +103,9 @@ export default function PostCard({
     if (selection.toString().length !== 0) {
       return;
     }
-    //console.log(event.target)
+    console.log(event.target.tagName.toLowerCase());
     // don't navigate if the user clicked a link
+
     if (
       event.target.tagName.toLowerCase() === "a" &&
       event.target.target === "_blank"
@@ -95,7 +120,9 @@ export default function PostCard({
       event.target.tagName.toLowerCase() === "img" ||
       event.target.tagName.toLowerCase() === "svg" ||
       event.target.className === "__react_modal_image__header" ||
-      event.target.className === "rsis-image"
+      event.target.className === "rsis-image" ||
+      event.target.tagName.toLowerCase() === "svg" ||
+      event.target.tagName.toLowerCase() === "path"
     ) {
       return;
     }
@@ -103,6 +130,51 @@ export default function PostCard({
     navigate(
       `/${isCircle ? `circle` : `u`}/${circle.Username}/${post.PostHashHex}`
     );
+  };
+
+  const loadGatedContent = async () => {
+    if (loadingDecrypted) return;
+    if (!isLoggedIn) {
+      toast.error("Please login to view this content");
+      return;
+    }
+    setLoadingDecrypted(true);
+
+    try {
+      const jwt = await GlobalContextValue.desoObj.identity.getJwt(undefined);
+
+      const requestPayload = {
+        content: post.PostExtraData.EncryptedData,
+        postHashHex: post.PostHashHex,
+        jwt: jwt,
+        readerPublicKey: readerPublicKey,
+      };
+      const requestURL = "https://tipdeso.com/decrypt-diamond-gated-content";
+      const encryptedResponse = await fetch(requestURL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestPayload),
+      });
+      const data = await encryptedResponse.json();
+      if (data.status) {
+        setImageList(data.response.image);
+        setVideoList([data.response.postVideo]);
+        setPostBody(data.response.content);
+        setDecryptedData(data.response);
+        setLoadingDecrypted(false);
+      } else {
+        toast.error(data.message || `Error loading gated content`);
+
+        setLoadingDecrypted(false);
+      }
+      console.log(data);
+    } catch (e) {
+      console.log(e);
+      toast.error(`Error loading gated content`);
+      setLoadingDecrypted(false);
+    }
   };
 
   return (
@@ -126,26 +198,49 @@ export default function PostCard({
                 {postTitle}
               </h2>
             ) : null}
-            <div className='w-full lightText break-words'>
-              <Linkify options={LinkifyOptions}>
-                {!readMore ? postBody : `${postBody.substring(0, 200)}`}
-              </Linkify>
-              {readMore && (
-                <span
-                  className='brandGradientText'
-                  onClick={() => setReadMore(false)}>
-                  ... <span className='ml-1 font-medium'>Read more</span>
-                </span>
-              )}
-            </div>
-            {post.ImageURLs?.length > 0 && post.ImageURLs[0] !== "" && (
-              <PostImages images={post.ImageURLs} circle={circle} />
+
+            {(!isGatedWithDiamond || decryptedData) && (
+              <div className='w-full lightText break-words'>
+                <Linkify options={LinkifyOptions}>
+                  {!readMore ? postBody : `${postBody.substring(0, 200)}`}
+                </Linkify>
+                {readMore && (
+                  <span
+                    className='brandGradientText'
+                    onClick={() => setReadMore(false)}>
+                    ... <span className='ml-1 font-medium'>Read more</span>
+                  </span>
+                )}
+              </div>
             )}
-            {post.VideoURLs && post.VideoURLs[0] !== "" && (
+
+            {isGatedWithDiamond && !decryptedData && !loadingDecrypted && (
+              <div className='w-full lightText break-words flex justify-center items-center flex-col'>
+                <span>{`This Content is Gated with ${diamondLevelGatedWith} Diamonds `}</span>
+                <button
+                  onClick={loadGatedContent}
+                  className={`buttonBG dark:text-white flex items-center px-8 py-2 rounded-full`}>
+                  <span className='text-sm sm:text-md'>
+                    View Gated Content 👀
+                  </span>
+                </button>
+              </div>
+            )}
+
+            {loadingDecrypted && (
+              <div className='w-full lightText break-words flex justify-center items-center flex-col'>
+                <Loader />
+              </div>
+            )}
+
+            {imagelist.length > 0 && imagelist[0] !== "" && (
+              <PostImages images={imagelist} circle={circle} />
+            )}
+            {videoList.length > 0 && videoList[0] !== "" && (
               <div className='mt-2 feed-post__video-container relative pt-[56.25%] w-full rounded-xl max-h-[700px] overflow-hidden'>
                 <iframe
                   title='embed-video'
-                  src={post.VideoURLs[0]}
+                  src={videoList[0]}
                   className='w-full absolute left-0 right-0 top-0 bottom-0 h-full feed-post__video'
                   allow='accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;'
                   allowFullScreen></iframe>
@@ -175,6 +270,8 @@ export default function PostCard({
                 post={post.RepostedPostEntryResponse}
                 isRepost={true}
                 circle={circle}
+                isLoggedIn={isLoggedIn}
+                readerPublicKey={readerPublicKey}
               />
             )}
           </div>

@@ -40,7 +40,7 @@ function LoginPopup({ showLoginPopup, setShowLoginPopup, loginWithDeso }) {
                     <p className='primaryTextColor'>
                       Your Profile on CircleIt is a digital Identity accessible
                       only by you. Make sure you always save your account's
-                      Secret phrase. There is no way to recover or revoke your
+                      Secret phrase when you create new account. There is no way to recover or revoke your
                       secret phrase.
                     </p>
                   </div>

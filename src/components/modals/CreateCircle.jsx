@@ -8,7 +8,12 @@ import { Loader } from "../../utils/Loader";
 import Deso from "deso-protocol";
 import { DESO_CONFIG } from "../../utils/Constants";
 
-function CreateCircleModal({ rootRef, showModal, setShowModal }) {
+function CreateCircleModal({
+  rootRef,
+  showModal,
+  setShowModal,
+  loggedInUsername,
+}) {
   const { user, setCircle } = useApp();
   const [loading, setLoading] = useState(false);
   const createCircle = async () => {
@@ -114,7 +119,7 @@ function CreateCircleModal({ rootRef, showModal, setShowModal }) {
                 leave='ease-in duration-200'
                 leaveFrom='opacity-100 scale-100'
                 leaveTo='opacity-0 scale-95'>
-                <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl primaryBg primaryBorder border text-left align-middle shadow-xl transition-all'>
+                <Dialog.Panel className='w-full max-w-xl transform overflow-hidden rounded-2xl primaryBg primaryBorder border text-left align-middle shadow-xl transition-all'>
                   <Dialog.Title
                     as='h3'
                     className='text-lg py-4  px-6 font-semibold leading-6 border-b primaryBorder primaryTextColor'>
@@ -122,13 +127,12 @@ function CreateCircleModal({ rootRef, showModal, setShowModal }) {
                   </Dialog.Title>
                   <div className='mt-4 px-6'>
                     <p className=' primaryTextColor'>
-                      Convert Your DeSo Profile with Circle or{" "}
-                      <Link
-                        className='cursor-pointer hover:underline colorText'
-                        to='/'>
-                        Create
-                      </Link>{" "}
-                      a new DeSo account!
+                      Community Circles are like groups where people can join
+                      and post about specific topic determined by the creator of
+                      the circle.
+                      <br></br>
+                      You can define your own set of rules, verification system
+                      and monetization in your circle.
                     </p>
                   </div>
 
@@ -140,7 +144,7 @@ function CreateCircleModal({ rootRef, showModal, setShowModal }) {
                       }`}
                       onClick={createCircle}>
                       {loading && <Loader className='w-3.5 h-3.5' />}
-                      <span>Conitnue</span>
+                      <span>{`Create c/${loggedInUsername}`}</span>
                     </button>
                     <button
                       type='button'

@@ -20,7 +20,8 @@ import { NotificationMenu } from "../notifications";
 const deso = new Deso(DESO_CONFIG);
 
 function Header() {
-  const { user, isLoggedIn, setLoggedIn, setUser, setCircle, isCircle } = useApp((state) => state);
+  const { user, isLoggedIn, setLoggedIn, setUser, setCircle, isCircle } =
+    useApp((state) => state);
   const path = window.location.pathname;
   const [currentTab, setCurrentTab] = React.useState(
     path === "/" ? "home" : path.split("/")[1]
@@ -90,11 +91,13 @@ function Header() {
 
           setUser({ profile: data.Profile });
           setLoggedIn(true);
+
+          window.location.reload();
         } catch (error) {
           // toast.error("Something went wrong");
           // console.log(error);
           //route to /sign-up
-          
+
           localStorage.setItem("newDeSoPublicKey", response.key);
           navigate("/sign-up");
         }
@@ -149,7 +152,7 @@ function Header() {
             <div className='flex justify-center space-x-5 items-center md:ml-6 md:mr-2'>
               {isMobile ? <MobileSearch /> : null}
               <ThemeSwitch />
-              <NotificationMenu isCircle={isCircle} />
+             {isLoggedIn &&  <NotificationMenu isCircle={isCircle} />}
             </div>
             {!isLoggedIn ? (
               <button
@@ -233,7 +236,7 @@ function Header() {
           <div className='flex sm:hidden space-x-5 px-2 mt-1 pt-1 '>
             <Link
               to='/'
-              className={` menu font-semibold flex flex-row  transition delay-75 ${
+              className={` menu font-semibold flex flex-row  transition delay-75 pb-1 ${
                 currentTab === "home" ? "border-b-4 border-[#8b5cf6]" : ""
               }`}>
               <BiHomeAlt size={24} />
@@ -241,7 +244,7 @@ function Header() {
             </Link>
             <Link
               to='/following'
-              className={` menu font-semibold flex flex-row  transition delay-75 ${
+              className={` menu font-semibold flex flex-row  transition delay-75 pb-1 ${
                 currentTab === "following" ? "border-b-4 border-[#8b5cf6]" : ""
               }`}>
               <FiSunrise size={24} />

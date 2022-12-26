@@ -13,7 +13,6 @@ import { useInView } from "react-cool-inview";
 import { DefaultLayout } from "../../components/layouts";
 import { DESO_CONFIG } from "../../utils/Constants";
 import CircleTabs from "../../components/common/CircleTabs";
-import { act } from "react-dom/test-utils";
 
 export default function Circle() {
   const { isLoggedIn, user } = useApp();
@@ -171,8 +170,8 @@ export default function Circle() {
                 setCommunityHasMore(false);
               }
               let feedDataList = response.Posts;
-             
-              setLastPostHashHex(response.LastPostHashHex)
+
+              setLastPostHashHex(response.LastPostHashHex);
               setCommunityPostFeed(feedDataList);
               setIsLoading(false);
             } catch (error) {
@@ -236,9 +235,9 @@ export default function Circle() {
           console.log(error);
         }
       }
-      console.log(activeTab)
+      console.log(activeTab);
       if (activeTab === "community") {
-        console.log("in it should work wtf")
+        console.log("in it should work wtf");
         const request = {
           Username: circle.toLowerCase(),
           ReaderPublicKeyBase58Check: userPublicKey,
@@ -253,8 +252,8 @@ export default function Circle() {
             setCommunityHasMore(false);
           }
           let feedDataList = response.Posts;
-        
-          setLastPostHashHex(response.LastPostHashHex)
+
+          setLastPostHashHex(response.LastPostHashHex);
           setCommunityPostFeed([...communityPostFeed, ...feedDataList]);
         } catch (error) {
           console.log(error);
@@ -267,6 +266,16 @@ export default function Circle() {
     localStorage.setItem("circleTab", tab);
     setActiveTab(tab);
   };
+
+  useEffect(() => {
+    setIsLoading(true);
+    setHotFeed([]);
+    setNewFeed([]);
+    setSeenHotPosts([]);
+    setSeenNewPosts([]);
+    setCommunityPostFeed([]);
+    setLastPostHashHex("");
+  }, [circle]);
   return (
     <>
       <DefaultLayout>
@@ -282,9 +291,9 @@ export default function Circle() {
             </div>
             <div>
               {isLoading || feedLoading ? <FeedShimmer cols={20} /> : null}
-              {(currentActiveTab === "hot") && (
+              {currentActiveTab === "hot" && (
                 <>
-                  {hotFeed? (
+                  {hotFeed ? (
                     hotFeed.map((post) => (
                       <PostCard
                         circle={circleProfile}
@@ -293,6 +302,8 @@ export default function Circle() {
                         isRepost={false}
                         isCommunityPost={false}
                         onCirclePage={true}
+                        readerPublicKey={userPublicKey}
+                        isLoggedIn={isLoggedIn}
                       />
                     ))
                   ) : (
@@ -325,6 +336,8 @@ export default function Circle() {
                         isRepost={false}
                         isCommunityPost={false}
                         onCirclePage={true}
+                        readerPublicKey={userPublicKey}
+                        isLoggedIn={isLoggedIn}
                       />
                     ))
                   ) : (
@@ -348,7 +361,7 @@ export default function Circle() {
               )}
               {currentActiveTab === "community" && (
                 <>
-                  {communityPostFeed? (
+                  {communityPostFeed ? (
                     communityPostFeed.map((post) => (
                       <PostCard
                         circle={circleProfile}
@@ -357,13 +370,16 @@ export default function Circle() {
                         isRepost={false}
                         isCommunityPost={true}
                         onCirclePage={true}
+                        readerPublicKey={userPublicKey}
+                        isLoggedIn={isLoggedIn}
                       />
                     ))
                   ) : (
                     <NoPostCard />
                   )}
                   {!isLoading &&
-                    !feedLoading && communityPostFeed &&
+                    !feedLoading &&
+                    communityPostFeed &&
                     communityPostFeed.length === 0 && <NoPostCard />}
                   {!isLoading &&
                     !feedLoading &&
@@ -378,41 +394,6 @@ export default function Circle() {
                     ))}
                 </>
               )}
-
-              {/* {!isLoading && feedData && feedData.length > 0 ? (
-                feedData.map((post) => (
-                  <PostCard
-                    circle={circleProfile}
-                    key={post.PostHashHex}
-                    post={post}
-                    isRepost={false}
-                    isCommunityPost={currentActiveTab === "community"}
-                    onCirclePage={true}
-                  />
-                ))
-              ) : (
-                <>
-                  <NoPostCard />
-                </>
-              )}
-              {!isLoading && !feedLoading && noPosts && (
-                <>
-                  <NoPostCard />
-                </>
-              )} */}
-              {/* {!isLoading &&
-                !feedLoading &&
-                (hasMore ? (
-                  <span ref={observe} className='flex justify-center p-10'>
-                    <Loader />
-                  </span>
-                ) : (
-                  <div className='flex justify-center p-10'>
-                    <p className='text-gray-500 dark:text-gray-400'>
-                      No more posts
-                    </p>
-                  </div>
-                ))} */}
             </div>
           </div>
           <div className='mt-[20px] md:mt-[35px]'>

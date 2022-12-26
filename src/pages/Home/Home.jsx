@@ -141,21 +141,28 @@ function Home() {
     <>
       <DefaultLayout>
         {!isLoggedIn && (
-          <div className='relative inline-flex justify-center rounded-full items-center w-full my-20'>
-            <div className='relative text-4xl md:py-10 font-bold text-center dark:text-white sm:text-4xl lg:text-5xl leading-none rounded-full z-10'>
+          <div className='relative inline-flex justify-center rounded-full items-center w-full mt-24 mb-4'>
+            <div className='relative text-4xl md:py-10 font-bold text-center dark:text-white sm:text-4xl lg:text-5xl leading-normal rounded-full z-10'>
               <span className='brandGradientBg blur-2xl filter opacity-10 w-full h-full absolute inset-0 rounded-full'></span>
               <span className='md:px-5'>
-                Your{" "}
+                Get paid for{" "}
                 <span className='text-transparent bg-clip-text brandGradientBg'>
-                  Community
+                  Building
                 </span>{" "}
-                on your terms.
+                and{" "}
+                <span className='text-transparent bg-clip-text brandGradientBg'>
+                  Contributing
+                </span>{" "}
+                to{" "}
+                <span className='text-transparent bg-clip-text brandGradientBg'>
+                  Communities
+                </span>
               </span>
             </div>
           </div>
         )}
         <div className='grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-8 mt-14 sm:mt-4'>
-          <div className='grid grid-cols-1 gap-4 lg:col-span-2'>
+          <div className='grid grid-cols-1 lg:col-span-2'>
             <div className='flex w-full items-center'>
               <div className='hidden md:flex md:float-left mr-4 text-white brandGradientBg dark:border-[#18181C] border-transparent border rounded-md p-3'>
                 <svg
@@ -174,6 +181,7 @@ function Home() {
                 Trending Posts on CircleIt
               </h1>
             </div>
+            <div className='mt-4'>
             {isLoading && <FeedShimmer cols={20} />}
             {!isLoading &&
             GlobalContextValue.homeFeed &&
@@ -186,6 +194,8 @@ function Home() {
                   isRepost={false}
                   circle={GlobalContextValue.circleItProfile}
                   onCirclePage={false}
+                  readerPublicKey={userPublicKey}
+                  isLoggedIn={isLoggedIn}
                 />
               ))
             ) : (
@@ -193,6 +203,7 @@ function Home() {
                 <NoPostCard />
               </>
             )}
+            </div>
             {!isLoading && !feedLoading && noPosts && (
               <>
                 <NoPostCard />
@@ -212,7 +223,7 @@ function Home() {
                 </div>
               ))}
           </div>
-          <div className='mt-[20px] md:mt-[75px] hidden sm:visible'>
+          <div className='mt-[20px] md:mt-[75px] hidden sm:flex'>
             <SidebarRight />
           </div>
         </div>

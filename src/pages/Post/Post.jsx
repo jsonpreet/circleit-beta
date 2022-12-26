@@ -26,7 +26,7 @@ import {
 } from "../../utils/EmbedUrls";
 import { isBrowser } from "react-device-detect";
 import GlobalContext from "../../utils/GlobalContext/GlobalContext";
-
+import { Loader } from "../../utils/Loader";
 function Post() {
   const GlobalContextValue = useContext(GlobalContext);
   const deso = GlobalContextValue.desoObj;
@@ -39,6 +39,16 @@ function Post() {
   const [isCircle, setisCircle] = useState(false);
   const [videoEmbed, setEmbed] = useState("");
 
+  const [isGatedWithDiamond, setIsGatedWithDiamond] = useState(false);
+  const [diamondLevelGatedWith, setDiamondLevelGatedWith] = useState(0);
+
+  const [loadingDecrypted, setLoadingDecrypted] = useState(false);
+  const [decryptedData, setDecryptedData] = useState(null);
+
+  const [imagelist, setImageList] = useState([]);
+  const [videoList, setVideoList] = useState([]);
+
+  const [postBody, setPostBody] = useState("");
   const userPublicKey = isLoggedIn
     ? user.profile.PublicKeyBase58Check
     : "BC1YLhBLE1834FBJbQ9JU23JbPanNYMkUsdpJZrFVqNGsCe7YadYiUg";
@@ -75,11 +85,29 @@ function Post() {
             if (response && response.PostFound) {
               let post = response.PostFound;
               setPost(post);
+              setVideoList([post.VideoURLs ? post.VideoURLs : ""]);
+              setImageList(post.ImageURLs ? post.ImageURLs : []);
+
+              try {
+                if (post.PostExtraData.isGatedWithDiamondOnCircleIt) {
+                  setIsGatedWithDiamond(
+                    post.PostExtraData.isGatedWithDiamondOnCircleIt === "true"
+                      ? true
+                      : false
+                  );
+                  setDiamondLevelGatedWith(
+                    parseInt(post.PostExtraData.gatedDiamondLevel)
+                  );
+                }
+              } catch (error) {
+                // console.log(error);
+              }
               setisLoading(false);
+              setPostBody(post.Body);
               const regex = /Posted on @\w+ in @\w+/;
               const output = post.Body.replace(regex, "");
 
-              setBody(output.trimRight());
+              setPostBody(output.trimRight());
               if (
                 post.PostExtraData &&
                 post.PostExtraData["EmbedVideoURL"] !== null
@@ -106,6 +134,50 @@ function Post() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postID, circle, userPublicKey]);
 
+  const loadGatedContent = async () => {
+    if (loadingDecrypted) return;
+    if (!isLoggedIn) {
+      toast.error("Please login to view this content");
+      return;
+    }
+    setLoadingDecrypted(true);
+    try {
+      const jwt = await GlobalContextValue.desoObj.identity.getJwt(undefined);
+
+      const requestPayload = {
+        content: post.PostExtraData.EncryptedData,
+        postHashHex: post.PostHashHex,
+        jwt: jwt,
+        readerPublicKey: userPublicKey,
+      };
+      const requestURL = "https://tipdeso.com/decrypt-diamond-gated-content";
+      const encryptedResponse = await fetch(requestURL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestPayload),
+      });
+      const data = await encryptedResponse.json();
+      if (data.status) {
+        setImageList(data.response.image);
+        setVideoList([data.response.postVideo]);
+        setPostBody(data.response.content);
+        setDecryptedData(data.response);
+        setLoadingDecrypted(false);
+      } else {
+        toast.error(data.message || `Error loading gated content`);
+
+        setLoadingDecrypted(false);
+      }
+      console.log(data);
+    } catch (e) {
+      console.log(e);
+      toast.error(`Error loading gated content`);
+      setLoadingDecrypted(false);
+    }
+  };
+
   return (
     <>
       <DefaultLayout>
@@ -125,20 +197,43 @@ function Post() {
                       />
                       <div className='flex flex-col w-full'>
                         <div className='flex flex-col space-y-4 my-2'>
-                          <div className='w-full lightText'>
-                            <Linkify options={LinkifyOptions}>{body}</Linkify>
-                          </div>
-                          {post.ImageURLs?.length > 0 && (
-                            <PostImages
-                              images={post.ImageURLs}
-                              circle={circle}
-                            />
+                          {(!isGatedWithDiamond || decryptedData) && (
+                            <div className='w-full lightText break-words'>
+                              <Linkify options={LinkifyOptions}>
+                                {postBody}
+                              </Linkify>
+                            </div>
                           )}
-                          {post.VideoURLs && post.VideoURLs[0] !== "" && (
+
+                          {isGatedWithDiamond &&
+                            !decryptedData &&
+                            !loadingDecrypted && (
+                              <div className='w-full lightText break-words flex justify-center items-center flex-col'>
+                                <span>{`This Content is Gated with ${diamondLevelGatedWith} Diamonds `}</span>
+                                <button
+                                  onClick={loadGatedContent}
+                                  className={`buttonBG dark:text-white flex items-center px-8 py-2 rounded-full`}>
+                                  <span className='text-sm sm:text-md'>
+                                    View Gated Content 👀
+                                  </span>
+                                </button>
+                              </div>
+                            )}
+
+                          {loadingDecrypted && (
+                            <div className='w-full lightText break-words flex justify-center items-center flex-col'>
+                              <Loader />
+                            </div>
+                          )}
+
+                          {imagelist?.length > 0 && imagelist[0] !== "" && (
+                            <PostImages images={imagelist} circle={circle} />
+                          )}
+                          {videoList && videoList[0] !== "" && (
                             <div className='mt-2 feed-post__video-container relative pt-[56.25%] w-full rounded-xl max-h-[700px] overflow-hidden'>
                               <iframe
                                 title='embed-video'
-                                src={post.VideoURLs[0]}
+                                src={videoList[0]}
                                 className='w-full absolute left-0 right-0 top-0 bottom-0 h-full feed-post__video'
                                 allow='accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;'
                                 allowFullScreen></iframe>
@@ -169,9 +264,12 @@ function Post() {
                               post={post.RepostedPostEntryResponse}
                               isRepost={true}
                               circle={circleProfile}
+                              isLoggedIn={isLoggedIn}
+                              readerPublicKey={userPublicKey}
                             />
                           </div>
                         )}
+
                         <PostBottomMeta
                           post={post}
                           circleProfile={circleProfile}
