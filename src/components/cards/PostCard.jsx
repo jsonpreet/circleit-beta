@@ -103,8 +103,9 @@ export default function PostCard({
     if (selection.toString().length !== 0) {
       return;
     }
-    //console.log(event.target)
+    console.log(event.target.tagName.toLowerCase());
     // don't navigate if the user clicked a link
+
     if (
       event.target.tagName.toLowerCase() === "a" &&
       event.target.target === "_blank"
@@ -119,7 +120,9 @@ export default function PostCard({
       event.target.tagName.toLowerCase() === "img" ||
       event.target.tagName.toLowerCase() === "svg" ||
       event.target.className === "__react_modal_image__header" ||
-      event.target.className === "rsis-image"
+      event.target.className === "rsis-image" ||
+      event.target.tagName.toLowerCase() === "svg" ||
+      event.target.tagName.toLowerCase() === "path"
     ) {
       return;
     }

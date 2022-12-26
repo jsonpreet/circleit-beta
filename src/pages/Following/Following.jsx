@@ -229,7 +229,7 @@ function Following() {
           </div>
         )}
         <div className='grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-8 sm:mt-4 mt-14'>
-          <div className='grid grid-cols-1 gap-4 lg:col-span-2'>
+          <div className='grid grid-cols-1  lg:col-span-2'>
             <div className='flex items-center justify-between w-full'>
               <div className='flex  items-center'>
                 <div className='hidden md:flex md:float-left mr-4 text-white brandGradientBg dark:border-[#18181C] border-transparent border rounded-md p-3'>
@@ -258,6 +258,7 @@ function Following() {
                 handleFeedChange={handleFeedChange}
               />
             </div>
+            <div className='mt-4'>
             {isLoading && <FeedShimmer cols={20} />}
             {!isLoading &&
             GlobalContextValue.followingFeed &&
@@ -278,6 +279,7 @@ function Following() {
                 <NoPostCard />
               </>
             )}
+            </div>
             {!isLoading && !feedLoading && noPosts && (
               <>
                 <NoPostCard />

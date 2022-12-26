@@ -31,7 +31,7 @@ function PostBottomMeta({ circle, isCircle, isRepost, post, desoObj }) {
     setShowDiamond(!showDiamond);
   };
   return (
-    <>
+    <div>
       <DiamondModal
         setDiamonds={setDiamonds}
         diamonds={post.DiamondCount}
@@ -47,7 +47,7 @@ function PostBottomMeta({ circle, isCircle, isRepost, post, desoObj }) {
         setShowShare={setShowShareModal}
         post={post}
       />
-      <div className='flex w-full items-center mt-2 primaryTextColor'>
+      <div className='flex w-full items-center  primaryTextColo'>
         <div className='flex -ml-3'>
           {isRepost && (
             <div className='px-3 hidden md:flex text-sm items-center justify-center font-semibold extralightText'>
@@ -67,12 +67,12 @@ function PostBottomMeta({ circle, isCircle, isRepost, post, desoObj }) {
                 }#comments`
               )
             }
-            className='px-3 flex text-sm items-center cursor-pointer justify-center font-semibold extralightText'>
-            <BsChatLeft size={17} className='mt-1 mr-1' />
+            className='mx-1 px-2 flex text-sm items-center cursor-pointer justify-center font-semibold extralightText  py-2'>
+            <BsChatLeft size={22} className='mt-1 mr-1' />
             <span>{formatNumber(post.CommentCount)}</span>
           </button>
-          <div className='px-3 flex text-sm items-center justify-center font-semibold extralightText'>
-            <FiRefreshCcw size={17} className='mt-1 mr-1' />
+          <div className='px-2 mx-1 flex text-sm items-center justify-center font-semibold extralightText '>
+            <FiRefreshCcw size={22} className='mt-1 mr-1' />
             <span>
               {formatNumber(post.RepostCount + post.QuoteRepostCount)}
             </span>
@@ -87,19 +87,19 @@ function PostBottomMeta({ circle, isCircle, isRepost, post, desoObj }) {
             onClick={showDiamondModal}
             className={`px-3 flex text-sm items-center cursor-pointer justify-center font-semibold ${
               diamondBestowed > 0 ? `text-blue-400` : `extralightText`
-            }`}>
-            <IoDiamondOutline size={17} className='mt-1 mr-1' />
+            } `}>
+            <IoDiamondOutline size={22} className='mt-1 mr-1' />
             <span>{formatNumber(diamonds > 0 ? diamonds : postDiamonds)}</span>
           </button>
           <button
             onClick={() => setShowShareModal(!showShareModal)}
             className='px-3 cursor-pointer flex text-sm items-center justify-center font-semibold extralightText'>
-            <FaRegShareSquare size={17} className='mt-1 mr-1' />
+            <FaRegShareSquare size={22} className='mt-1 mr-1' />
             <span className='mt-[1px]'></span>
           </button>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

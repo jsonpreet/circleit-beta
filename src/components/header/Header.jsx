@@ -152,7 +152,7 @@ function Header() {
             <div className='flex justify-center space-x-5 items-center md:ml-6 md:mr-2'>
               {isMobile ? <MobileSearch /> : null}
               <ThemeSwitch />
-              <NotificationMenu isCircle={isCircle} />
+             {isLoggedIn &&  <NotificationMenu isCircle={isCircle} />}
             </div>
             {!isLoggedIn ? (
               <button
