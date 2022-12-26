@@ -67,7 +67,7 @@ function PostBottomMeta({ circle, isCircle, isRepost, post, desoObj }) {
                 }#comments`
               )
             }
-            className='mx-1 px-2 flex text-sm items-center cursor-pointer justify-center font-semibold extralightText  py-2'>
+            className='mx-1 px-2 flex text-sm items-center cursor-pointer justify-center font-semibold extralightText  pt-2'>
             <BsChatLeft size={22} className='mt-1 mr-1' />
             <span>{formatNumber(post.CommentCount)}</span>
           </button>
