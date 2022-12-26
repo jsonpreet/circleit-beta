@@ -330,7 +330,7 @@ export default function CreatePostBox({ circle }) {
           const EditpostRequest = {
             UpdaterPublicKeyBase58Check: user.profile.PublicKeyBase58Check,
             BodyObj: {
-              Body: `${body}\n\nView at https://beta.circleit.app/circle/${circle.Username}/${createdPostHashHex}\n\n${extraBody}`,
+              Body: `${body}\n\nView at circleit.app/circle/${circle.Username}/${createdPostHashHex}\n\n${extraBody}`,
               VideoURLs: [],
               ImageURLs: [],
             },
