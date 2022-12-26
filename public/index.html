@@ -5,10 +5,31 @@
     <link rel="icon" href="%PUBLIC_URL%/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <meta
+
+ 
+
+      <meta
       name="description"
-      content="Circleit Web3 SubCommunity build on DeSo"
+      content="CircleIt is a new social media platform where creators can create communities and get rewarded for their contributions."
     />
+    <meta name="twitter:card" content="summary_large_image"></meta>
+    <meta name="twitter:image" content="%PUBLIC_URL%/banner.png">
+    <meta property="og:site_name" content="Circleit.app">
+
+    <meta property="og:title" content="CircleIt" />
+    <meta property="og:image" content="%PUBLIC_URL%/banner.png" />
+    <meta property="og:url" content="https://www.circleit.app" />
+    <meta property="og:type" content="website" />
+
+
+    <meta
+      property="og:description"
+      content="CircleIt is a new social media platform where creators can create communities and get rewarded for their contributions."
+    /> 
+
+
+
+  
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a
@@ -25,6 +46,21 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Circleit</title>
+
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-9MQ9LPTD7V"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-9MQ9LPTD7V");
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

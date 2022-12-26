@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
-
+import Tippy from "@tippyjs/react";
+import {BiQuestionMark} from "react-icons/bi";
 import DiamondedCreatorsList from "./DiamondedCreatorsList";
 import Deso from "deso-protocol";
 // TODO: add catch exception to manage handlings when API errors out
@@ -37,8 +38,8 @@ function SidebarRight() {
         }
         GlobalContextValue.updateDiamondInfoMap(tempDimaondInfoMap);
         if (
-          Object.keys(GlobalContextValue.topDiamonderStatelessResponse).length ==
-          0
+          Object.keys(GlobalContextValue.topDiamonderStatelessResponse)
+            .length == 0
         ) {
           const request = {
             PublicKeysBase58Check: publicKeyList,
@@ -56,8 +57,18 @@ function SidebarRight() {
     <>
       <div className='flex flex-col md:w-96 md:ml-6 secondaryBg border secondaryBorder rounded-md secondaryTextColor py-4 items-start justify-start'>
         <div className='flex-1 w-full flex flex-col'>
-          <div className='flex items-center space-x-2 px-4 text-xl font-bold mb-4 pb-4 border-b secondaryBorder dark:text-white'>
-            <h3 className=''>Top Diamonded Creators</h3>
+          <div className='flex items-center space-x-2 px-4 text-xl font-bold mb-4 pb-4 border-b secondaryBorder dark:text-white w-full '>
+            <h3 className='text-lg'>Top Daily Diamonded Creators</h3>
+            <Tippy
+              content='Creators on CircleIt can receive direct tippings in the form of Diamonds. Top Daily Diamonded Creators are the creators who received the most Diamonds in the last 24 hours.'
+              placement='bottom'>
+              <span>
+                <BiQuestionMark
+                  size={16}
+                  className='text-gray-200 bg-gray-700 rounded-full'
+                />
+              </span>
+            </Tippy>
           </div>
           {Object.keys(GlobalContextValue.diamondInfoMap).length > 0 && (
             <div className='px-4'>

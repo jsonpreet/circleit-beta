@@ -19,8 +19,7 @@ function DiaondedCreatorList({ name, list, diamondInfoMap }) {
             let publicKey = userInfo.ProfileEntryResponse.PublicKeyBase58Check;
 
             return (
-              <div className='flex items-center  my-1'
-              key={index}>
+              <div className='flex items-center  my-1' key={index}>
                 <div className='flex items-center space-x-1'>
                   <Tippy
                     followCursor={true}
@@ -39,11 +38,13 @@ function DiaondedCreatorList({ name, list, diamondInfoMap }) {
                     <Link
                       to={`/u/${username}`}
                       className='w-full menu transition delay-100 flex flex-row space-x-2  mb-[20px] items-center'>
-                      <img
-                        src={`https://diamondapp.com/api/v0/get-single-profile-picture/${publicKey}?fallback=https://diamondapp.com/assets/img/default_profile_pic.png`}
-                        className='rounded-full w-7 h-7'
-                        alt=''
-                      />
+                      <div
+                        className='rounded-full w-7 h-7 bg-gray-200 dark:bg-gray-700'
+                        style={{
+                          backgroundImage: `url(https://diamondapp.com/api/v0/get-single-profile-picture/${publicKey}?fallback=https://diamondapp.com/assets/img/default_profile_pic.png)`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                        }}></div>
                       <span className='font-semibold tracking-wider'>
                         {`${username.slice(0, 18)}${
                           username.length > 18 ? `...` : ""
