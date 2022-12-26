@@ -69,22 +69,22 @@ function LikeButton({ isRepost, post }) {
           </div>
         )
       ) : (
-        <div className='flex text-sm items-center justify-center font-semibold extralightText'>
+        <div className='flex text-sm items-center justify-center font-semibold extralightText pt-1'>
           <button
             onClick={() => like(liked)}
             className={`  flex text-sm items-center justify-center font-semibold extralightText`}>
             {isLoggedIn ? (
               liked ? (
                 <HeartFillIcon
-                  classes={`h-5 w-5 mr-1 group-hover:text-red-500 text-red-500`}
+                  classes={`h-[1.45rem] w-[1.45rem] mr-1 group-hover:text-red-500 text-red-500`}
                 />
               ) : (
                 <HeartIcon
-                  classes={`h-5 w-5 mr-1 group-hover:text-red-500 `}
+                  classes={`h-[1.45rem] w-[1.45rem] mr-1 group-hover:text-red-500 `}
                 />
               )
             ) : (
-              <HeartIcon classes={`h-5 w-5 mr-1 group-hover:text-red-500`} />
+              <HeartIcon classes={`h-[1.45rem] w-[1.45rem] mr-1 group-hover:text-red-500`} />
             )}
             <span>{likes}</span>
           </button>
