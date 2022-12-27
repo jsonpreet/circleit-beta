@@ -30,22 +30,21 @@ import { useDetectClickOutside } from "react-detect-click-outside";
 export const getAttachmentsClass = (attachments, isNew = false) => {
   if (attachments === 1) {
     return {
-      aspect: isNew ? 'aspect-w-16 aspect-h-10' : '',
-      row: 'grid-cols-1 grid-rows-1'
+      aspect: isNew ? "aspect-w-16 aspect-h-10" : "",
+      row: "grid-cols-1 grid-rows-1",
     };
   } else if (attachments === 2) {
     return {
-      aspect: 'aspect-w-16 aspect-h-12',
-      row: 'grid-cols-2 grid-rows-1'
+      aspect: "aspect-w-16 aspect-h-12",
+      row: "grid-cols-2 grid-rows-1",
     };
   } else if (attachments > 2) {
     return {
-      aspect: 'aspect-w-16 aspect-h-12',
-      row: 'grid-cols-2 grid-rows-2'
+      aspect: "aspect-w-16 aspect-h-12",
+      row: "grid-cols-2 grid-rows-2",
     };
   }
 };
-
 
 export default function CreatePostBox({ circle }) {
   const { user } = useApp((state) => state);
@@ -446,7 +445,7 @@ export default function CreatePostBox({ circle }) {
             <div className='flex items-center'>
               <input
                 className={`focus:ring-0 focus:outline-none outline-none darkenBg darkenHoverBg border dark:border-[#2D2D33] hover:dark:border-[#43434d] border-gray-200 hover:border-gray-200 resize-none w-full heading px-4 py-2 ${
-                  isExpanded ? "rounded-md" : "rounded-full"
+                  isExpanded ? "rounded-md" : "rounded-md sm:rounded-full"
                 }`}
                 placeholder={`${
                   !isExpanded ? "Create Post" : "Title (optional)"
@@ -462,286 +461,321 @@ export default function CreatePostBox({ circle }) {
               ) : null}
             </div>
             {isExpanded ? (
-              <><>
-                <div className='mt-4'>
-                  <textarea
-                    className='focus:ring-0 focus:outline-none outline-none darkenBg darkenHoverBg border dark:border-[#2D2D33] hover:dark:border-[#43434d] border-gray-200 hover:border-gray-200 resize-none w-full rounded-lg heading px-4 py-2'
-                    placeholder='Write something...'
-                    value={postBody}
-                    onChange={(e) => setPostBody(e.target.value)}
-                    onKeyDown={handleKeyDown} />
-                </div>
+              <>
+                <>
+                  <div className='mt-4'>
+                    <textarea
+                      className='focus:ring-0 focus:outline-none outline-none darkenBg darkenHoverBg border dark:border-[#2D2D33] hover:dark:border-[#43434d] border-gray-200 hover:border-gray-200 resize-none w-full rounded-lg heading px-4 py-2'
+                      placeholder='Write something...'
+                      value={postBody}
+                      onChange={(e) => setPostBody(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                    />
+                  </div>
 
-                {/* Show only when user is configuring post...*/}
-                {postConfigure && (
-                  <div className='flex space-x-3 items-center mt-1'>
-                    <div className='flex items-center space-x-1'>
-                      <input
-                        type='checkbox'
-                        checked={enableDiamondGate}
-                        onChange={() => setEnableDiamondGate(!enableDiamondGate)}
-                        className=' dark:border-[#2d2d33] hover:dark:border-[#43434d] border-gray-200 hover:border-gray-200 active:border-none' />
+                  {/* Show only when user is configuring post...*/}
+                  {postConfigure && (
+                    <div className='flex space-x-3 items-center mt-1'>
                       <div className='flex items-center space-x-1'>
-                        <p className='text-xs text-gray-400'>Diamond Gate</p>
-                        <Tippy
-                          content='When you gate your content with diamonds, the viewer has to give diamond first in order to view your content. Title remains visible to everyone. You can set number of dimonds to gate with between 1-6'
-                          placement='bottom'>
-                          <span>
-                            <BiQuestionMark
-                              size={16}
-                              className='text-gray-200 bg-gray-700 rounded-full' />
-                          </span>
-                        </Tippy>
-                      </div>
-                    </div>
-                    <div ref={ref}>
-                      <button
-                        className='flex space-x-1 items-center text-sm pl-1 rounded-md hover:bg-gray-200 p-1 hover:bg-opacity-20'
-                        onClick={() => {
-                          setIsDropdownExpanded(!isDropdowExpanded);
-                        } }>
-                        <span className='text-gray-400'>
-                          {diamondLevelToGateWith == 1
-                            ? "1 Diamond"
-                            : `${diamondLevelToGateWith} Diamonds`}
-                        </span>
-                        <span className='flex ml-2 lightText'>
-                          <IoDiamondOutline
-                            size={16}
-                            className='text-blue-500' />
-                        </span>
-                        <svg
-                          xmlns='http://www.w3.org/2000/svg'
-                          viewBox='0 0 20 20'
-                          fill='currentColor'
-                          className='w-5 h-5 dark:text-white'>
-                          <path
-                            d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'
-                            clipRule='evenodd'></path>
-                        </svg>
-                      </button>
-                      <div
-                        className={` ${isDropdowExpanded ? "flex" : "hidden"} absolute  drop-shadow-xl  flex-col rounded-md primaryBg border divide-y theme-divider darkenBorder mt-2 px-3 py-2 min-w-[280px] left-1/3 md:left-auto`}
-                        style={{
-                          zIndex: 100,
-                        }}>
-                        <span className='text-sm lightText flex items-center '>
-                          Select Diamond Level to gate with{" "}
-                          <IoDiamondOutline
-                            size={14}
-                            className='text-blue-500 ml-1' />
-                        </span>
-
-                        <div className='flex flex-col pt-1  '>
-                          {diamondLevelsMap.map((diamond, index) => {
-                            return (
-                              <button
-                                className='flex items-center space-x-1  primaryBg lightText   hover:bg-gray-100 py-3 px-1 rounded-md dark:hover:bg-gray-800'
-                                key={index}
-                                onClick={() => {
-                                  setDiamondLevelToGateWith(diamond.value);
-                                  setIsDropdownExpanded(false);
-                                } }>
-                                <span className='text-xs flex items-center'>
-                                  {
-                                    //loop diamond.value times
-                                    [...Array(diamond.value)].map((e, i) => (
-                                      <IoDiamondOutline
-                                        size={14}
-                                        className='text-blue-500' />
-                                    ))}
-                                  <span className='ml-1'> {diamond.label}</span>
-                                </span>
-                              </button>
-                            );
-                          })}
+                        <input
+                          type='checkbox'
+                          checked={enableDiamondGate}
+                          onChange={() =>
+                            setEnableDiamondGate(!enableDiamondGate)
+                          }
+                          className=' dark:border-[#2d2d33] hover:dark:border-[#43434d] border-gray-200 hover:border-gray-200 active:border-none'
+                        />
+                        <div className='flex items-center space-x-1'>
+                          <p className='text-xs text-gray-400'>Diamond Gate</p>
+                          <Tippy
+                            content='When you gate your content with diamonds, the viewer has to give diamond first in order to view your content. Title remains visible to everyone. You can set number of dimonds to gate with between 1-6'
+                            placement='bottom'>
+                            <span>
+                              <BiQuestionMark
+                                size={16}
+                                className='text-gray-200 bg-gray-700 rounded-full'
+                              />
+                            </span>
+                          </Tippy>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                )}
-
-                {postImageList.length > 0 ? (
-                  <>
-                    <div className={`${getAttachmentsClass(postImageList.length).row} grid gap-2 pt-3`}>
-                      {postImageList.map((image, index) => (
+                      <div ref={ref}>
+                        <button
+                          className='flex space-x-1 items-center text-sm pl-1 rounded-md hover:bg-gray-200 p-1 hover:bg-opacity-20'
+                          onClick={() => {
+                            setIsDropdownExpanded(!isDropdowExpanded);
+                          }}>
+                          <span className='text-gray-400'>
+                            {diamondLevelToGateWith == 1
+                              ? "1 Diamond"
+                              : `${diamondLevelToGateWith} Diamonds`}
+                          </span>
+                          <span className='flex ml-2 lightText'>
+                            <IoDiamondOutline
+                              size={16}
+                              className='text-blue-500'
+                            />
+                          </span>
+                          <svg
+                            xmlns='http://www.w3.org/2000/svg'
+                            viewBox='0 0 20 20'
+                            fill='currentColor'
+                            className='w-5 h-5 dark:text-white'>
+                            <path
+                              d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'
+                              clipRule='evenodd'></path>
+                          </svg>
+                        </button>
                         <div
-                          key={index}
-                          className={`relative ${getAttachmentsClass(postImageList.length).aspect} ${postImageList?.length === 3 && index === 0 ? '' : ''}`}
-                        >
-                          <div className='container'>
-                            <img
-                              src={image}
-                              alt=''
-                              className='w-full darkenBorder border rounded-lg' />
-                            <div className='absolute top-2 right-2 '>
-                              <button
-                                onClick={() => {
-                                  let temp = [...postImageList];
-                                  temp.splice(index, 1);
-                                  setPostImageList(temp);
-                                } }
-                                className='bg-red-500 group hover:bg-red-700  rounded-full w-10 h-10 drop-shadow-lg flex items-center justify-center'>
-                                <BsTrash size={24} className='text-white' />
-                              </button>
-                            </div>
+                          className={` ${
+                            isDropdowExpanded ? "flex" : "hidden"
+                          } absolute  drop-shadow-xl  flex-col rounded-md primaryBg border divide-y theme-divider darkenBorder mt-2 px-3 py-2 min-w-[280px] left-1/3 md:left-auto`}
+                          style={{
+                            zIndex: 100,
+                          }}>
+                          <span className='text-sm lightText flex items-center '>
+                            Select Diamond Level to gate with{" "}
+                            <IoDiamondOutline
+                              size={14}
+                              className='text-blue-500 ml-1'
+                            />
+                          </span>
+
+                          <div className='flex flex-col pt-1  '>
+                            {diamondLevelsMap.map((diamond, index) => {
+                              return (
+                                <button
+                                  className='flex items-center space-x-1  primaryBg lightText   hover:bg-gray-100 py-3 px-1 rounded-md dark:hover:bg-gray-800'
+                                  key={index}
+                                  onClick={() => {
+                                    setDiamondLevelToGateWith(diamond.value);
+                                    setIsDropdownExpanded(false);
+                                  }}>
+                                  <span className='text-xs flex items-center'>
+                                    {
+                                      //loop diamond.value times
+                                      [...Array(diamond.value)].map((e, i) => (
+                                        <IoDiamondOutline
+                                          size={14}
+                                          className='text-blue-500'
+                                        />
+                                      ))
+                                    }
+                                    <span className='ml-1'>
+                                      {" "}
+                                      {diamond.label}
+                                    </span>
+                                  </span>
+                                </button>
+                              );
+                            })}
                           </div>
                         </div>
-                      ))}
+                      </div>
                     </div>
-                  </>
-                ) : null}
+                  )}
 
-                {isVideoReady && postVideo !== "" ? (
-                  <div className='relative mt-4'>
-                    <div className='mt-2 relative pt-[56.25%] w-full rounded-xl max-h-[700px] overflow-hidden'>
-                      <iframe
-                        src={postVideo}
-                        className='w-full absolute left-0 right-0 top-0 bottom-0 h-full'
-                        allow='accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;'
-                        allowFullScreen></iframe>
-                    </div>
-                    <div className='absolute top-4 right-4 '>
-                      <button
-                        onClick={() => {
-                          setPostVideo("");
-                          setVideoProcess(false);
-                          setVideoFile(null);
-                          setUploadProgress(0);
-                        } }
-                        className='bg-red-500 group hover:bg-red-700  rounded-full w-10 h-10 drop-shadow-lg flex items-center justify-center'>
-                        <BsTrash size={24} className='text-white' />
-                      </button>
-                    </div>
-                  </div>
-                ) : null}
-
-                {showLinkField ? (
-                  <div className='mt-4'>
-                    <input
-                      onChange={handleEmbedLink}
-                      value={postLink}
-                      className={`focus:ring-0 focus:outline-none outline-none darkenBg darkenHoverBg border dark:border-[#2D2D33] hover:dark:border-[#43434d] border-gray-200 hover:border-gray-200 resize-none w-full heading px-4 py-2 rounded-md`}
-                      placeholder='Embed Youtube, Vimeo, TikTok, Giphy, Spotify, Mousai, or SoundCloud' />
-                  </div>
-                ) : null}
-                {postEmbedLink !== "" && postEmbedLink !== null ? (
-                  <>
-                    <div className='mt-2 embed-container w-full flex flex-row items-center justify-center rounded-xl overflow-hidden'>
-                      <iframe
-                        id='embed-iframe'
-                        className='w-full flex-shrink-0'
-                        height={getEmbedHeight(postEmbedLink)}
-                        style={{ maxWidth: getEmbedWidth(postEmbedLink) }}
-                        src={postEmbedLink}
-                        frameBorder='0'
-                        allow='picture-in-picture; clipboard-write; encrypted-media; gyroscope; accelerometer; encrypted-media;'
-                        allowFullScreen></iframe>
-                    </div>
-                    </>
-                ) : null}
-              <div className='space-y-4'>
-                  {!isVideoReady && postVideo !== "" && (
+                  {postImageList.length > 0 ? (
                     <>
-                      <div className='flex mt-4 space-x-2 items-center'>
-                        <Loader className='w-5 h-5' />{" "}
-                        <span>Processing Video</span>
+                      <div
+                        className={`${
+                          getAttachmentsClass(postImageList.length).row
+                        } grid gap-2 pt-3`}>
+                        {postImageList.map((image, index) => (
+                          <div
+                            key={index}
+                            className={`relative ${
+                              getAttachmentsClass(postImageList.length).aspect
+                            } ${
+                              postImageList?.length === 3 && index === 0
+                                ? ""
+                                : ""
+                            }`}>
+                            <div className='container'>
+                              <img
+                                src={image}
+                                alt=''
+                                className='w-full darkenBorder border rounded-lg'
+                              />
+                              <div className='absolute top-2 right-2 '>
+                                <button
+                                  onClick={() => {
+                                    let temp = [...postImageList];
+                                    temp.splice(index, 1);
+                                    setPostImageList(temp);
+                                  }}
+                                  className='bg-red-500 group hover:bg-red-700  rounded-full w-10 h-10 drop-shadow-lg flex items-center justify-center'>
+                                  <BsTrash size={24} className='text-white' />
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
                     </>
-                  )}
-                  {/* !isVideoReady && postVideo === '' &&  */}
-                  {!isVideoReady && postVideo === "" && uploadProgress > 0 && (
-                    <ProgressBar
-                      bgcolor='#ff00ff'
-                      progress={uploadProgress}
-                      height={24} />
-                  )}
-                </div>
-                <div className='flex items-center mt-2 justify-between w-full'>
-                  <div className='flex items-center space-x-4 my-2 px-2'>
-                    <div>
-                      <Tippy content='Add Image' placement='bottom'>
-                        <button onClick={() => handleImage()}>
-                          {uploadingImage ? (
-                            <Loader className='w-5 h-5' />
-                          ) : (
-                            <BiImageAdd size={21} className='text-gray-500' />
-                          )}
+                  ) : null}
+
+                  {isVideoReady && postVideo !== "" ? (
+                    <div className='relative mt-4'>
+                      <div className='mt-2 relative pt-[56.25%] w-full rounded-xl max-h-[700px] overflow-hidden'>
+                        <iframe
+                          src={postVideo}
+                          className='w-full absolute left-0 right-0 top-0 bottom-0 h-full'
+                          allow='accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;'
+                          allowFullScreen></iframe>
+                      </div>
+                      <div className='absolute top-4 right-4 '>
+                        <button
+                          onClick={() => {
+                            setPostVideo("");
+                            setVideoProcess(false);
+                            setVideoFile(null);
+                            setUploadProgress(0);
+                          }}
+                          className='bg-red-500 group hover:bg-red-700  rounded-full w-10 h-10 drop-shadow-lg flex items-center justify-center'>
+                          <BsTrash size={24} className='text-white' />
                         </button>
-                      </Tippy>
+                      </div>
                     </div>
-                    <div>
+                  ) : null}
+
+                  {showLinkField ? (
+                    <div className='mt-4'>
                       <input
-                        ref={inputFileRef}
-                        type='file'
-                        className='hidden'
-                        name='video'
-                        onChange={handleFileChange} />
-                      <Tippy content='Add Video' placement='bottom'>
-                        <button onClick={() => handleVideo()}>
-                          <BiVideoPlus size={21} className='text-gray-500' />
-                        </button>
-                      </Tippy>
+                        onChange={handleEmbedLink}
+                        value={postLink}
+                        className={`focus:ring-0 focus:outline-none outline-none darkenBg darkenHoverBg border dark:border-[#2D2D33] hover:dark:border-[#43434d] border-gray-200 hover:border-gray-200 resize-none w-full heading px-4 py-2 rounded-md`}
+                        placeholder='Embed Youtube, Vimeo, TikTok, Giphy, Spotify, Mousai, or SoundCloud'
+                      />
                     </div>
-                    <div>
-                      <Tippy content='Add Embed' placement='bottom'>
-                        <button onClick={() => setShowLinkField(true)}>
-                          <ImEmbed2 size={21} className='text-gray-500' />
-                        </button>
-                      </Tippy>
-                    </div>
-                    <div className='relative'>
-                      {/* <EmojiPicker /> */}
-                      <Popover className='relative'>
-                        {({ open }) => (
-                          <>
-                            <Popover.Button
-                              onClick={() => {
-                                setUploadingImage(false);
-                                setShowLinkField(false);
-                                setIsLoading(false);
-                                setShowLinkField(false);
-                              } }
-                              className={`
+                  ) : null}
+                  {postEmbedLink !== "" && postEmbedLink !== null ? (
+                    <>
+                      <div className='mt-2 embed-container w-full flex flex-row items-center justify-center rounded-xl overflow-hidden'>
+                        <iframe
+                          id='embed-iframe'
+                          className='w-full flex-shrink-0'
+                          height={getEmbedHeight(postEmbedLink)}
+                          style={{ maxWidth: getEmbedWidth(postEmbedLink) }}
+                          src={postEmbedLink}
+                          frameBorder='0'
+                          allow='picture-in-picture; clipboard-write; encrypted-media; gyroscope; accelerometer; encrypted-media;'
+                          allowFullScreen></iframe>
+                      </div>
+                    </>
+                  ) : null}
+                  <div className='space-y-4'>
+                    {!isVideoReady && postVideo !== "" && (
+                      <>
+                        <div className='flex mt-4 space-x-2 items-center'>
+                          <Loader className='w-5 h-5' />{" "}
+                          <span>Processing Video</span>
+                        </div>
+                      </>
+                    )}
+                    {/* !isVideoReady && postVideo === '' &&  */}
+                    {!isVideoReady &&
+                      postVideo === "" &&
+                      uploadProgress > 0 && (
+                        <ProgressBar
+                          bgcolor='#ff00ff'
+                          progress={uploadProgress}
+                          height={24}
+                        />
+                      )}
+                  </div>
+                  <div className='flex items-center mt-2 justify-between w-full'>
+                    <div className='flex items-center space-x-4 my-2 px-2'>
+                      <div>
+                        <Tippy content='Add Image' placement='bottom'>
+                          <button onClick={() => handleImage()}>
+                            {uploadingImage ? (
+                              <Loader className='w-5 h-5' />
+                            ) : (
+                              <BiImageAdd size={21} className='text-gray-500' />
+                            )}
+                          </button>
+                        </Tippy>
+                      </div>
+                      <div>
+                        <input
+                          ref={inputFileRef}
+                          type='file'
+                          className='hidden'
+                          name='video'
+                          onChange={handleFileChange}
+                        />
+                        <Tippy content='Add Video' placement='bottom'>
+                          <button onClick={() => handleVideo()}>
+                            <BiVideoPlus size={21} className='text-gray-500' />
+                          </button>
+                        </Tippy>
+                      </div>
+                      <div>
+                        <Tippy content='Add Embed' placement='bottom'>
+                          <button onClick={() => setShowLinkField(true)}>
+                            <ImEmbed2 size={21} className='text-gray-500' />
+                          </button>
+                        </Tippy>
+                      </div>
+                      <div className='relative'>
+                        {/* <EmojiPicker /> */}
+                        <Popover className='relative'>
+                          {({ open }) => (
+                            <>
+                              <Popover.Button
+                                onClick={() => {
+                                  setUploadingImage(false);
+                                  setShowLinkField(false);
+                                  setIsLoading(false);
+                                  setShowLinkField(false);
+                                }}
+                                className={`
                                   ${open ? "" : "text-opacity-90"}
                                   group inline-flex items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75`}>
-                              <BsEmojiSmile
-                                size={19}
-                                className='text-gray-500' />
-                            </Popover.Button>
-                            <Transition
-                              as={Fragment}
-                              enter='transition ease-out duration-200'
-                              enterFrom='opacity-0 translate-y-1'
-                              enterTo='opacity-100 translate-y-0'
-                              leave='transition ease-in duration-150'
-                              leaveFrom='opacity-100 translate-y-0'
-                              leaveTo='opacity-0 translate-y-1'>
-                              <Popover.Panel className='absolute left-1/2 z-20 mt-3 w-screen max-w-sm -translate-x-1/2 transform'>
-                                <EmojiPicker
-                                  emojiStyle='twitter'
-                                  onEmojiClick={setEmoji} />
-                              </Popover.Panel>
-                            </Transition>
-                          </>
-                        )}
-                      </Popover>
+                                <BsEmojiSmile
+                                  size={19}
+                                  className='text-gray-500'
+                                />
+                              </Popover.Button>
+                              <Transition
+                                as={Fragment}
+                                enter='transition ease-out duration-200'
+                                enterFrom='opacity-0 translate-y-1'
+                                enterTo='opacity-100 translate-y-0'
+                                leave='transition ease-in duration-150'
+                                leaveFrom='opacity-100 translate-y-0'
+                                leaveTo='opacity-0 translate-y-1'>
+                                <Popover.Panel className='absolute left-1/2 z-20 mt-3 w-screen max-w-sm -translate-x-1/2 transform'>
+                                  <EmojiPicker
+                                    emojiStyle='twitter'
+                                    onEmojiClick={setEmoji}
+                                  />
+                                </Popover.Panel>
+                              </Transition>
+                            </>
+                          )}
+                        </Popover>
+                      </div>
+                    </div>
+                    <div className='flex w-full justify-end space-x-2'>
+                      <Tippy content='Configure Post' placement='bottom'>
+                        <button
+                          onClick={() => setPostConfigure(!postConfigure)}>
+                          <BiSlider size={21} className='text-gray-500' />
+                        </button>
+                      </Tippy>
+                      <button
+                        onClick={(e) => submitPost(e)}
+                        className={`buttonBG dark:text-white flex items-center ${
+                          isLoading ? "px-4" : "px-8"
+                        } py-2 rounded-full`}>
+                        {isLoading && <Loader className='mr-2 w-5 h-5' />}{" "}
+                        <span>Post</span>
+                      </button>
                     </div>
                   </div>
-                  <div className='flex w-full justify-end space-x-2'>
-                    <Tippy content='Configure Post' placement='bottom'>
-                      <button onClick={() => setPostConfigure(!postConfigure)}>
-                        <BiSlider size={21} className='text-gray-500' />
-                      </button>
-                    </Tippy>
-                    <button
-                      onClick={(e) => submitPost(e)}
-                      className={`buttonBG dark:text-white flex items-center ${isLoading ? "px-4" : "px-8"} py-2 rounded-full`}>
-                      {isLoading && <Loader className='mr-2 w-5 h-5' />}{" "}
-                      <span>Post</span>
-                    </button>
-                  </div>
-                </div></>
+                </>
               </>
             ) : null}
           </div>

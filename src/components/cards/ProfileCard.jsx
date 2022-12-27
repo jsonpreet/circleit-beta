@@ -83,6 +83,10 @@ function ProfileCard({ circle }) {
     }
   }, [isLoggedIn, circle, user.profile]);
 
+  const handleFollow = async () => {
+    //have to write this after making mempool thing work
+  };
+
   useEffect(() => {
     circle.Description.length > 200 ? setReadMore(true) : setReadMore(false);
   }, [circle.Description]);
@@ -172,16 +176,10 @@ function ProfileCard({ circle }) {
         </div>
         <div className='divider'></div>
         <div className='px-6 py-4 items-center justify-center flex'>
-          {isLoggedIn ? (
-            isFollowing ? (
-              <button className='py-2 px-10 border border-transparent rounded-full text-sm font-medium text-white buttonBG focus:outline-none'>
-                {isCircle ? `Leave` : `Unfollow`}
-              </button>
-            ) : (
-              <button className='py-2 px-10 border border-transparent rounded-full text-sm font-medium text-white buttonBG focus:outline-none'>
-                {isCircle ? `Join` : `Follow`}
-              </button>
-            )
+          {isFollowing ? (
+            <button className='py-2 px-10 border border-transparent rounded-full text-sm font-medium text-white buttonBG focus:outline-none'>
+              {isCircle ? `Leave` : `Unfollow`}
+            </button>
           ) : (
             <button className='py-2 px-10 border border-transparent rounded-full text-sm font-medium text-white buttonBG focus:outline-none'>
               {isCircle ? `Join` : `Follow`}

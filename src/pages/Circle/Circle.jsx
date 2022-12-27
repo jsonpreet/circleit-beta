@@ -391,7 +391,7 @@ export default function Circle() {
   return (
     <>
       <DefaultLayout>
-        <div className='flex sm:grid sm:grid-cols-1 sm:gap-4 items-start lg:grid-cols-3 lg:gap-8 flex-col-reverse'>
+        <div className='flex sm:grid sm:grid-cols-1 sm:gap-4  lg:grid-cols-3 lg:gap-8 flex-col-reverse items-center sm:items-start'>
           <div className='grid grid-cols-1 gap-4 lg:col-span-2 sm:mt-6'>
             {isLoggedIn && <CreatePostBox circle={circleProfile} />}
             <div className='flex flex-row justify-between items-center py-2'>
