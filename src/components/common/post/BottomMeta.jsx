@@ -47,8 +47,8 @@ function PostBottomMeta({ circle, isCircle, isRepost, post, desoObj }) {
         setShowShare={setShowShareModal}
         post={post}
       />
-      <div className='flex w-full items-center  primaryTextColo'>
-        <div className='flex -ml-3'>
+      <div className='flex w-full items-center  primaryTextColo '>
+        <div className='flex sm:-ml-2 justify-between w-full items-center sm:justify-start'>
           {isRepost && (
             <div className='px-3 hidden md:flex text-sm items-center justify-center font-semibold extralightText'>
               {post.PostEntryReaderState.LikedByReader ? (
@@ -93,7 +93,7 @@ function PostBottomMeta({ circle, isCircle, isRepost, post, desoObj }) {
           </button>
           <button
             onClick={() => setShowShareModal(!showShareModal)}
-            className='px-3 cursor-pointer flex text-sm items-center justify-center font-semibold extralightText pt-2'>
+            className='px-3 cursor-pointer  text-sm items-center justify-center font-semibold extralightText pt-2 hidden sm:flex'>
             <FaRegShareSquare size={20} className='mt-1 mr-1' />
             <span className='mt-[1px]'></span>
           </button>
