@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Deso from "deso-protocol";
 import PostCard from "../../components/cards/PostCard";
 import { useNavigate, useParams } from "react-router-dom";
-import { CreatePostBox } from "../../components/common";
 import { SidebarRight } from "../../components/sidebar/circle";
 import useApp from "../../store/app";
 import FeedShimmer from "../../components/shimmers/Feed";
@@ -13,7 +12,7 @@ import { useInView } from "react-cool-inview";
 import { DefaultLayout } from "../../components/layouts";
 import { DESO_CONFIG } from "../../utils/Constants";
 import ProfileTabs from "../../components/common/ProfileTabs";
-
+import toast from "react-hot-toast";
 export default function Circle() {
   const { isLoggedIn, user } = useApp();
   const { username } = useParams();
@@ -23,7 +22,7 @@ export default function Circle() {
   const [activeTab, setActiveTab] = useState("");
   const [feedLoading, setFeedLoading] = useState(false);
   const [currentActiveTab, setCurrentActiveTab] = useState("");
-
+  const [isFeedReloading, setIsFeedReloading] = useState(false);
   const navigate = useNavigate();
 
   // having 2 different states for each tab. So we don't have to fetch the data again on tab change
@@ -44,6 +43,8 @@ export default function Circle() {
     ? user.profile.PublicKeyBase58Check
     : "BC1YLhBLE1834FBJbQ9JU23JbPanNYMkUsdpJZrFVqNGsCe7YadYiUg";
 
+  const deso = new Deso(DESO_CONFIG);
+
   useEffect(() => {
     if (mentionFeed && mentionFeed.length > 0) {
       setNoMnetionPosts(false);
@@ -61,7 +62,7 @@ export default function Circle() {
   useEffect(() => {
     async function fetchData(lastTab) {
       if (!username) return navigate("/");
-      const deso = new Deso(DESO_CONFIG);
+
       const profileRequest = {
         Username: `${username}`,
       };
@@ -165,7 +166,6 @@ export default function Circle() {
   const { observe } = useInView({
     rootMargin: "1000px 0px",
     onEnter: async () => {
-      const deso = new Deso(DESO_CONFIG);
       if (activeTab === "mentions") {
         setMentionHasMore(true);
         const request = {
@@ -227,6 +227,97 @@ export default function Circle() {
     localStorage.setItem("profileTab", tab);
     setActiveTab(tab);
   };
+
+  const handleFeedReload = () => {
+    setIsFeedReloading(true);
+    async function reloadFeed(lastTab) {
+      let sequenceTabList = [lastTab ? lastTab : "posts", "mentions", "posts"];
+      //remove duplicate from sequenceTabList
+      sequenceTabList = [...new Set(sequenceTabList)];
+      //looping through each tab and storing their feed data in state
+      let newPostFound = 0;
+      for (let i = 0; i < sequenceTabList.length; i++) {
+        const tab = sequenceTabList[i];
+        if (tab === "mentions") {
+          const request = {
+            ReaderPublicKeyBase58Check: userPublicKey,
+            SeenPosts: [],
+            Tag: `@${username.toLowerCase()}`,
+            SortByNew: true,
+            ResponseLimit: 20,
+          };
+          try {
+            const response = await deso.posts.getHotFeed(request);
+            if (response.HotFeedPage === null) {
+              setMentionHasMore(false);
+            }
+            let feedDataList = response.HotFeedPage;
+            feedDataList = feedDataList.filter(
+              (post) => post.RecloutedPostEntryResponse === null
+            );
+            //see if feedDataList has any new post by comparing with mentionFeed
+            feedDataList = feedDataList.filter(
+              (post) =>
+                !mentionFeed.some((p) => p.PostHashHex === post.PostHashHex)
+            );
+
+            //if new post found, then set newPostFound to number of new post found and update seenHotPosts and hotFeed
+            if (feedDataList.length > 0) {
+              newPostFound += feedDataList.length;
+              setSeenMentionPost([
+                ...seenMentionPost,
+                ...feedDataList.map((post) => post.PostHashHex),
+              ]);
+              setMentionFeed([...feedDataList, ...mentionFeed]);
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        }
+        if (tab === "posts") {
+          const request = {
+            Username: username.toLowerCase(),
+            ReaderPublicKeyBase58Check: userPublicKey,
+            NumToFetch: 20,
+          };
+          try {
+            const response = await deso.posts.getPostsForPublicKey(request);
+            if (response.Posts === null) {
+              setCommunityHasMore(false);
+            }
+            let feedDataList = response.Posts;
+
+            //see if feedDataList has any new post by comparing with communityPostFeed
+            feedDataList = feedDataList.filter(
+              (post) =>
+                !communityPostFeed.some(
+                  (p) => p.PostHashHex === post.PostHashHex
+                )
+            );
+            console.log(feedDataList);
+            //if new post found, then set newPostFound to number of new post found and update communityPostFeed
+            if (feedDataList.length > 0) {
+              newPostFound += feedDataList.length;
+              setCommunityPostFeed([...feedDataList, ...communityPostFeed]);
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      }
+
+      setIsFeedReloading(false);
+      if (newPostFound > 0) {
+        toast.success(
+          `${newPostFound} new post${newPostFound == 1 ? "" : "s"} found!`
+        );
+      } else {
+        toast.success("No new post found! You are up to date!");
+      }
+    }
+    reloadFeed(currentActiveTab);
+  };
+
   return (
     <>
       <DefaultLayout>
@@ -237,6 +328,8 @@ export default function Circle() {
               username={username}
               activeTab={activeTab}
               currentActiveTab={currentActiveTab}
+              handleFeedReload={handleFeedReload}
+              isFeedReloading={isFeedReloading}
             />
 
             <div>
@@ -259,9 +352,10 @@ export default function Circle() {
                   ) : (
                     <NoPostCard />
                   )}
-                  {(mentionFeed && !isLoading && !feedLoading && mentionFeed.length === 0) && (
-                    <NoPostCard />
-                  )}
+                  {mentionFeed &&
+                    !isLoading &&
+                    !feedLoading &&
+                    mentionFeed.length === 0 && <NoPostCard />}
                   {!isLoading &&
                     !feedLoading &&
                     (mentionHasMore ? (
@@ -295,7 +389,8 @@ export default function Circle() {
                     <NoPostCard />
                   )}
                   {!isLoading &&
-                    !feedLoading && communityPostFeed &&
+                    !feedLoading &&
+                    communityPostFeed &&
                     communityPostFeed.length === 0 && <NoPostCard />}
                   {!isLoading &&
                     !feedLoading &&

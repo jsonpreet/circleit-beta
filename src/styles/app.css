@@ -14,6 +14,17 @@ body {
   }
 }
 
+
+@keyframes ping2 {
+  75%, 100% {
+      transform: scale(1.2);
+      opacity: 0;
+  }
+}
+.custom-ping{
+  animation: ping2 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
 .primaryBg {
   @apply dark:bg-[#121214] bg-[#fff];
 }

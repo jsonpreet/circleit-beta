@@ -1,14 +1,19 @@
 import { Menu, Transition } from "@headlessui/react";
 import React, { Fragment } from "react";
 import { isBrowser } from "react-device-detect";
-import { BiChevronDown } from "react-icons/bi";
+import { BiChevronDown, BiRefresh } from "react-icons/bi";
 
 function ProfileTabs({
   currentActiveTab,
   handleTabChange,
   activeTab,
   username,
+  handleFeedReload,
+  isFeedReloading,
 }) {
+  const handleReload = () => {
+    handleFeedReload();
+  };
   return (
     <>
       {isBrowser ? (
@@ -21,6 +26,15 @@ function ProfileTabs({
             </h2>
             <div className='flex flex-row space-x-2'>
               <button
+                className={`rounded-full px-3 dark:text-gray-200 ${
+                  isFeedReloading
+                    ? "animate-spin hover:bg-none"
+                    : "hover:bg-gray-200 hover:dark:bg-gray-800 "
+                }}`}
+                onClick={handleReload}>
+                <BiRefresh size={22} />
+              </button>
+              <button
                 onClick={() => handleTabChange("posts")}
                 className={`${
                   activeTab === "posts"
@@ -29,7 +43,7 @@ function ProfileTabs({
                 } font-semibold px-8 py-2 rounded-full`}>
                 Posts
               </button>
-             
+
               <button
                 onClick={() => handleTabChange("mentions")}
                 className={`${

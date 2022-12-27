@@ -13,6 +13,7 @@ import { useInView } from "react-cool-inview";
 import { DefaultLayout } from "../../components/layouts";
 import { DESO_CONFIG } from "../../utils/Constants";
 import CircleTabs from "../../components/common/CircleTabs";
+import { toast } from "react-hot-toast";
 
 export default function Circle() {
   const { isLoggedIn, user } = useApp();
@@ -42,10 +43,13 @@ export default function Circle() {
   const [noHotPosts, setNoHotPosts] = useState(false);
   const [noNewPosts, setNoNewPosts] = useState(false);
   const [noCommunityPosts, setNoCommunityPosts] = useState(false);
+
+  const [isFeedReloading, setIsFeedReloading] = useState(false);
   const userPublicKey = isLoggedIn
     ? user.profile.PublicKeyBase58Check
     : "BC1YLhBLE1834FBJbQ9JU23JbPanNYMkUsdpJZrFVqNGsCe7YadYiUg";
 
+  const deso = new Deso(DESO_CONFIG);
   useEffect(() => {
     if (hotFeed && hotFeed.length > 0) {
       setNoHotPosts(false);
@@ -67,7 +71,7 @@ export default function Circle() {
   useEffect(() => {
     async function fetchData(lastTab) {
       if (!circle) return navigate("/");
-      const deso = new Deso(DESO_CONFIG);
+
       const profileRequest = {
         Username: `${circle}`,
       };
@@ -198,7 +202,6 @@ export default function Circle() {
   const { observe } = useInView({
     rootMargin: "1000px 0px",
     onEnter: async () => {
-      const deso = new Deso(DESO_CONFIG);
       if (activeTab === "hot" || activeTab === "new") {
         let isNew = activeTab === "new" ? true : false;
         if (activeTab === "hot") setHotHasMore(true);
@@ -276,6 +279,135 @@ export default function Circle() {
     setCommunityPostFeed([]);
     setLastPostHashHex("");
   }, [circle]);
+
+  const handleFeedReload = () => {
+    setIsFeedReloading(true);
+    async function reloadFeed(lastTab) {
+      let sequenceTabList = [
+        lastTab ? lastTab : "hot",
+        "new",
+        "community",
+        "hot",
+      ];
+      //remove duplicate from sequenceTabList
+      sequenceTabList = [...new Set(sequenceTabList)];
+      //looping through each tab and storing their feed data in state
+      let newPostFound = 0;
+      for (let i = 0; i < sequenceTabList.length; i++) {
+        const tab = sequenceTabList[i];
+        if (tab === "hot") {
+          const request = {
+            ReaderPublicKeyBase58Check: userPublicKey,
+            SeenPosts: [],
+            Tag: `@${circle.toLowerCase()}`,
+            SortByNew: false,
+            ResponseLimit: 20,
+          };
+          try {
+            const response = await deso.posts.getHotFeed(request);
+            if (response.HotFeedPage === null) {
+              setHotHasMore(false);
+            }
+            let feedDataList = response.HotFeedPage;
+            feedDataList = feedDataList.filter(
+              (post) => post.RecloutedPostEntryResponse === null
+            );
+            //see if feedDataList has any new post by comparing with hotFeed
+            feedDataList = feedDataList.filter(
+              (post) => !hotFeed.some((p) => p.PostHashHex === post.PostHashHex)
+            );
+
+            //if new post found, then set newPostFound to number of new post found and update seenHotPosts and hotFeed
+            if (feedDataList.length > 0) {
+              newPostFound += feedDataList.length;
+              setSeenHotPosts([
+                ...seenHotPosts,
+                ...feedDataList.map((post) => post.PostHashHex),
+              ]);
+              setHotFeed([...feedDataList, ...hotFeed]);
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        }
+        if (tab === "new") {
+          const request = {
+            ReaderPublicKeyBase58Check: userPublicKey,
+            SeenPosts: [],
+            Tag: `@${circle.toLowerCase()}`,
+            SortByNew: true,
+            ResponseLimit: 20,
+          };
+          try {
+            const response = await deso.posts.getHotFeed(request);
+            if (response.HotFeedPage === null) {
+              setNewHasMore(false);
+            }
+            let feedDataList = response.HotFeedPage;
+            feedDataList = feedDataList.filter(
+              (post) => post.RecloutedPostEntryResponse === null
+            );
+            //see if feedDataList has any new post by comparing with newFeed
+            feedDataList = feedDataList.filter(
+              (post) => !newFeed.some((p) => p.PostHashHex === post.PostHashHex)
+            );
+
+            //if new post found, then set newPostFound to number of new post found and update seenNewPosts and newFeed
+            if (feedDataList.length > 0) {
+              newPostFound += feedDataList.length;
+              setSeenNewPosts([
+                ...seenNewPosts,
+                ...feedDataList.map((post) => post.PostHashHex),
+              ]);
+              setNewFeed([...feedDataList, ...newFeed]);
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        }
+        if (tab === "community") {
+          const request = {
+            Username: circle.toLowerCase(),
+            ReaderPublicKeyBase58Check: userPublicKey,
+            NumToFetch: 20,
+          };
+          try {
+            const response = await deso.posts.getPostsForPublicKey(request);
+            if (response.Posts === null) {
+              setCommunityHasMore(false);
+            }
+            let feedDataList = response.Posts;
+
+            //see if feedDataList has any new post by comparing with communityPostFeed
+            feedDataList = feedDataList.filter(
+              (post) =>
+                !communityPostFeed.some(
+                  (p) => p.PostHashHex === post.PostHashHex
+                )
+            );
+            console.log(feedDataList);
+            //if new post found, then set newPostFound to number of new post found and update communityPostFeed
+            if (feedDataList.length > 0) {
+              newPostFound += feedDataList.length;
+              setCommunityPostFeed([...feedDataList, ...communityPostFeed]);
+            }
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      }
+
+      setIsFeedReloading(false);
+      if (newPostFound > 0) {
+        toast.success(
+          `${newPostFound} new post${newPostFound == 1 ? "" : "s"} found!`
+        );
+      } else {
+        toast.success("No new post found! You are up to date!");
+      }
+    }
+    reloadFeed(currentActiveTab);
+  };
   return (
     <>
       <DefaultLayout>
@@ -287,6 +419,8 @@ export default function Circle() {
                 handleTabChange={handleTabChange}
                 currentActiveTab={currentActiveTab}
                 activeTab={activeTab}
+                handleFeedReload={handleFeedReload}
+                isFeedReloading={isFeedReloading}
               />
             </div>
             <div>
