@@ -1,19 +1,21 @@
 export const defaultCircles = [
-    {
-        circleName: 'DeSoCircle',
-        publicKey: 'BC1YLgYC9tzqwYNC6uSSaRrzDcf5ab3CAYXJgfCosbvemEx6Vxwe6q7',
-    },
+
     {
         circleName: 'BitCoinCircle',
         publicKey: 'BC1YLhx5DHXhWb7ojEfD1fT59YuNE65X4LN7YrZegtSWNrJBr4B3iER'
     },
     {
+        circleName: 'DeSoCircle',
+        publicKey: 'BC1YLgYC9tzqwYNC6uSSaRrzDcf5ab3CAYXJgfCosbvemEx6Vxwe6q7',
+    },
+   
+    {
         circleName: "CircleIt",
         publicKey: "BC1YLgbXw1u8M3Sf6812pfewa2ozzK8SGQfkKU162QJf59xe1YaFfuU"
     },
     {
-        circleName: "CyberPunkApes",
-        publicKey: "BC1YLhM4vH9FTepmEm9jCBrKmR46vW5n517YEopsuLT49JQHw674KE2"
+        circleName: "CardanoCircle",
+        publicKey: "BC1YLhRJYmk7ZhcMhjPU6chYc5EpKsL9XFgYManNKTPUio3VM6YEfF6"
     },
     {
         circleName: "RandomOpinions",
