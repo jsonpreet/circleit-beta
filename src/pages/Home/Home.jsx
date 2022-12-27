@@ -147,7 +147,7 @@ function Home() {
               <span className='md:px-5'>
                 Get paid for{" "}
                 <span className='text-transparent bg-clip-text brandGradientBg'>
-                  Building
+                  Creating
                 </span>{" "}
                 and{" "}
                 <span className='text-transparent bg-clip-text brandGradientBg'>
