@@ -119,7 +119,7 @@ export default function Verification({ user, sidebar }) {
           </p>
           <input
             type='text'
-            placeholder='Search Users to add as moderators'
+            placeholder='Search Users to Verify them'
             value={searchPrefix}
             className='search rounded-full darkenBg darkenBorder border darkenHoverBg  px-3 py-2 w-full outline-none focus:shadow transition delay-50 placeholder:text-gray-400 dark:placeholder:text-gray-500'
             onChange={(e) => setSearchPrefix(e.target.value)}
