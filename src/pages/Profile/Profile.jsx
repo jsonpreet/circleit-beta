@@ -35,29 +35,11 @@ export default function Circle() {
   const [mentionHasMore, setMentionHasMore] = useState(true);
 
   const [communityHasMore, setCommunityHasMore] = useState(true);
-
-  const [noMentionPosts, setNoMnetionPosts] = useState(false);
-
-  const [noCommunityPosts, setNoCommunityPosts] = useState(false);
   const userPublicKey = isLoggedIn
     ? user.profile.PublicKeyBase58Check
     : "BC1YLhBLE1834FBJbQ9JU23JbPanNYMkUsdpJZrFVqNGsCe7YadYiUg";
 
   const deso = new Deso(DESO_CONFIG);
-
-  useEffect(() => {
-    if (mentionFeed && mentionFeed.length > 0) {
-      setNoMnetionPosts(false);
-    } else {
-      setNoMnetionPosts(true);
-    }
-
-    if (communityPostFeed && communityPostFeed.length > 0) {
-      setNoCommunityPosts(false);
-    } else {
-      setNoCommunityPosts(true);
-    }
-  }, [mentionFeed, communityPostFeed]);
 
   useEffect(() => {
     async function fetchData(lastTab) {
@@ -229,6 +211,7 @@ export default function Circle() {
   };
 
   const handleFeedReload = () => {
+    if (isFeedReloading || isLoading) return;
     setIsFeedReloading(true);
     async function reloadFeed(lastTab) {
       let sequenceTabList = [lastTab ? lastTab : "posts", "mentions", "posts"];
@@ -321,7 +304,7 @@ export default function Circle() {
   return (
     <>
       <DefaultLayout>
-        <div className='grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-8'>
+      <div className='flex sm:grid sm:grid-cols-1 sm:gap-4 items-start lg:grid-cols-3 lg:gap-8 flex-col-reverse'>
           <div className='grid grid-cols-1 gap-4 lg:col-span-2 mt-6'>
             <ProfileTabs
               handleTabChange={handleTabChange}
@@ -407,7 +390,7 @@ export default function Circle() {
               )}
             </div>
           </div>
-          <div className='mt-[20px] md:mt-[35px]'>
+          <div className='sm:mt-[20px] md:mt-[35px]'>
             {!isLoading ? (
               <SidebarRight circle={userProfile} />
             ) : (

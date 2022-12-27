@@ -40,33 +40,12 @@ export default function Circle() {
   const [newHasMore, setNewHasMore] = useState(true);
   const [communityHasMore, setCommunityHasMore] = useState(true);
 
-  const [noHotPosts, setNoHotPosts] = useState(false);
-  const [noNewPosts, setNoNewPosts] = useState(false);
-  const [noCommunityPosts, setNoCommunityPosts] = useState(false);
-
   const [isFeedReloading, setIsFeedReloading] = useState(false);
   const userPublicKey = isLoggedIn
     ? user.profile.PublicKeyBase58Check
     : "BC1YLhBLE1834FBJbQ9JU23JbPanNYMkUsdpJZrFVqNGsCe7YadYiUg";
 
   const deso = new Deso(DESO_CONFIG);
-  useEffect(() => {
-    if (hotFeed && hotFeed.length > 0) {
-      setNoHotPosts(false);
-    } else {
-      setNoHotPosts(true);
-    }
-    if (newFeed && newFeed.length > 0) {
-      setNoNewPosts(false);
-    } else {
-      setNoNewPosts(true);
-    }
-    if (communityPostFeed && communityPostFeed.length > 0) {
-      setNoCommunityPosts(false);
-    } else {
-      setNoCommunityPosts(true);
-    }
-  }, [hotFeed, newFeed, communityPostFeed]);
 
   useEffect(() => {
     async function fetchData(lastTab) {
@@ -281,6 +260,7 @@ export default function Circle() {
   }, [circle]);
 
   const handleFeedReload = () => {
+    if (isFeedReloading || isLoading) return;
     setIsFeedReloading(true);
     async function reloadFeed(lastTab) {
       let sequenceTabList = [
@@ -411,8 +391,8 @@ export default function Circle() {
   return (
     <>
       <DefaultLayout>
-        <div className='grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-8'>
-          <div className='grid grid-cols-1 gap-4 lg:col-span-2 mt-6'>
+        <div className='flex sm:grid sm:grid-cols-1 sm:gap-4 items-start lg:grid-cols-3 lg:gap-8 flex-col-reverse'>
+          <div className='grid grid-cols-1 gap-4 lg:col-span-2 sm:mt-6'>
             {isLoggedIn && <CreatePostBox circle={circleProfile} />}
             <div className='flex flex-row justify-between items-center py-2'>
               <CircleTabs
@@ -530,9 +510,10 @@ export default function Circle() {
               )}
             </div>
           </div>
-          <div className='mt-[20px] md:mt-[35px]'>
+          <div className='sm:mt-[20px] md:mt-[35px]'>
             {!isLoading ? (
               <SidebarRight circle={circleProfile} />
+              
             ) : (
               <SidebarShimmer />
             )}
