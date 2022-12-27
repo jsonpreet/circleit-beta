@@ -8,7 +8,11 @@ export default function FeedChanger({
   handleFeedChange,
   feedUser,
 }) {
-  const initialSearchResult = [
+  let initialSearchResult = [
+    {
+      Username: "My Feed",
+      PublicKeyBase58Check: userPublicKey,
+    },
     {
       Username: "Nader",
       PublicKeyBase58Check:
@@ -19,19 +23,25 @@ export default function FeedChanger({
       PublicKeyBase58Check:
         "BC1YLhBLE1834FBJbQ9JU23JbPanNYMkUsdpJZrFVqNGsCe7YadYiUg",
     },
-    {
-      Username: "Mossified",
-      PublicKeyBase58Check:
-        "BC1YLgi66tdjAaVfYpmM447cxsve3TpvfXD9h8X6JMak7gbKABoEVaT",
-    },
+
     {
       Username: "WhaleSharkETH",
       PublicKeyBase58Check:
         "BC1YLi2r4Kn2vDb2ThCrbtG3cASKYnzqAvyv2qwCshbS3NojYxQNudp",
     },
   ];
+  //remove duplicates from initialSearchResult
+
+  const uniqueSearchResults = initialSearchResult.filter(
+    (thing, index, self) =>
+      index ===
+      self.findIndex(
+        (t) => t.PublicKeyBase58Check === thing.PublicKeyBase58Check
+      )
+  );
+
   const [browseFeedSearchResult, setBrowseFeedSearchResult] =
-    useState(initialSearchResult);
+    useState(uniqueSearchResults);
   const [query, setQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
 
@@ -48,7 +58,7 @@ export default function FeedChanger({
           if (profiles && profiles.ProfilesFound !== null) {
             setBrowseFeedSearchResult(profiles.ProfilesFound.slice(0, 5));
           } else {
-            setBrowseFeedSearchResult(initialSearchResult);
+            setBrowseFeedSearchResult(uniqueSearchResults);
           }
           setIsSearching(false);
         } catch (error) {
@@ -56,7 +66,7 @@ export default function FeedChanger({
           setIsSearching(false);
         }
       } else {
-        setBrowseFeedSearchResult(initialSearchResult);
+        setBrowseFeedSearchResult(uniqueSearchResults);
         //setShowResults(false);
       }
     }, 700);

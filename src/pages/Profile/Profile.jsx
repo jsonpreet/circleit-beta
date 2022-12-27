@@ -304,7 +304,7 @@ export default function Circle() {
   return (
     <>
       <DefaultLayout>
-      <div className='flex sm:grid sm:grid-cols-1 sm:gap-4  lg:grid-cols-3 lg:gap-8 flex-col-reverse items-center sm:items-start'>
+        <div className='flex sm:grid sm:grid-cols-1 sm:gap-4  lg:grid-cols-3 lg:gap-8 flex-col-reverse items-center sm:items-start'>
           <div className='grid grid-cols-1 gap-4 lg:col-span-2 mt-6'>
             <ProfileTabs
               handleTabChange={handleTabChange}
