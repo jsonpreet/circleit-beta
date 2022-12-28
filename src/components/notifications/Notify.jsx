@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 
 export const Notify = ({ notification }) => {
+    if(!notification) return null;
     const profileExtra = typeof notification?.post?.ProfileEntryResponse?.ExtraData !== "undefined" ? notification?.post?.ProfileEntryResponse?.ExtraData : null;
 
     const circleData = profileExtra ? typeof profileExtra.CircleIt !== "undefined" ? JSON.parse(profileExtra.CircleIt) : null : null;
@@ -20,22 +21,22 @@ export const Notify = ({ notification }) => {
         <>
             {
                 notification.type === 'REPLIED_TO_POST' ?
-                    <span className='text-sm extralight flex space-x-1'>
+                    <span className='text-sm extralight flex-none flex space-x-1'>
                         <span>replied on your</span>
                         <PostLink isCircle={isCircle} notification={notification}/>
                     </span>
                     : notification.type === 'DIAMOND_SENT' ?
-                        <span className='text-sm extralight flex space-x-1'>
+                        <span className='text-sm extralight flex-none flex space-x-1'>
                             <span>diamonded your</span>
                             <PostLink isCircle={isCircle} notification={notification}/>
                         </span>
                         : notification.type === 'LIKED' ?
-                            <span className='text-sm extralight flex space-x-1'>
+                            <span className='text-sm extralight flex-none flex space-x-1'>
                                 <span>liked your</span>
                                 <PostLink isCircle={isCircle} notification={notification}/>
                             </span>
                             : notification.type === 'MENTIONED' ?
-                                <span className='text-sm extralight flex space-x-1'>
+                                <span className='text-sm extralight flex-none flex space-x-1'>
                                     <span>mentioned you in</span>
                                     <PostLink isCircle={isCircle} notification={notification}/>
                                 </span>
