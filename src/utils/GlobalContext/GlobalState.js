@@ -14,6 +14,9 @@ const GlobalState = (props) => {
   const [newCircles, setNewCircles] = useState([]);
   const [desoObj, setDesoObj] = useState(deso);
 
+  const [topCirclesStatelessResponse, setTopCirclesStatelessResponse] =
+    useState([]);
+
   const updateHomeFeed = (newHomeFeed) => {
     setHomeFeed(newHomeFeed);
   };
@@ -39,6 +42,11 @@ const GlobalState = (props) => {
   const updateNewCircles = (newNewCircles) => {
     setNewCircles(newNewCircles);
   };
+  const updateTopCirclesStatelessResponse = (
+    newTopCirclesStatelessResponse
+  ) => {
+    setTopCirclesStatelessResponse(newTopCirclesStatelessResponse);
+  };
   return (
     <GlobalContext.Provider
       value={{
@@ -50,6 +58,7 @@ const GlobalState = (props) => {
         followingFeedInfo,
         newCircles,
         desoObj,
+        topCirclesStatelessResponse,
         updateHomeFeed,
         updateFollowingFeed,
         updateCircleItProfile,
@@ -57,6 +66,7 @@ const GlobalState = (props) => {
         updateDiamondInfoMap,
         updateFollowingFeedInfo,
         updateNewCircles,
+        updateTopCirclesStatelessResponse,
       }}>
       {props.children}
     </GlobalContext.Provider>

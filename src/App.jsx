@@ -9,35 +9,65 @@ import { Post } from "./pages/Post";
 import { Profile } from "./pages/Profile";
 import RedirectRoute from "./pages/RedirectRoute";
 import { SignUp } from "./pages/SignUp";
-import MemPoolState from "../src/MemoryPool/MemPoolState"
+import MemPoolState from "../src/MemoryPool/MemPoolState";
 import GlobalState from "./utils/GlobalContext/GlobalState";
 import { Notifications } from "./pages/Notifications";
+import { Discover } from "./pages/Discover";
 function App() {
   return (
     <>
-    <MemPoolState>
-      <GlobalState>
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/following' element={<Following/>} />
-          <Route path='/' element={<Home/>} />
-          <Route path='/sign-up' element={<SignUp/>} />
-       
-          <Route path='/hot' element={<Home />} />
-          <Route path='/circle' element={<RedirectRoute />} />
-          <Route path='/u' element={<RedirectRoute />} />
-          <Route path='circle/:circle' element={<Circle />} />
-          <Route path='/u/:username' element={<Profile />} />
-          <Route path='/circle/:circle/:postID' element={<Post />} />
-          <Route path='/u/:circle/:postID' element={<Post />} />
-          <Route path='/circle/:circle/settings' element={<ProtectedRoute><CircleSettings /></ProtectedRoute>} />
-          <Route path='/circle/:circle/create/:type' element={<ProtectedRoute><CreatePost /></ProtectedRoute>} />
-          <Route path='/u/:username/settings' element={<ProtectedRoute><CircleSettings /></ProtectedRoute>} />
-          <Route path='/notifications/:username' element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
-        </Routes>
-      </BrowserRouter>
-      </GlobalState>
+      <MemPoolState>
+        <GlobalState>
+          <BrowserRouter>
+            <Routes>
+              <Route path='/' element={<Home />} />
+              <Route path='/following' element={<Following />} />
+              <Route path='/' element={<Home />} />
+              <Route path='/sign-up' element={<SignUp />} />
+
+              <Route path='/hot' element={<Home />} />
+              <Route path='/circle' element={<RedirectRoute />} />
+              <Route path='/discover' element={<Discover />} />
+              <Route path='/u' element={<RedirectRoute />} />
+              <Route path='circle/:circle' element={<Circle />} />
+              <Route path='/u/:username' element={<Profile />} />
+              <Route path='/circle/:circle/:postID' element={<Post />} />
+              <Route path='/u/:circle/:postID' element={<Post />} />
+              <Route
+                path='/circle/:circle/settings'
+                element={
+                  <ProtectedRoute>
+                    <CircleSettings />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path='/circle/:circle/create/:type'
+                element={
+                  <ProtectedRoute>
+                    <CreatePost />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path='/u/:username/settings'
+                element={
+                  <ProtectedRoute>
+                    <CircleSettings />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path='/notifications/:username'
+                element={
+                  <ProtectedRoute>
+                    <Notifications />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+          </BrowserRouter>
+        </GlobalState>
       </MemPoolState>
     </>
   );

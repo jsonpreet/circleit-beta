@@ -1,7 +1,7 @@
 import React from "react";
-import { BsChatLeft } from "react-icons/bs";
+
 import { IoDiamondOutline } from "react-icons/io5";
-import { FiRefreshCcw } from "react-icons/fi";
+import { BiRepost, BiComment } from "react-icons/bi";
 import { FaRegShareSquare } from "react-icons/fa";
 import { HeartFillIcon, HeartIcon } from "../../../utils/Icons";
 import LikeButton from "./Like";
@@ -48,7 +48,7 @@ function PostBottomMeta({ circle, isCircle, isRepost, post, desoObj }) {
         post={post}
       />
       <div className='flex w-full items-center  primaryTextColo '>
-        <div className='flex sm:-ml-2 justify-between w-full items-center sm:justify-start'>
+        <div className='flex -ml-2 justify-between w-full items-center sm:justify-start'>
           {isRepost && (
             <div className='px-3 hidden md:flex text-sm items-center justify-center font-semibold extralightText'>
               {post.PostEntryReaderState.LikedByReader ? (
@@ -68,11 +68,11 @@ function PostBottomMeta({ circle, isCircle, isRepost, post, desoObj }) {
               )
             }
             className='mx-1 px-2 flex text-sm items-center cursor-pointer justify-center font-semibold extralightText  pt-2'>
-            <BsChatLeft size={20} className='mt-1 mr-1' />
+            <BiComment size={24} className='mt-1 mr-1' />
             <span>{formatNumber(post.CommentCount)}</span>
           </button>
           <div className='px-2 mx-1 flex text-sm items-center justify-center font-semibold extralightText pt-2 '>
-            <FiRefreshCcw size={20} className='mt-1 mr-1' />
+            <BiRepost size={28} className=' mr-1' />
             <span>
               {formatNumber(post.RepostCount + post.QuoteRepostCount)}
             </span>

@@ -13,6 +13,7 @@ const GlobalContext = createContext({
   followingFeedInfo: {},
   newCircles: [],
   desoObj: deso,
+  topCirclesStatelessResponse: [],
 
   updateHomeFeed: () => {},
   updateFollowingFeed: () => {},
@@ -21,6 +22,7 @@ const GlobalContext = createContext({
   updateTopDiamonderStatelessResponse: () => {},
   updateFollowingFeedInfo: () => {},
   updateNewCircles: () => {},
+  updateTopCirclesStatelessResponse: () => {},
 });
 
 export default GlobalContext;
