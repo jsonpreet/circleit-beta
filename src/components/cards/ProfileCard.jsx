@@ -38,7 +38,7 @@ function ProfileCard({ circle }) {
       }
     }
   } catch (e) {
-    console.log(e);
+    //console.log(e);
   }
 
   useEffect(() => {

@@ -23,7 +23,7 @@ function CircleCard({ circleStateless }) {
       }
     }
   } catch (e) {
-    console.log(e);
+    //console.log(e);
   }
 
   //get all text till newline from circleStateless.ProfileEntryResponse.Description
