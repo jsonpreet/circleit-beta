@@ -2,9 +2,9 @@
 
 CircleIt: Web3 Reddit on DeSo Blockchain.
 
-## Demo URL:
+## URL:
 
-(https://beta.circleit.app/)
+(https://circleit.app/)
 
 ## Available Scripts
 
