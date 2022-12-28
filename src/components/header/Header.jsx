@@ -1,6 +1,5 @@
 import React, { Fragment } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import { BiChevronDown, BiHomeAlt } from "react-icons/bi";
 import { FiSunrise } from "react-icons/fi";
 import { Menu, Transition } from "@headlessui/react";
@@ -15,7 +14,7 @@ import { isMobile } from "react-device-detect";
 import logoPng from "../../assets/logoPng.png";
 import LoginPopup from "../modals/LoginPopup";
 import { NotificationMenu } from "../notifications";
-import {FiCompass}  from "react-icons/fi";
+import { FiCompass } from "react-icons/fi";
 const deso = new Deso(DESO_CONFIG);
 
 function Header() {
@@ -168,7 +167,7 @@ function Header() {
                   <Menu.Button className='flex w-full menu space-x-1 items-center justify-center focus:outline-none'>
                     <div className='flex space-x-3 items-center justify-center'>
                       <img
-                        src={`https://diamondapp.com/api/v0/get-single-profile-picture/${user.profile.PublicKeyBase58Check}`}
+                        src={`https://diamondapp.com/api/v0/get-single-profile-picture/${user.profile.PublicKeyBase58Check}?fallback=https://diamondapp.com/assets/img/default_profile_pic.png`}
                         alt=''
                         className='rounded-full w-7 h-7 md:w-10 md:h-10 md:ml-4'
                       />
@@ -231,7 +230,9 @@ function Header() {
             )}
           </div>
         </div>
-        {(currentTab === "home" || currentTab === "following") && (
+        {(currentTab === "home" ||
+          currentTab === "following" ||
+          currentTab === "discover") && (
           <div className='flex sm:hidden space-x-5 px-2 mt-1 pt-1 '>
             <Link
               to='/'
@@ -248,6 +249,14 @@ function Header() {
               }`}>
               <FiSunrise size={24} />
               <span className='ml-1'>Following</span>
+            </Link>
+            <Link
+              to='/discover'
+              className={` menu font-semibold flex flex-row  transition delay-75 pb-1 ${
+                currentTab === "discover" ? "border-b-4 border-[#8b5cf6]" : ""
+              }`}>
+              <FiCompass size={24} />
+              <span className='ml-2'>Discover</span>
             </Link>
           </div>
         )}

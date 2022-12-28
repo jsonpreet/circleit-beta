@@ -15,6 +15,8 @@ export default function Discover() {
   const { isLoggedIn, user } = useApp();
   const { circle } = useParams();
 
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const navigate = useNavigate();
 
   const deso = new Deso(DESO_CONFIG);
@@ -24,11 +26,26 @@ export default function Discover() {
       ? GlobalContextValue.newCircles
       : []
   );
+  const [lastTimeStampOfCircleCreated, setLastTimeStampOfCircleCreated] =
+    useState(
+      GlobalContextValue.newCircles.length > 0
+        ? GlobalContextValue.newCircles[
+            GlobalContextValue.newCircles.length - 1
+          ].timestampCreated
+        : 0
+    );
   const [isLoading, setIsLoading] = useState(
-    circles.length == 0 ? true : false
+    circles.length == 0 ||
+      GlobalContextValue.topCirclesStatelessResponse.length == 0
+      ? true
+      : false
   );
   useEffect(() => {
     if (circles.length == 0 && GlobalContextValue.newCircles.length > 0) {
+      setLastTimeStampOfCircleCreated(
+        GlobalContextValue.newCircles[GlobalContextValue.newCircles.length - 1]
+          .timestampCreated
+      );
       setCircles(GlobalContextValue.newCircles);
     }
   }, [GlobalContextValue.newCircles]);
@@ -61,6 +78,67 @@ export default function Discover() {
     fetchInfo();
   }, [circles]);
 
+  const { observe } = useInView({
+    rootMargin: "1000px 0px",
+    onEnter: async () => {
+      console.log("finding more posts");
+      if (loadingMore || !hasMore) return;
+      setLoadingMore(true);
+
+      try {
+        console.log("fetching circles...");
+        const response = await fetch("https://tipdeso.com/get-latest-circles", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            limit: 30,
+            lastTimeStampOfCircleCreated: lastTimeStampOfCircleCreated,
+          }),
+        });
+
+        let uniqueCircles = await response.json();
+        if (uniqueCircles.data.length == 0) {
+          setHasMore(false);
+          return;
+        }
+
+        const newGlobalContextValue = [
+          ...GlobalContextValue.newCircles,
+          ...uniqueCircles.data,
+        ];
+        GlobalContextValue.updateNewCircles(newGlobalContextValue);
+        const listOfAllCircleKeys = uniqueCircles.data.map(
+          (circle) => circle.publicKey
+        );
+        const request = {
+          PublicKeysBase58Check: listOfAllCircleKeys,
+          SkipForLeaderboard: true,
+        };
+        const response2 = await deso.user.getUserStateless(request);
+        const newGlobalContextToCircleStatelessResponse = [
+          ...GlobalContextValue.topCirclesStatelessResponse,
+          ...response2.UserList,
+        ];
+
+        GlobalContextValue.updateTopCirclesStatelessResponse(
+          newGlobalContextToCircleStatelessResponse
+        );
+
+        setLastTimeStampOfCircleCreated(
+          uniqueCircles.data[uniqueCircles.data.length - 1].timestampCreated
+        );
+        setCircles((prev) => [...prev, ...uniqueCircles.data]);
+      } catch (error) {
+        console.log(error);
+        toast.error("Something went wrong");
+      } finally {
+        setLoadingMore(false);
+      }
+    },
+  });
+
   return (
     <>
       <DefaultLayout>
@@ -82,13 +160,13 @@ export default function Discover() {
             <Loader />
           </div>
         ) : (
-          <div>
+          <div className='container mx-auto flex flex-wrap '>
             {circles &&
               circles.length > 0 &&
               circles.map((circle, index) => {
                 //return divs that has 4 cards on big screen, 3 on small, and 1 on mobile. Each div card has banner image, circle name, and circle description along with circle image and join button
                 return (
-                  <div key={index}>
+                  <div className='w-full md:w-1/2 xl:w-1/3 sm:p-4 my-1 sm:my-1  ' key={index}>
                     <CircleCard
                       circleStateless={GlobalContextValue.topCirclesStatelessResponse.find(
                         (c) => c.PublicKeyBase58Check == circle.publicKey
@@ -99,6 +177,18 @@ export default function Discover() {
               })}
           </div>
         )}
+        {!isLoading &&
+          (hasMore ? (
+            <span ref={observe} className='flex justify-center my-10'>
+              <Loader />
+            </span>
+          ) : (
+            <div className='flex justify-center md:p-10'>
+              <p className='text-gray-500 dark:text-gray-400'>
+                You have come to an end!
+              </p>
+            </div>
+          ))}
       </DefaultLayout>
     </>
   );

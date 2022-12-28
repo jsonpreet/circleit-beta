@@ -8,7 +8,7 @@ import { LinkifyOptions } from "../../utils/Functions";
 import { FiSettings } from "react-icons/fi";
 import Tippy from "@tippyjs/react";
 import { useNavigate } from "react-router-dom";
-
+import defaultBanner from "../../assets/defaultBanner.jpg";
 const deso = new Deso(DESO_CONFIG);
 
 function ProfileCard({ circle }) {
@@ -24,10 +24,22 @@ function ProfileCard({ circle }) {
     : null;
   const isCircle =
     payload !== null && payload.isCircle === "true" ? true : false;
-  const cover =
-    circle.ExtraData && circle.ExtraData.FeaturedImageURL !== ""
-      ? circle.ExtraData.FeaturedImageURL
-      : "https://wallpaperaccess.com/full/1760835.jpg";
+  let cover = defaultBanner;
+
+  let imgURL = `${NODE_URL}/get-single-profile-picture/${circle.PublicKeyBase58Check}?fallback=https://diamondapp.com/assets/img/default_profile_pic.png`;
+  //loop thorough extradata map
+  try {
+    for (const [key, value] of Object.entries(circle.ExtraData)) {
+      if (key === "LargeProfilePicURL" && value !== "") {
+        imgURL = value;
+      }
+      if (key === "FeaturedImageURL" && value !== "") {
+        cover = value;
+      }
+    }
+  } catch (e) {
+    //console.log(e);
+  }
 
   useEffect(() => {
     async function fetchFollowers() {
@@ -100,11 +112,7 @@ function ProfileCard({ circle }) {
             className='h-32 md:h-48'
             style={{
               position: "relative",
-              backgroundImage: `url(${
-                cover !== ""
-                  ? cover
-                  : "https://wallpaperaccess.com/full/1760835.jpg"
-              })`,
+              backgroundImage: `url(${cover !== "" ? cover : defaultBanner})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
             }}></div>
@@ -127,12 +135,12 @@ function ProfileCard({ circle }) {
             )}
           <div className='flex flex-col items-center justify-center -mt-20 relative z-10'>
             <img
-              src={`${NODE_URL}/get-single-profile-picture/${circle.PublicKeyBase58Check}?fallback=https://diamondapp.com/assets/img/default_profile_pic.png`}
+              src={imgURL}
               className='rounded-full subHeader border-4 border-white dark:border-[#212126] w-24 h-24 md:w-32 md:h-32'
               alt={circle.Username}
             />
-            <div className='flex items-center flex-col mt-1'>
-              <h2 className='font-semibold text-2xl'>
+            <div className='flex items-center flex-col mt-1  '>
+              <h2 className='font-semibold text-2xl  '>
                 {circle.ExtraData?.DisplayName
                   ? circle.ExtraData?.DisplayName
                   : circle.Username}
