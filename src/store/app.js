@@ -9,6 +9,7 @@ const useApp = create(
             recentSearch: [],
             isLoggedIn: false,
             isCircle: false,
+            isExport: false,
             user: {},
             setTheme: (params) => {
                 set((state) => ({
@@ -38,6 +39,11 @@ const useApp = create(
             resetSearch: () => {
                 set((state) => ({
                     recentSearch: [],
+                }));
+            },
+            setExport: (params) => {
+                set((state) => ({
+                    isExport: params,
                 }));
             },
         }),

@@ -5763,6 +5763,11 @@ html-minifier-terser@^6.0.2:
     relateurl "^0.2.7"
     terser "^5.10.0"
 
+html-to-image@^1.11.3:
+  version "1.11.3"
+  resolved "https://registry.yarnpkg.com/html-to-image/-/html-to-image-1.11.3.tgz#ef34e367dc1b52b864acab7baabfc253bc481023"
+  integrity sha512-9E/uinAx0LrfGndny36FDh3j3shpp0vn/J1UFvpYZm/y6n8CjWJ+h6jyU1VzmOKAx/Fy/NPGath7nmRMpaocmg==
+
 html-webpack-plugin@^5.5.0:
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/html-webpack-plugin/-/html-webpack-plugin-5.5.0.tgz#c3911936f57681c1f9f4d8b68c158cd9dfe52f50"
@@ -8803,11 +8808,6 @@ react-share@^4.4.1:
   dependencies:
     classnames "^2.3.2"
     jsonp "^0.2.1"
-
-react-simple-image-slider@^2.4.1:
-  version "2.4.1"
-  resolved "https://registry.yarnpkg.com/react-simple-image-slider/-/react-simple-image-slider-2.4.1.tgz#ba80e5741b32a531110cb3811ed9f76e3eee88f8"
-  integrity sha512-9T/WjsRThJup43QxzH202rLVNqaUK9P8izTiWOfLcc5w3QygU44a9IQUuIwGYiXtWvw2spRRGLRc5Xd62/vfDg==
 
 react-window@^1.8.8:
   version "1.8.8"

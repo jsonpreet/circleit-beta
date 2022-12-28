@@ -3,7 +3,7 @@ import "linkify-plugin-hashtag";
 import "linkify-plugin-mention";
 import { LinkifyOptions } from "../../utils/Functions";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useEffect, useContext } from "react";
 import {
   LikeButton,
@@ -31,7 +31,9 @@ export default function PostCard({
   readerPublicKey,
   isLoggedIn,
 }) {
+
   const GlobalContextValue = useContext(GlobalContext);
+  const ref = useRef(null);
 
   const navigate = useNavigate();
   const [videoEmbed, setEmbed] = useState("");
@@ -179,12 +181,14 @@ export default function PostCard({
 
   return (
     <div
+      ref={ref}
       onClick={(e) => onPostClicked(e)}
       className={`${
         isRepost ? `my-2` : ``
       } cursor-pointer flex items-start justify-between min-h-24 lg:min-h-36 w-full transition secondaryBg secondaryBorder border primaryTextColor rounded-md mb-1 focus:outline-none active:outline-none `}>
       <div className='flex flex-col w-full p-4'>
         <PostTopMeta
+          rootRef={ref}
           post={post}
           isCircle={isCircle}
           circle={circle}

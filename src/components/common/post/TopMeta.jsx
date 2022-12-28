@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { dateFormat, timeStampToTimeAgo } from "../../../utils/Functions";
 import SubProfileCard from "../../cards/SubProfileCard";
@@ -6,14 +6,23 @@ import Tippy from "@tippyjs/react/headless";
 import { NODE_URL } from "../../../utils/Constants";
 import greenCheck from "../../../assets/greenCheck.svg";
 import { useState } from "react";
+import { BiCopy, BiDotsHorizontalRounded } from "react-icons/bi";
+import { Menu, Transition } from "@headlessui/react";
+import { RiScreenshot2Line } from "react-icons/ri";
+import useApp from "../../../store/app";
+import { toast } from "react-hot-toast";
+import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
+
 function PostTopMeta({
   isCircle,
   circle,
   post,
   isCommunityPost,
   onCirclePage,
+  rootRef,
 }) {
   let verifiedPayload = null;
+  const setExport = useApp((state) => state.setExport);
   try {
     verifiedPayload = circle
       ? circle.ExtraData.CircleIt !== undefined
@@ -51,6 +60,37 @@ function PostTopMeta({
       ? circle
       : post.ProfileEntryResponse
     : circle;
+  
+  
+
+  const saveImage = useCallback(() => {
+    const toastId = toast.loading("Exporting image to PNG...")
+    setExport(true);
+    if (rootRef?.current === null) {
+      return
+    }
+    const d = new Date();
+    let time = d.getTime();
+    const fileName = 'Circleit.app__' + time;
+
+    setTimeout(() =>
+      toJpeg(rootRef?.current, { cacheBust: true, pixelRatio: 3 }).then((dataUrl) => {
+        exportLink(dataUrl, fileName);
+        setExport(false);
+        toast.update(toastId, { render: "Image exported!", type: "success", isLoading: false, autoClose: 2000, hideProgressBar: true  });
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    , 1500);
+  }, [rootRef])
+
+  const exportLink = (dataUrl, fileName) => {
+    const link = document.createElement('a')
+    link.download = `${fileName}.jpeg`
+    link.href = dataUrl
+    link.click()
+  }
 
   return (
     <>
@@ -111,7 +151,7 @@ function PostTopMeta({
                 listOfVerifiedUsers &&
                 listOfVerifiedUsers.indexOf(
                   post.ProfileEntryResponse.PublicKeyBase58Check
-                ) > -1 && <img src={greenCheck} className='w-4 h-4' />}
+                ) > -1 && <img src={greenCheck} alt='' className='w-4 h-4' />}
             </Link>
           </Tippy>
         </div>
@@ -139,6 +179,54 @@ function PostTopMeta({
               {timeStampToTimeAgo(post.TimestampNanos)}
             </span>
           </div>
+        </div>
+        <div>
+          <Menu as='div' className='relative w-full flex text-left'>
+            <Menu.Button className='flex w-full menu space-x-1 items-center justify-center focus:outline-none'>
+              <BiDotsHorizontalRounded size={20} />
+            </Menu.Button>
+            <Transition
+              as={Fragment}
+              enter='transition ease-out duration-100'
+              enterFrom='transform opacity-0 scale-95'
+              enterTo='transform opacity-100 scale-100'
+              leave='transition ease-in duration-75'
+              leaveFrom='transform opacity-100 scale-100'
+              leaveTo='transform opacity-0 scale-95'>
+              <Menu.Items className='absolute right-0 z-10 mt-10 w-44 origin-top-right divide-y divide-gray-100 dark:divide-[#2D2D33] rounded-md primaryBg shadow-lg ring-1 ring-black ring-opacity-5 py-1 focus:outline-none'>
+                <Menu.Item>
+                  {({ active }) => (
+                    <button 
+                      className={`${
+                        active ? "bg-gray-100 dark:bg-[#2D2D33]" : ""
+                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                      onClick={() => null}
+                    >
+                      <BiCopy className='mr-2' size={20} />
+                      Copy Link
+                    </button>
+                  )}
+                </Menu.Item>
+                <Menu.Item>
+                  {({ active }) => (
+                    <button 
+                      className={`${
+                        active ? "bg-gray-100 dark:bg-[#2D2D33]" : ""
+                        } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
+                      onClick={() => {
+                          setExport(true)
+                          saveImage()
+                        }
+                      }
+                    >
+                      <RiScreenshot2Line className='mr-2' size={20} />
+                      Screenshot
+                    </button>
+                  )}
+                </Menu.Item>
+              </Menu.Items>
+            </Transition>
+          </Menu>
         </div>
       </div>
     </>

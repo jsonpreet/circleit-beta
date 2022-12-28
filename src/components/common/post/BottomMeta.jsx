@@ -91,12 +91,12 @@ function PostBottomMeta({ circle, isCircle, isRepost, post, desoObj }) {
             <IoDiamondOutline size={20} className='mt-1 mr-1' />
             <span>{formatNumber(diamonds > 0 ? diamonds : postDiamonds)}</span>
           </button>
-          <button
+          {/* <button
             onClick={() => setShowShareModal(!showShareModal)}
             className='px-3 cursor-pointer  text-sm items-center justify-center font-semibold extralightText pt-2 hidden sm:flex'>
             <FaRegShareSquare size={20} className='mt-1 mr-1' />
             <span className='mt-[1px]'></span>
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

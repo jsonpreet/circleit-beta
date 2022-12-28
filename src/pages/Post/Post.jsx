@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
 import PostShimmer from "../../components/shimmers/Post";
@@ -27,7 +27,9 @@ import {
 import { isBrowser } from "react-device-detect";
 import GlobalContext from "../../utils/GlobalContext/GlobalContext";
 import { Loader } from "../../utils/Loader";
+
 function Post() {
+  const ref = useRef(null);
   const GlobalContextValue = useContext(GlobalContext);
   const deso = GlobalContextValue.desoObj;
   const { circle, postID } = useParams();
@@ -187,10 +189,14 @@ function Post() {
               <PostShimmer />
             ) : (
               <>
-                <div className='flex flex-col min-h-24 lg:min-h-36 w-full secondaryBg secondaryBorder border primaryTextColor rounded-md mb-2'>
+                  <div
+                    ref={ref}
+                    className='flex flex-col min-h-24 lg:min-h-36 w-full secondaryBg secondaryBorder border primaryTextColor rounded-md mb-2'
+                  >
                   <div className='flex items-start justify-between w-full'>
                     <div className='flex flex-col w-full p-4'>
                       <PostTopMeta
+                        rootRef={ref}
                         post={post}
                         circle={circleProfile}
                         isCircle={isCircle}
