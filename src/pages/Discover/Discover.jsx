@@ -25,7 +25,10 @@ export default function Discover() {
       : []
   );
   const [isLoading, setIsLoading] = useState(
-    circles.length == 0 ? true : false
+    circles.length == 0 ||
+      GlobalContextValue.topCirclesStatelessResponse.length == 0
+      ? true
+      : false
   );
   useEffect(() => {
     if (circles.length == 0 && GlobalContextValue.newCircles.length > 0) {
