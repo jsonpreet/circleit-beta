@@ -205,7 +205,7 @@ function PostTopMeta({
                       className={`${
                         active ? "bg-gray-100 dark:bg-[#2D2D33]" : ""
                         } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                      onClick={() => onCopyUrl()  }
+                      onClick={() => onCopyUrl()  } 
                     >
                       <BiCopy className='mr-2' size={20} />
                       Copy Link
