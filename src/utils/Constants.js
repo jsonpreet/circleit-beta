@@ -39,7 +39,7 @@ export const MIN_DESO_TO_CREATE_PROFILE = 0.001 // IDK WHAT'S THE EXACT VALUE IS
 
 export const APP = {
     Name: 'Circleit',
-    URL: 'https://beta.circleit.app',
+    URL: 'https://circleit.app',
     Description: '',
     Twitter: '@CircleItApp'
 }

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { dateFormat, timeStampToTimeAgo } from "../../../utils/Functions";
 import SubProfileCard from "../../cards/SubProfileCard";
 import Tippy from "@tippyjs/react/headless";
-import { NODE_URL } from "../../../utils/Constants";
+import { APP, NODE_URL } from "../../../utils/Constants";
 import greenCheck from "../../../assets/greenCheck.svg";
 import { useState } from "react";
 import { BiCopy, BiDotsHorizontalRounded } from "react-icons/bi";
@@ -12,6 +12,7 @@ import { RiScreenshot2Line } from "react-icons/ri";
 import useApp from "../../../store/app";
 import { toast } from "react-hot-toast";
 import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
+import useCopyToClipboard from "../../../utils/useCopyToClipboard";
 
 function PostTopMeta({
   isCircle,
@@ -22,6 +23,7 @@ function PostTopMeta({
   rootRef,
 }) {
   let verifiedPayload = null;
+  const [copy] = useCopyToClipboard()
   const setExport = useApp((state) => state.setExport);
   try {
     verifiedPayload = circle
@@ -61,7 +63,10 @@ function PostTopMeta({
       : post.ProfileEntryResponse
     : circle;
   
-  
+  const onCopyUrl = async () => {
+    await copy(`${APP.URL}/${isCircle ? `circle` : `u`}/${circle.Username}/${post.PostHashHex}`)
+    toast.success('Link copied to clipboard')
+  }
 
   const saveImage = useCallback(() => {
     const toastId = toast.loading("Exporting image to PNG...")
@@ -200,7 +205,7 @@ function PostTopMeta({
                       className={`${
                         active ? "bg-gray-100 dark:bg-[#2D2D33]" : ""
                         } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                      onClick={() => null}
+                      onClick={() => onCopyUrl()  }
                     >
                       <BiCopy className='mr-2' size={20} />
                       Copy Link
