@@ -15,6 +15,7 @@ function Notification({ ProfilesByPublicKey, reader, PostsByHash, notification }
     Object.assign(profiles, ProfilesByPublicKey);
     Object.assign(posts, PostsByHash);
     const notify = parseNotification(notification, reader, profiles, posts)
+    if (!notify) return null;
     const profileExtraData = typeof notify.actor.ExtraData !== "undefined" ? notify.actor.ExtraData : null;
     const circleData = profileExtraData ? typeof profileExtraData.CircleIt !== "undefined" ? JSON.parse(profileExtraData.CircleIt) : null : null;
     const isCircle = circleData ? circleData.isCircle : false;
@@ -46,7 +47,7 @@ function Notification({ ProfilesByPublicKey, reader, PostsByHash, notification }
                     }
                     <Link
                         to={`/${isCircle ? `circle` : `u`}/${notify.actor.Username}`}
-                        className='cursor-pointer relative flex items-center space-x-2 '>
+                        className='cursor-pointer relative truncate max-w-1/2  flex items-center space-x-2 '>
                         <img
                             src={`${NODE_URL}/get-single-profile-picture/${
                             notify.actor.PublicKeyBase58Check

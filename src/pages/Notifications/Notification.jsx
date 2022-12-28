@@ -15,6 +15,7 @@ function Notification({ ProfilesByPublicKey, reader, PostsByHash, notification }
     Object.assign(profiles, ProfilesByPublicKey);
     Object.assign(posts, PostsByHash);
     const notify = parseNotification(notification, reader, profiles, posts)
+    if(!notify) return null;
     const profileExtraData = typeof notify.actor.ExtraData !== "undefined" ? notify.actor.ExtraData : null;
     const circleData = profileExtraData ? typeof profileExtraData.CircleIt !== "undefined" ? JSON.parse(profileExtraData.CircleIt) : null : null;
     const isCircle = circleData ? circleData.isCircle : false;
@@ -22,7 +23,6 @@ function Notification({ ProfilesByPublicKey, reader, PostsByHash, notification }
     const listOfVerifiedUsers = circleData?.VerifiedUsers.length > 0
       ? circleData.VerifiedUsers.map((user) => user.PublicKeyBase58Check)
       : []
-    console.log(notify)
     return (
         <>
             <div className='flex flex-col p-4 border theme-border secondaryBg rounded-lg'>
@@ -82,25 +82,30 @@ function Notification({ ProfilesByPublicKey, reader, PostsByHash, notification }
 export default Notification
 
 export const Post = ({ notification }) => {
-    const profileExtra = typeof notification.post.ProfileEntryResponse.ExtraData !== "undefined" ? notification.post.ProfileEntryResponse.ExtraData : null;
+    const profileExtra = typeof notification?.post?.ProfileEntryResponse?.ExtraData !== "undefined" ? notification?.post?.ProfileEntryResponse?.ExtraData : null;
 
     const circleData = profileExtra ? typeof profileExtra.CircleIt !== "undefined" ? JSON.parse(profileExtra.CircleIt) : null : null;
     const isCircle = circleData ? circleData.isCircle : false;
 
     return (
         <>
-            {notification.type === 'DIAMOND_SENT' || notification.type === 'LIKED' ?
-                <div className='flex w-full flex-col mt-1'>
-                    {notification.post.Body ? <p className='text-sm text-gray-500'>{notification.post.Body}</p> : null}
-                </div>
-                : null
-            }
+            {notification.post  ?
+                <>
+                    {notification.type === 'DIAMOND_SENT' || notification.type === 'LIKED' ?
+                        <div className='flex w-full flex-col mt-1'>
+                            {notification.post.Body ? <p className='text-sm text-gray-500'>{notification.post.Body}</p> : null}
+                        </div>
+                        : null}
             
-            <span
-              className='text-sm mt-0.5 extralightText'
-              title={dateFormat(notification.post.TimestampNanos)}>
-              {dateFormat(notification.post.TimestampNanos)}
-            </span>
+                    <span
+                    className='text-sm mt-0.5 extralightText'
+                    title={dateFormat(notification.post.TimestampNanos)}>
+                    {dateFormat(notification.post.TimestampNanos)}
+                    </span>
+                </>
+            : null
+        }
+            
            
         </>
     )
