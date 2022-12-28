@@ -140,7 +140,6 @@ export default function ProfileForm({ desoObj, publicKey, rootRef }) {
       NewDescription: profileDescription,
       NewProfilePic: base68Image,
       ExtraData: {
-        NewProfilePic: profileImage,
         DisplayName: "",
         TelegramURL: "",
         TwitterURL: "",
@@ -148,8 +147,8 @@ export default function ProfileForm({ desoObj, publicKey, rootRef }) {
         InstagramURL: "",
         GithubURL: "",
         LinkedinURL: "",
-        FeaturedImageURL: profileExtraInfo.FeaturedImageURL,
-        LargeProfilePicURL: profileExtraInfo.LargeProfilePicURL,
+        FeaturedImageURL: bannerURL,
+        LargeProfilePicURL: profileImage,
       },
       NewStakeMultipleBasisPoints: 12500,
       MinFeeRateNanosPerKB: 1000,

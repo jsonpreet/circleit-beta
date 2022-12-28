@@ -13,7 +13,7 @@ function SidebarLeft({ rootRef }) {
   const [showModal, setShowModal] = useState(false);
   const [circles, setCircles] = useState(
     GlobalContextValue.newCircles.length > 0
-      ? GlobalContextValue.newCircles
+      ? GlobalContextValue.newCircles.slice(0, 7)
       : []
   );
 
@@ -26,16 +26,14 @@ function SidebarLeft({ rootRef }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          limit: 12,
+          limit: 30,
           lastTimeStampOfCircleCreated: null,
         }),
       });
       let uniqueCircles = await response.json();
 
-      uniqueCircles = uniqueCircles.data.slice(0, 7);
-
-      setCircles(uniqueCircles);
-      GlobalContextValue.updateNewCircles(uniqueCircles);
+      setCircles(uniqueCircles.data.slice(0, 7));
+      GlobalContextValue.updateNewCircles(uniqueCircles.data);
     }
     if (GlobalContextValue.newCircles.length === 0) {
       fetchCircles();
@@ -68,7 +66,7 @@ function SidebarLeft({ rootRef }) {
             rootRef={rootRef}
             showModal={showModal}
             setShowModal={setShowModal}
-            loggedInUsername={user.profile?user.profile.Username: ""}
+            loggedInUsername={user.profile ? user.profile.Username : ""}
           />
         </div>
         {circles && circles.length > 0 ? (

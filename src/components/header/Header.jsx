@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { BsBarChart } from "react-icons/bs";
+
 import { BiChevronDown, BiHomeAlt } from "react-icons/bi";
 import { FiSunrise } from "react-icons/fi";
 import { Menu, Transition } from "@headlessui/react";
@@ -11,12 +11,11 @@ import { ThemeSwitch } from "../theme";
 import { DESO_CONFIG } from "../../utils/Constants";
 import toast from "react-hot-toast";
 import { MobileSearch, Search } from "../common/search";
-import logo from "../../assets/logo.svg";
 import { isMobile } from "react-device-detect";
 import logoPng from "../../assets/logoPng.png";
 import LoginPopup from "../modals/LoginPopup";
 import { NotificationMenu } from "../notifications";
-
+import {FiCompass}  from "react-icons/fi";
 const deso = new Deso(DESO_CONFIG);
 
 function Header() {
@@ -141,10 +140,10 @@ function Header() {
               <span className='ml-2'>Following</span>
             </Link>
             <Link
-              to='/hot'
+              to='/discover'
               className='menu font-semibold flex flex-row flex-grow transition delay-75'>
-              <BsBarChart size={24} />
-              <span className='ml-2'>Popular</span>
+              <FiCompass size={24} />
+              <span className='ml-2'>Discover</span>
             </Link>
           </div>
           <Search />
@@ -152,7 +151,7 @@ function Header() {
             <div className='flex justify-center space-x-5 items-center md:ml-6 md:mr-2'>
               {isMobile ? <MobileSearch /> : null}
               <ThemeSwitch />
-             {isLoggedIn &&  <NotificationMenu isCircle={isCircle} />}
+              {isLoggedIn && <NotificationMenu isCircle={isCircle} />}
             </div>
             {!isLoggedIn ? (
               <button
