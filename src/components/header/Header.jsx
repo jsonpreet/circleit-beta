@@ -1,6 +1,5 @@
 import React, { Fragment } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import { BiChevronDown, BiHomeAlt } from "react-icons/bi";
 import { FiSunrise } from "react-icons/fi";
 import { Menu, Transition } from "@headlessui/react";
@@ -231,7 +230,9 @@ function Header() {
             )}
           </div>
         </div>
-        {(currentTab === "home" || currentTab === "following") && (
+        {(currentTab === "home" ||
+          currentTab === "following" ||
+          currentTab === "discover") && (
           <div className='flex sm:hidden space-x-5 px-2 mt-1 pt-1 '>
             <Link
               to='/'
@@ -248,6 +249,14 @@ function Header() {
               }`}>
               <FiSunrise size={24} />
               <span className='ml-1'>Following</span>
+            </Link>
+            <Link
+              to='/discover'
+              className={` menu font-semibold flex flex-row  transition delay-75 pb-1 ${
+                currentTab === "discover" ? "border-b-4 border-[#8b5cf6]" : ""
+              }`}>
+              <FiCompass size={24} />
+              <span className='ml-2'>Discover</span>
             </Link>
           </div>
         )}
