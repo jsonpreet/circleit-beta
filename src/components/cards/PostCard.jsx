@@ -17,11 +17,11 @@ import {
   getEmbedWidth,
 } from "../../utils/EmbedUrls";
 import { isBrowser } from "react-device-detect";
-import { Link } from "react-router-dom";
+
 import GlobalContext from "../../utils/GlobalContext/GlobalContext";
 import { toast } from "react-hot-toast";
 import { Loader } from "../../utils/Loader";
-import { BiRepost } from "react-icons/bi";
+
 export default function PostCard({
   post,
   circle,
@@ -31,11 +31,6 @@ export default function PostCard({
   readerPublicKey,
   isLoggedIn,
 }) {
-  const isRecircle = post.RepostedPostEntryResponse
-    ? post.Body === ""
-      ? true
-      : false
-    : false;
 
   const GlobalContextValue = useContext(GlobalContext);
   const ref = useRef(null);
@@ -105,7 +100,6 @@ export default function PostCard({
   }, [post.Body]);
 
   const onPostClicked = (event) => {
-    if (isRepost) return;
     event.preventDefault();
     const selection = window.getSelection();
     if (selection.toString().length !== 0) {
@@ -134,17 +128,10 @@ export default function PostCard({
     ) {
       return;
     }
-    if (isRecircle) {
-      navigate(
-        `/${isCircle ? `circle` : `u`}/${circle.Username}/${
-          post.RepostedPostEntryResponse.PostHashHex
-        }`
-      );
-    } else {
-      navigate(
-        `/${isCircle ? `circle` : `u`}/${circle.Username}/${post.PostHashHex}`
-      );
-    }
+
+    navigate(
+      `/${isCircle ? `circle` : `u`}/${circle.Username}/${post.PostHashHex}`
+    );
   };
 
   const loadGatedContent = async () => {
@@ -196,137 +183,116 @@ export default function PostCard({
     <div
       ref={ref}
       onClick={(e) => onPostClicked(e)}
-      className={`cursor-pointer flex items-start justify-between min-h-24 lg:min-h-36 w-full transition secondaryBg secondaryBorder ${
-        !isRepost && "border"
-      } primaryTextColor rounded-md mb-1 focus:outline-none active:outline-none `}>
-      <div
-        className={`flex flex-col w-full  ${
-          isRecircle ? "px-4 pt-3 pb-2" : isRepost ? "" : "p-4"
-        }`}>
-        {isRecircle ? (
-          <Link
-            className='flex flex-row items-center justify-start w-full mb-1 hover:underline'
-            to={`/u/${post.ProfileEntryResponse?.Username}`}>
-            <BiRepost size={28} className=' mr-1' />
-            <span> {`${post.ProfileEntryResponse?.Username || circle.Username} Recircled`} </span>
-          </Link>
-        ) : (
-          <PostTopMeta
-            rootRef={ref}
-            post={post}
-            isCircle={isCircle}
-            circle={circle}
-            isCommunityPost={isCommunityPost}
-            onCirclePage={onCirclePage}
-          />
-        )}
+      className={`${
+        isRepost ? `my-2` : ``
+      } cursor-pointer flex items-start justify-between min-h-24 lg:min-h-36 w-full transition secondaryBg secondaryBorder border primaryTextColor rounded-md mb-1 focus:outline-none active:outline-none `}>
+      <div className='flex flex-col w-full p-4'>
+        <PostTopMeta
+          rootRef={ref}
+          post={post}
+          isCircle={isCircle}
+          circle={circle}
+          isCommunityPost={isCommunityPost}
+          onCirclePage={onCirclePage}
+        />
         <div className='flex flex-col w-full'>
-          {!isRecircle && (
-            <div className='flex flex-col space-y-4 my-2 '>
-              {postTitle ? (
-                <h2 className='w-full font-bold text-xl lightText'>
-                  {postTitle}
-                </h2>
-              ) : null}
+          <div className='flex flex-col space-y-4 my-2 '>
+            {postTitle ? (
+              <h2 className='w-full font-bold text-xl lightText'>
+                {postTitle}
+              </h2>
+            ) : null}
 
-              {(!isGatedWithDiamond || decryptedData) && (
-                <div className='w-full lightText break-words ml-1'>
-                  <Linkify options={LinkifyOptions}>
-                    {!readMore ? postBody : `${postBody.substring(0, 200)}`}
-                  </Linkify>
-                  {readMore && (
-                    <span
-                      className='brandGradientText'
-                      onClick={() => setReadMore(false)}>
-                      ... <span className='ml-1 font-medium'>Read more</span>
-                    </span>
-                  )}
-                </div>
-              )}
+            {(!isGatedWithDiamond || decryptedData) && (
+              <div className='w-full lightText break-words'>
+                <Linkify options={LinkifyOptions}>
+                  {!readMore ? postBody : `${postBody.substring(0, 200)}`}
+                </Linkify>
+                {readMore && (
+                  <span
+                    className='brandGradientText'
+                    onClick={() => setReadMore(false)}>
+                    ... <span className='ml-1 font-medium'>Read more</span>
+                  </span>
+                )}
+              </div>
+            )}
 
-              {isGatedWithDiamond && !decryptedData && !loadingDecrypted && (
-                <div className='w-full lightText break-words flex justify-center items-center flex-col'>
-                  <span>{`This Content is Gated with ${diamondLevelGatedWith} Diamonds `}</span>
-                  <button
-                    onClick={loadGatedContent}
-                    className={`buttonBG dark:text-white flex items-center px-8 py-2 rounded-full`}>
-                    <span className='text-sm sm:text-md'>
-                      View Gated Content 👀
-                    </span>
-                  </button>
-                </div>
-              )}
+            {isGatedWithDiamond && !decryptedData && !loadingDecrypted && (
+              <div className='w-full lightText break-words flex justify-center items-center flex-col'>
+                <span>{`This Content is Gated with ${diamondLevelGatedWith} Diamonds `}</span>
+                <button
+                  onClick={loadGatedContent}
+                  className={`buttonBG dark:text-white flex items-center px-8 py-2 rounded-full`}>
+                  <span className='text-sm sm:text-md'>
+                    View Gated Content 👀
+                  </span>
+                </button>
+              </div>
+            )}
 
-              {loadingDecrypted && (
-                <div className='w-full lightText break-words flex justify-center items-center flex-col'>
-                  <Loader />
-                </div>
-              )}
+            {loadingDecrypted && (
+              <div className='w-full lightText break-words flex justify-center items-center flex-col'>
+                <Loader />
+              </div>
+            )}
 
-              {imagelist.length > 0 && imagelist[0] !== "" && (
-                <PostImages images={imagelist} circle={circle} />
-              )}
-              {videoList.length > 0 && videoList[0] !== "" && (
-                <div className='mt-2 feed-post__video-container relative pt-[56.25%] w-full rounded-xl max-h-[700px] overflow-hidden'>
+            {imagelist.length > 0 && imagelist[0] !== "" && (
+              <PostImages images={imagelist} circle={circle} />
+            )}
+            {videoList.length > 0 && videoList[0] !== "" && (
+              <div className='mt-2 feed-post__video-container relative pt-[56.25%] w-full rounded-xl max-h-[700px] overflow-hidden'>
+                <iframe
+                  title='embed-video'
+                  src={videoList[0]}
+                  className='w-full absolute left-0 right-0 top-0 bottom-0 h-full feed-post__video'
+                  allow='accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;'
+                  allowFullScreen></iframe>
+              </div>
+            )}
+            {post.PostExtraData?.EmbedVideoURL &&
+              post.PostExtraData?.EmbedVideoURL !== "" &&
+              videoEmbed !== "" &&
+              typeof videoEmbed != "undefined" && (
+                <div className='mt-2 embed-container w-full flex flex-row items-center justify-center rounded-xl overflow-hidden'>
                   <iframe
-                    title='embed-video'
-                    src={videoList[0]}
-                    className='w-full absolute left-0 right-0 top-0 bottom-0 h-full feed-post__video'
-                    allow='accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;'
+                    title='extraembed-video'
+                    id='embed-iframe'
+                    className='w-full flex-shrink-0 feed-post__image'
+                    height={getEmbedHeight(videoEmbed)}
+                    style={{ maxWidth: getEmbedWidth(videoEmbed) }}
+                    src={videoEmbed}
+                    frameBorder='0'
+                    allow='picture-in-picture; clipboard-write; encrypted-media; gyroscope; accelerometer; encrypted-media;'
                     allowFullScreen></iframe>
                 </div>
               )}
-              {post.PostExtraData?.EmbedVideoURL &&
-                post.PostExtraData?.EmbedVideoURL !== "" &&
-                videoEmbed !== "" &&
-                typeof videoEmbed != "undefined" && (
-                  <div className='mt-2 embed-container w-full flex flex-row items-center justify-center rounded-xl overflow-hidden'>
-                    <iframe
-                      title='extraembed-video'
-                      id='embed-iframe'
-                      className='w-full flex-shrink-0 feed-post__image'
-                      height={getEmbedHeight(videoEmbed)}
-                      style={{ maxWidth: getEmbedWidth(videoEmbed) }}
-                      src={videoEmbed}
-                      frameBorder='0'
-                      allow='picture-in-picture; clipboard-write; encrypted-media; gyroscope; accelerometer; encrypted-media;'
-                      allowFullScreen></iframe>
-                  </div>
-                )}
-            </div>
-          )}
-
+          </div>
           <div>
             {post.RepostedPostEntryResponse !== null && (
               <PostCard
                 post={post.RepostedPostEntryResponse}
-                isRepost={isRecircle}
+                isRepost={true}
                 circle={circle}
                 isLoggedIn={isLoggedIn}
                 readerPublicKey={readerPublicKey}
               />
             )}
           </div>
-          {!isRecircle && (
-            <PostBottomMeta
-              isRepost={isRecircle}
-              post={
-                post.RepostedPostEntryResponse !== null
-                  ? post.RepostedPostEntryResponse
-                  : post
-              }
-              isCircle={isCircle}
-              circle={circle}
-              desoObj={GlobalContextValue.desoObj}
-            />
-          )}
+          <PostBottomMeta
+            isRepost={isRepost}
+            post={
+              post.RepostedPostEntryResponse !== null
+                ? post.RepostedPostEntryResponse
+                : post
+            }
+            isCircle={isCircle}
+            circle={circle}
+            desoObj={GlobalContextValue.desoObj}
+          />
         </div>
       </div>
-      {isBrowser && !isRecircle ? (
-        <LikeButton isRepost={isRepost} post={post} />
-      ) : (
-        <LikeButton isRepost={isRepost} post={post.RepostedPostEntryResponse} />
-      )}
+      {isBrowser ? <LikeButton isRepost={isRepost} post={post} /> : null}
     </div>
   );
 }
