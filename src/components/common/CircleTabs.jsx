@@ -65,7 +65,7 @@ function CircleTabs({
           </div>
         </>
       ) : (
-        <div className='flex w-full items-center justify-between '>
+        <div className='flex w-full items-center justify-between  px-1'>
           <Menu as='div' className='relative inline-block text-left'>
             <Menu.Button className='flex w-full menu space-x-1 items-center justify-center focus:outline-none'>
               <h2 className='font-semibold text-lg heading'>

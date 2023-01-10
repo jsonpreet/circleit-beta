@@ -198,17 +198,22 @@ export default function PostCard({
       onClick={(e) => onPostClicked(e)}
       className={`cursor-pointer flex items-start justify-between min-h-24 lg:min-h-36 w-full transition secondaryBg secondaryBorder ${
         !isRepost && "border"
-      } primaryTextColor rounded-md mb-1 focus:outline-none active:outline-none `}>
+      } primaryTextColor rounded-sm sm:rounded-md mb-1 focus:outline-none active:outline-none `}>
       <div
         className={`flex flex-col w-full  ${
           isRecircle ? "px-4 pt-3 pb-2" : isRepost ? "" : "p-4"
         }`}>
         {isRecircle ? (
           <Link
-            className='flex flex-row items-center justify-start w-full mb-1 hover:underline'
+            className='flex flex-row items-center justify-start w-full mb-1 hover:underline text-sm sm:text-base'
             to={`/u/${post.ProfileEntryResponse?.Username}`}>
-            <BiRepost size={28} className=' mr-1' />
-            <span> {`${post.ProfileEntryResponse?.Username || circle.Username} Recircled`} </span>
+            <BiRepost size={26} className=' mr-1' />
+            <span>
+              {" "}
+              {`${
+                post.ProfileEntryResponse?.Username || circle.Username
+              } Recircled`}{" "}
+            </span>
           </Link>
         ) : (
           <PostTopMeta
@@ -311,9 +316,11 @@ export default function PostCard({
             <PostBottomMeta
               isRepost={isRecircle}
               post={
-                post.RepostedPostEntryResponse !== null
-                  ? post.RepostedPostEntryResponse
-                  : post
+                post.RepostedPostEntryResponse == null
+                  ? post
+                  : post.Body !== ""
+                  ? post
+                  : post.RepostedPostEntryResponse
               }
               isCircle={isCircle}
               circle={circle}
@@ -322,11 +329,12 @@ export default function PostCard({
           )}
         </div>
       </div>
-      {isBrowser && !isRecircle ? (
-        <LikeButton isRepost={isRepost} post={post} />
-      ) : (
-        <LikeButton isRepost={isRepost} post={post.RepostedPostEntryResponse} />
-      )}
+      {
+        isBrowser && !isRecircle ? (
+          <LikeButton isRepost={isRepost} post={post} />
+        ) : null
+        // TODO: make it so that it shows like button of reposted post
+      }
     </div>
   );
 }
