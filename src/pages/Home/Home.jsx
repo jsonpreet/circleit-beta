@@ -141,7 +141,7 @@ function Home() {
     <>
       <DefaultLayout>
         {!isLoggedIn && (
-          <div className='relative inline-flex justify-center rounded-full items-center w-full mt-24 mb-4'>
+          <div className='relative inline-flex justify-center rounded-full items-center w-full mt-24 mb-4 px-2 '>
             <div className='relative text-4xl md:py-10 font-bold text-center dark:text-white sm:text-4xl lg:text-5xl leading-normal rounded-full z-10'>
               <span className='brandGradientBg blur-2xl filter opacity-10 w-full h-full absolute inset-0 rounded-full'></span>
               <span className='md:px-5'>
@@ -177,7 +177,7 @@ function Home() {
                     clipRule='evenodd'></path>
                 </svg>
               </div>
-              <h1 className='text-2xl lg:text-3xl font-bold dark:text-white'>
+              <h1 className='text-2xl lg:text-3xl font-bold dark:text-white px-3'>
                 Trending Posts on CircleIt
               </h1>
             </div>

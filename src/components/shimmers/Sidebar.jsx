@@ -1,7 +1,7 @@
 function SidebarShimmer() {
     return (
         <>
-            <div className='flex flex-col w-96 sm:ml-6 ml-1'>
+            <div className='flex flex-col w-100 sm:w-96 sm:ml-6 '>
                 <div className='rounded-md secondaryBg secondaryBorder secondaryTextColor overflow-hidden border'>
                     <div className=' animate-pulse'>
                         <div className='flex flex-col'>
