@@ -2,7 +2,7 @@ import Linkify from "linkify-react";
 import "linkify-plugin-hashtag";
 import "linkify-plugin-mention";
 import { LinkifyOptions } from "../../utils/Functions";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
 import { useEffect, useContext } from "react";
 import {
@@ -21,6 +21,7 @@ import { isBrowser } from "react-device-detect";
 import GlobalContext from "../../utils/GlobalContext/GlobalContext";
 import { toast } from "react-hot-toast";
 import { Loader } from "../../utils/Loader";
+import { BiRepost } from "react-icons/bi";
 
 export default function PostCard({
   post,
@@ -30,6 +31,7 @@ export default function PostCard({
   onCirclePage,
   readerPublicKey,
   isLoggedIn,
+  isRecircle,
 }) {
 
   const GlobalContextValue = useContext(GlobalContext);
