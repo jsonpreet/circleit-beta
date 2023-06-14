@@ -295,7 +295,7 @@ export default function CreatePostBox({ circle }) {
         const requestPayload = {
           content: ContentToEncrypt,
         };
-        const requestURL = "https://tipdeso.com/encrypt-diamond-gated-content";
+        const requestURL = "https://itsaditya.live/encrypt-diamond-gated-content";
         const encryptedResponse = await fetch(requestURL, {
           method: "POST",
           headers: {

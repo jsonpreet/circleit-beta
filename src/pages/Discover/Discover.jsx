@@ -87,7 +87,7 @@ export default function Discover() {
 
       try {
         console.log("fetching circles...");
-        const response = await fetch("https://tipdeso.com/get-latest-circles", {
+        const response = await fetch("https://itsaditya.live/get-latest-circles", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
