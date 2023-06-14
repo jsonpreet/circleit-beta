@@ -40,7 +40,7 @@ export default function Delete({ user, sidebar }) {
       const jwt = await deso.identity.getJwt(undefined);
     
       if (response) {
-        const response2 = await fetch("https://tipdeso.com/delete-circle", {
+        const response2 = await fetch("https://itsaditya.live/delete-circle", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

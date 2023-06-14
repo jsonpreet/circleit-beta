@@ -45,7 +45,7 @@ function CreateCircleModal({
         setCircle(true);
         try {
           const jwt = await deso.identity.getJwt(undefined);
-          const response2 = await fetch("https://tipdeso.com/add-new-circle", {
+          const response2 = await fetch("https://itsaditya.live/add-new-circle", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

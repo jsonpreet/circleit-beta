@@ -152,7 +152,7 @@ function Post() {
         jwt: jwt,
         readerPublicKey: userPublicKey,
       };
-      const requestURL = "https://tipdeso.com/decrypt-diamond-gated-content";
+      const requestURL = "https://itsaditya.live/decrypt-diamond-gated-content";
       const encryptedResponse = await fetch(requestURL, {
         method: "POST",
         headers: {
